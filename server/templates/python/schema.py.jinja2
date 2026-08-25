@@ -1,0 +1,71 @@
+# -*- coding: utf-8 -*-
+
+{% if table.sub %}
+from typing import List
+{% endif %}
+from dataclasses import dataclass
+
+from pydantic import BaseModel, ConfigDict, Field
+from fastapi import Query
+{% for import_stmt in schema_import_list %}
+{{ import_stmt }}
+{% endfor %}
+from app.common.enums import QueueEnum
+from app.core.base_params import BaseQueryParam, TenantByQueryParam, UserByQueryParam
+from app.core.base_schema import BaseSchema, TenantBySchema, UserBySchema
+
+class {{ class_name }}CreateSchema(BaseModel):
+    """
+    {{ function_name }}新增模型
+    """
+    {% for column in columns %}
+    {% if column.column_name not in ['uuid', 'tenant_id', 'created_time', 'updated_time', 'created_id', 'updated_id', 'is_deleted', 'deleted_time', 'deleted_id'] and column.column_name != pk_column_name %}
+    {% if column.column_name == 'status' %}
+    {{ column.column_name }}: {{ column.python_type }} = Field(default={% if column.python_type == "str" %}"0"{% else %}0{% endif %}{% if column.python_type == "int" %}, ge=0, le=1{% endif %}, description='{{ column.column_comment }}')
+    {% elif column.column_name == 'description' %}
+    {{ column.column_name }}: str | None = Field(default=None, description='{{ column.column_comment }}')
+    {% elif column.python_type == "bool" or column.html_type == "switch" %}
+    {{ column.column_name }}: bool = Field(default=True, description='{{ column.column_comment }}')
+    {% elif column.is_nullable %}
+    {{ column.column_name }}: {{ column.python_type }} | None = Field(default=None, description='{{ column.column_comment }}')
+    {% else %}
+    {{ column.column_name }}: {{ column.python_type }} = Field(default=..., description='{{ column.column_comment }}')
+    {% endif %}
+    {% endif %}
+    {% endfor %}
+
+
+class {{ class_name }}UpdateSchema({{ class_name }}CreateSchema):
+    """
+    {{ function_name }}更新模型
+    """
+    ...
+
+
+class {{ class_name }}OutSchema({{ class_name }}CreateSchema, BaseSchema, UserBySchema, TenantBySchema):
+    """
+    {{ function_name }}响应模型
+    """
+    model_config = ConfigDict(from_attributes=True)
+
+
+@dataclass
+class {{ class_name }}QueryParam(BaseQueryParam, UserByQueryParam, TenantByQueryParam):
+    """{{ function_name }}查询参数"""
+
+    {% for column in columns %}
+    {% if column.is_query and column.column_name not in ['created_time', 'updated_time', 'created_id', 'updated_id', 'tenant_id', 'is_deleted', 'deleted_time', 'deleted_id'] %}
+    {{ column.column_name }}: {{ column.python_type }} | None = Query(None, description="{{ column.column_comment }}")
+    {% endif %}
+    {% endfor %}
+
+    def __post_init__(self) -> None:
+        {% for column in columns %}
+        {% if column.is_query and column.query_type == 'LIKE' and column.column_name not in ['created_time', 'updated_time', 'created_id', 'updated_id', 'tenant_id', 'is_deleted', 'deleted_time', 'deleted_id'] %}
+        if self.{{ column.column_name }}:
+            self.{{ column.column_name }} = (QueueEnum.like.value, self.{{ column.column_name }})
+        {% elif column.is_query and column.query_type == 'EQ' and column.column_name not in ['created_time', 'updated_time', 'created_id', 'updated_id', 'tenant_id', 'is_deleted', 'deleted_time', 'deleted_id'] %}
+        if self.{{ column.column_name }} is not None:
+            self.{{ column.column_name }} = (QueueEnum.eq.value, self.{{ column.column_name }})
+        {% endif %}
+        {% endfor %}

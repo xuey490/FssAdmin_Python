@@ -1,0 +1,47 @@
+[
+  {
+    "config_name": "演示模式启用",
+    "config_key": "demo_enable",
+    "config_value": "off",
+    "config_type": true,
+    "status": 0,
+    "description": "是否启用演示模式（启用后非白名单IP只允许GET请求）",
+    "tenant_id": 1
+  },
+  {
+    "config_name": "演示访问IP白名单",
+    "config_key": "ip_white_list",
+    "config_value": "[\"127.0.0.1\"]",
+    "config_type": true,
+    "status": 0,
+    "description": "演示模式下允许访问的IP列表",
+    "tenant_id": 1
+  },
+  {
+    "config_name": "接口白名单",
+    "config_key": "white_api_list_path",
+    "config_value": "[\"/api/v1/system/auth/login\", \"/api/v1/system/auth/token/refresh\", \"/api/v1/system/auth/captcha/get\", \"/api/v1/system/auth/logout\", \"/api/v1/system/config/info\", \"/api/v1/system/user/current/info\", \"/api/v1/system/notice/available\", \"/api/v1/system/auth/auto-login/users\", \"/api/v1/system/auth/auto-login/token\", \"/api/v1/system/auth/auto-login\", \"/common/health\", \"/common/health/ready\", \"/common/health/live\", \"/metrics\"]",
+    "config_type": true,
+    "status": 0,
+    "description": "无需登录即可访问的接口列表",
+    "tenant_id": 1
+  },
+  {
+    "config_name": "访问IP黑名单",
+    "config_key": "ip_black_list",
+    "config_value": "[]",
+    "config_type": true,
+    "status": 0,
+    "description": "禁止访问的IP列表（任意请求均拒绝）",
+    "tenant_id": 1
+  },
+  {
+    "config_name": "操作日志保留天数",
+    "config_key": "operation_log_retention_days",
+    "config_value": "90",
+    "config_type": true,
+    "status": 0,
+    "description": "操作日志保留天数，调度器定期清理过期日志",
+    "tenant_id": 1
+  }
+]

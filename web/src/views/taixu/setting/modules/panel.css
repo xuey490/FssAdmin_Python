@@ -1,0 +1,28 @@
+.setting-panel {
+  padding: 8px 4px 24px;
+}
+
+.panel-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--el-text-color-primary);
+}
+
+.panel-form {
+  max-width: 760px;
+}
+
+.panel-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+  max-width: 760px;
+}
+
+.panel-actions .el-button {
+  flex: 1;
+}

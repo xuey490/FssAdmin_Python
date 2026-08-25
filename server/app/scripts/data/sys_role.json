@@ -1,0 +1,47 @@
+[
+  {
+    "name": "超级管理员",
+    "code": "SUPER_ADMIN",
+    "status": 0,
+    "order": 1,
+    "data_scope": 4,
+    "description": "拥有系统最高权限",
+    "tenant_id": 1
+  },
+  {
+    "name": "管理员",
+    "code": "ADMIN",
+    "status": 0,
+    "order": 2,
+    "data_scope": 3,
+    "description": "管理租户内所有资源",
+    "tenant_id": 1
+  },
+  {
+    "name": "普通用户",
+    "code": "USER",
+    "status": 0,
+    "order": 3,
+    "data_scope": 1,
+    "description": "仅能查看和操作自己的数据",
+    "tenant_id": 1
+  },
+  {
+    "name": "测试租户管理员",
+    "code": "TEST_ADMIN",
+    "order": 1,
+    "data_scope": 4,
+    "tenant_id": 2,
+    "status": 0,
+    "description": "测试租户管理员"
+  },
+  {
+    "name": "测试租户员工",
+    "code": "TEST_STAFF",
+    "order": 2,
+    "data_scope": 2,
+    "tenant_id": 2,
+    "status": 0,
+    "description": "测试租户普通员工"
+  }
+]

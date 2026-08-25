@@ -1,0 +1,91 @@
+[
+  {
+    "name": "集团总公司",
+    "code": "GROUP",
+    "order": 1,
+    "status": 0,
+    "leader": "张总",
+    "phone": "13800138000",
+    "email": "ceo@example.com",
+    "description": "集团总部",
+    "parent_id": null,
+    "tenant_id": 1,
+    "children": [
+      {
+        "name": "技术研发部",
+        "code": "TECH",
+        "order": 1,
+        "status": 0,
+        "leader": "李工",
+        "phone": "13800138001",
+        "email": "tech@example.com",
+        "description": "负责技术研发",
+        "parent_id": null,
+        "tenant_id": 1,
+        "children": [
+          {
+            "name": "后端开发组",
+            "code": "BACKEND",
+            "order": 1,
+            "status": 0,
+            "leader": "王工",
+            "phone": "13800138002",
+            "email": "backend@example.com",
+            "description": "后端技术开发",
+            "parent_id": null,
+            "tenant_id": 1,
+            "children": []
+          },
+          {
+            "name": "前端开发组",
+            "code": "FRONTEND",
+            "order": 2,
+            "status": 0,
+            "leader": "陈工",
+            "phone": "13800138003",
+            "email": "frontend@example.com",
+            "description": "前端技术开发",
+            "parent_id": null,
+            "tenant_id": 1,
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "产品运营部",
+        "code": "PRODUCT",
+        "order": 2,
+        "status": 0,
+        "leader": "赵经理",
+        "phone": "13800138004",
+        "email": "product@example.com",
+        "description": "产品与运营",
+        "parent_id": null,
+        "tenant_id": 1,
+        "children": []
+      },
+      {
+        "name": "人力资源部",
+        "code": "HR",
+        "order": 3,
+        "status": 0,
+        "leader": "刘经理",
+        "phone": "13800138005",
+        "email": "hr@example.com",
+        "description": "人事管理",
+        "parent_id": null,
+        "tenant_id": 1,
+        "children": []
+      }
+    ]
+  },
+  {
+    "name": "测试租户技术部",
+    "code": "TEST_TECH",
+    "order": 1,
+    "tenant_id": 2,
+    "parent_id": null,
+    "status": 0,
+    "description": "测试租户技术部门"
+  }
+]
