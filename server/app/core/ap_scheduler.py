@@ -108,6 +108,15 @@ async def cleanup_operation_log() -> None:
         logger.info("操作日志清理: 软删 {} 条", result.rowcount)
 
 
+async def backup_database() -> None:
+    """系统任务：备份数据库到 static/backup（ponytail: 同步 dump 放线程池）。"""
+    import asyncio
+
+    from app.utils.database_backup_util import run_database_backup
+
+    await asyncio.to_thread(run_database_backup)
+
+
 class SchedulerUtil:
     """
     定时任务相关方法
@@ -619,7 +628,6 @@ class SchedulerUtil:
     def _register_system_jobs(cls) -> None:
         """注册系统级定时任务（写入默认 Redis JobStore，监控页可见）。"""
         from apscheduler.triggers.cron import CronTrigger
-        from apscheduler.triggers.interval import IntervalTrigger
 
         registered = 0
 
@@ -637,47 +645,17 @@ class SchedulerUtil:
             except Exception as e:
                 logger.warning("系统任务注册跳过 {}: {}", job_id, e)
 
-        try:
-            from app.api.v1.module_platform.tenant.service import TenantService
-
-            _add(
-                "system_tenant_expiry_check",
-                "租户到期检查",
-                TenantService.check_tenant_expiry,
-                IntervalTrigger(hours=1),
-            )
-            _add(
-                "system_grace_reminder",
-                "宽限期续费提醒",
-                TenantService.send_grace_reminders,
-                CronTrigger(hour=9, minute=0),
-            )
-            _add(
-                "system_clean_expired",
-                "过期租户归档清理",
-                TenantService.clean_expired_tenants,
-                CronTrigger(day=1, hour=2, minute=0),
-            )
-        except Exception as e:
-            logger.warning("租户相关系统任务导入失败: {}", e)
-
-        try:
-            from app.api.v1.module_platform.order.service import OrderService
-
-            _add(
-                "system_cancel_expired_orders",
-                "超时订单取消",
-                OrderService.cancel_expired_orders,
-                IntervalTrigger(minutes=300),
-            )
-        except Exception as e:
-            logger.warning("订单系统任务导入失败: {}", e)
-
         _add(
             "system_cleanup_operation_log",
             "操作日志清理",
             cleanup_operation_log,
             CronTrigger(day_of_week="sun", hour=3, minute=0),
+        )
+        _add(
+            "system_database_backup",
+            "数据库备份",
+            backup_database,
+            CronTrigger(hour=2, minute=0),
         )
 
         logger.info("系统周期任务已注册 {} 个", registered)

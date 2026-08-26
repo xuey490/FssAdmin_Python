@@ -14,7 +14,6 @@ from .config.setting import settings
 from .core.exceptions import handle_exception
 from .core.http_limit import http_limit_callback, ws_limit_callback
 from .core.logger import logger
-from .scripts.initialize import InitializeData
 from .utils.common_util import import_modules_async
 from .utils.console import console_end, console_start
 
@@ -22,8 +21,6 @@ from .utils.console import console_end, console_start
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[Any, Any]:
     try:
-        await InitializeData().init_db()
-        logger.info("✅ {}数据库初始化完成", settings.DATABASE_TYPE)
         await import_modules_async(modules=settings.EVENT_LIST, desc="全局事件", app=app, status=True)
         logger.info("✅ 全局事件模块加载完成")
         # ponytail: 旧 plugin/platform 调度器有循环依赖，本阶段跳过

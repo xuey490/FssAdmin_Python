@@ -9,7 +9,6 @@ from pydantic import (
     model_validator,
 )
 
-from app.api.v1.module_platform.menu.schema import MenuOutSchema
 from app.api.v1.module_system.dept.schema import DeptOutSchema
 from app.common.enums import QueueEnum
 from app.core.base_params import BaseQueryParam, TenantByQueryParam, UserByQueryParam
@@ -93,6 +92,13 @@ class RoleUpdateSchema(RoleCreateSchema):
     """
 
 
+class MenuBriefSchema(BaseModel):
+    id: int
+    name: str | None = None
+
+    model_config = ConfigDict(from_attributes=True)
+
+
 class RoleOutSchema(RoleCreateSchema, BaseSchema, UserBySchema, TenantBySchema):
     """
     角色信息响应模型
@@ -100,7 +106,7 @@ class RoleOutSchema(RoleCreateSchema, BaseSchema, UserBySchema, TenantBySchema):
 
     model_config = ConfigDict(from_attributes=True)
 
-    menus: list[MenuOutSchema] = Field(default_factory=list, description="角色菜单列表")
+    menus: list[MenuBriefSchema] = Field(default_factory=list, description="角色菜单列表")
     depts: list[DeptOutSchema] = Field(default_factory=list, description="角色部门列表")
 
 

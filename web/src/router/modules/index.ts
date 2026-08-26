@@ -4,7 +4,6 @@ import { systemRoutes } from './system'
 import { resultRoutes } from './result'
 import { exceptionRoutes } from './exception'
 import { articleRoutes } from './article'
-import { aiRoutes } from './ai'
 import { videoRoutes } from './video'
 //import { flowRoutes } from './flow'
 
@@ -18,6 +17,5 @@ export const routeModules: AppRouteRecord[] = [
   resultRoutes,
   exceptionRoutes,
   articleRoutes,
-  aiRoutes,
   videoRoutes
 ]

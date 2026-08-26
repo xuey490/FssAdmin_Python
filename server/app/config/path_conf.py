@@ -18,8 +18,8 @@ UPLOAD_DIR = STATIC_DIR / "upload"
 # 下载文件目录
 DOWNLOAD_DIR = STATIC_DIR / "download"
 
-# 发票 PDF 输出目录
-INVOICE_DIR = STATIC_DIR / "invoice"
+# 数据库备份目录
+BACKUP_DIR = STATIC_DIR / "backup"
 
 # 环境配置目录（.env.dev / .env.prod 等放在项目根）
 ENV_DIR = BASE_DIR

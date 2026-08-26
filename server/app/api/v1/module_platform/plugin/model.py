@@ -47,7 +47,7 @@ class TenantPluginModel(MappedBase):
     )
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True, comment="主键ID")
-    tenant_id: Mapped[int] = mapped_column(Integer, ForeignKey("platform_tenant.id", ondelete="CASCADE"), nullable=False, index=True, comment="租户ID")
+    tenant_id: Mapped[int] = mapped_column(Integer, nullable=False, index=True, comment="租户ID")
     plugin_id: Mapped[int] = mapped_column(Integer, ForeignKey("platform_plugin.id", ondelete="CASCADE"), nullable=False, index=True, comment="插件ID")
     enabled: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True, comment="启用(True:启用 False:禁用)")
     purchased: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False, comment="是否已购买(True:已购买 False:未购买)")

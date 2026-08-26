@@ -1,8 +1,8 @@
 # 见 docs/PLUGIN_ARCHITECTURE.md
 
 name = "task"
-title = "任务与工作流"
+title = "任务调度"
 version = "1.0.0"
-description = "定时任务、DAG 工作流等子模块。"
+description = "定时任务（cronjob 节点/调度器）。"
 optional = true
-tags = ["task", "cron", "workflow"]
+tags = ["task", "cron"]

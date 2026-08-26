@@ -85,13 +85,6 @@ class PluginService:
         if not tenant_id:
             raise CustomException(msg="无法获取租户信息")
 
-        if tenant_id != 1:
-            from app.api.v1.module_platform.package.service import PackageService
-
-            allowed_plugin_ids = await PackageService(self.auth).get_tenant_available_plugin_ids(tenant_id)
-            if allowed_plugin_ids and plugin_id not in allowed_plugin_ids:
-                raise CustomException(msg="当前套餐不支持安装此插件")
-
         plugin = await PluginCRUD(self.auth).get(id=plugin_id)
         if not plugin or plugin.status == 1:
             raise CustomException(msg="该数据不存在")

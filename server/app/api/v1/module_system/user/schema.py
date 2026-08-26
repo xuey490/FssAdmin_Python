@@ -11,8 +11,7 @@ from pydantic import (
     model_validator,
 )
 
-from app.api.v1.module_platform.menu.schema import MenuOutSchema
-from app.api.v1.module_system.role.schema import RoleOutSchema
+from app.api.v1.module_system.role.schema import MenuBriefSchema, RoleOutSchema
 from app.common.enums import QueueEnum
 from app.core.base_params import BaseQueryParam, TenantByQueryParam, UserByQueryParam
 from app.core.base_schema import BaseSchema, CommonSchema, TenantBySchema, UserBySchema
@@ -293,7 +292,7 @@ class UserOutSchema(UserUpdateSchema, BaseSchema, UserBySchema, TenantBySchema):
     dept: CommonSchema | None = Field(default=None, description="部门")
     positions: list[CommonSchema] | None = Field(default=[], description="岗位")
     roles: list[RoleOutSchema] | None = Field(default=[], description="角色")
-    menus: list[MenuOutSchema] | None = Field(default=[], description="菜单")
+    menus: list[MenuBriefSchema] | None = Field(default=[], description="菜单")
 
 
 @dataclass

@@ -17,11 +17,8 @@ from typing import Any
 from app.core.logger import logger
 
 from .ytdlp_core import (
-    entry_webpage_url as _entry_webpage_url,
     pick_best_resolution,
-    pick_playable_url as _pick_playable_url,
     slim_info,
-    urls_from_flat_info,
 )
 
 _RISK_MARKERS = (

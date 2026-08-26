@@ -64,7 +64,7 @@ def handle_service_exception(func: Callable) -> Callable:
     return wrapper
 
 
-_MENU_TYPE_CATALOG = 1  # 与 platform_menu.type、前端 MenuTypeEnum.CATALOG 一致
+_MENU_TYPE_CATALOG = 1  # 与 sa_system_menu.type、前端 MenuTypeEnum.CATALOG 一致
 _MENU_TYPE_MENU = 2
 
 
@@ -85,7 +85,7 @@ class GenTableService:
         pn = (package_name or "").strip()
         # 1) 选择上级目录：从上级菜单 route_path 第一段推断 module_xxx
         if parent_catalog_id is not None:
-            from app.api.v1.module_platform.menu.crud import MenuCRUD
+from .system_menu_helper import GenMenuCRUD as MenuCRUD
 
             m = await MenuCRUD(self.auth).get(id=parent_catalog_id)
             if not m:
@@ -110,7 +110,7 @@ class GenTableService:
         """上级菜单仅允许目录：与前端树只展示目录一致，避免挂到菜单/按钮下。"""
         if parent_menu_id is None:
             return
-        from app.api.v1.module_platform.menu.crud import MenuCRUD
+        from .system_menu_helper import GenMenuCRUD as MenuCRUD
 
         m = await MenuCRUD(self.auth).get(id=parent_menu_id)
         if not m:
@@ -155,7 +155,7 @@ class GenTableService:
         business_name: str,
     ) -> int:
         """创建或复用 type=1 模块目录；固定为「目录 → 菜单 → 按钮」中的第一层目录。"""
-        from app.api.v1.module_platform.menu.schema import MenuCreateSchema
+        from .system_menu_helper import GenMenuCreate as MenuCreateSchema
         from app.utils.common_util import CamelCaseUtil
 
         pn = (package_name or "").strip()
@@ -691,8 +691,8 @@ class GenTableService:
         render_info = await self.__get_gen_render_info(table_name)
         gen_table_schema: GenTableOutSchema = render_info[3]
 
-        from app.api.v1.module_platform.menu.crud import MenuCRUD
-        from app.api.v1.module_platform.menu.schema import MenuCreateSchema
+        from .system_menu_helper import GenMenuCRUD as MenuCRUD
+        from .system_menu_helper import GenMenuCreate as MenuCreateSchema
         from app.utils.common_util import CamelCaseUtil
 
         # 按“上级目录”规则矫正最终包名（分系统根）
