@@ -219,40 +219,6 @@ class TestDept:
         )
 
 
-class TestPosition:
-    """岗位管理接口 — 数据验证。"""
-
-    def test_position_list(self, test_client: TestClient, auth_headers: dict) -> None:
-        assert_route(test_client, "GET", "/system/position/list", auth=auth_headers)
-
-    def test_position_detail(self, test_client: TestClient, auth_headers: dict) -> None:
-        assert_route(test_client, "GET", "/system/position/detail/1", auth=auth_headers)
-
-    def test_position_create(self, test_client: TestClient, auth_headers: dict) -> None:
-        assert_route(
-            test_client, "POST", "/system/position/create", auth=auth_headers,
-            json={"name": "测试岗位", "code": "test_pos", "sort": 1},
-        )
-
-    def test_position_update(self, test_client: TestClient, auth_headers: dict) -> None:
-        assert_route(
-            test_client, "PUT", "/system/position/update/1", auth=auth_headers,
-            json={"name": "更新岗位"},
-        )
-
-    def test_position_delete(self, test_client: TestClient, auth_headers: dict) -> None:
-        assert_route(test_client, "DELETE", "/system/position/delete", auth=auth_headers, json=[9999])
-
-    def test_position_export(self, test_client: TestClient, auth_headers: dict) -> None:
-        assert_route(test_client, "GET", "/system/position/export", auth=auth_headers)
-
-    def test_position_status_batch(self, test_client: TestClient, auth_headers: dict) -> None:
-        assert_route(
-            test_client, "PATCH", "/system/position/status/batch", auth=auth_headers,
-            json={"ids": [1], "status": 1},
-        )
-
-
 class TestDict:
     """字典管理接口 — 数据验证。"""
 
@@ -427,30 +393,3 @@ class TestLog:
     def test_operation_log_detail(self, test_client: TestClient, auth_headers: dict) -> None:
         assert_route(test_client, "GET", "/system/log/operation/detail/1", auth=auth_headers)
 
-
-class TestTicket:
-    """工单管理接口 — 数据验证。"""
-
-    def test_ticket_list(self, test_client: TestClient, auth_headers: dict) -> None:
-        assert_route(test_client, "GET", "/system/ticket/list", auth=auth_headers)
-
-    def test_ticket_detail(self, test_client: TestClient, auth_headers: dict) -> None:
-        assert_route(test_client, "GET", "/system/ticket/detail/1", auth=auth_headers)
-
-    def test_ticket_create(self, test_client: TestClient, auth_headers: dict) -> None:
-        assert_route(
-            test_client, "POST", "/system/ticket/create", auth=auth_headers,
-            json={"title": "测试工单", "ticket_type": "bug", "ticket_content": "内容描述"},
-        )
-
-    def test_ticket_update(self, test_client: TestClient, auth_headers: dict) -> None:
-        assert_route(
-            test_client, "PUT", "/system/ticket/update/1", auth=auth_headers,
-            json={"title": "更新工单"},
-        )
-
-    def test_ticket_delete(self, test_client: TestClient, auth_headers: dict) -> None:
-        assert_route(test_client, "DELETE", "/system/ticket/delete", auth=auth_headers, json=[9999])
-
-    def test_ticket_batch(self, test_client: TestClient, auth_headers: dict) -> None:
-        assert_route(test_client, "PUT", "/system/ticket/batch", auth=auth_headers)

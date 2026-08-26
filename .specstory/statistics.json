@@ -9,6 +9,33 @@
       "provider": "cursoride",
       "last_updated": "2026-08-25T15:23:31Z"
     },
+    "5f272360-b8a9-412c-9e82-884abb3273e4": {
+      "user_message_count": 1,
+      "agent_message_count": 4,
+      "start_timestamp": "2026-08-26T23:31:00+08:00",
+      "end_timestamp": "2026-08-26T23:31:00+08:00",
+      "markdown_size_bytes": 1125,
+      "provider": "cursoride",
+      "last_updated": "2026-08-26T15:31:15Z"
+    },
+    "68dceeb6-f5bc-4888-81a3-2b3ff53e69cc": {
+      "user_message_count": 1,
+      "agent_message_count": 0,
+      "start_timestamp": "2026-08-26T23:26:25+08:00",
+      "end_timestamp": "2026-08-26T23:26:25+08:00",
+      "markdown_size_bytes": 291,
+      "provider": "cursoride",
+      "last_updated": "2026-08-26T15:26:29Z"
+    },
+    "6d0c01b1-ff10-4c68-adf4-bc582c1e8169": {
+      "user_message_count": 1,
+      "agent_message_count": 1,
+      "start_timestamp": "2026-08-26T23:26:18+08:00",
+      "end_timestamp": "2026-08-26T23:26:18+08:00",
+      "markdown_size_bytes": 606,
+      "provider": "cursoride",
+      "last_updated": "2026-08-26T15:26:29Z"
+    },
     "70bd85bc-1dac-4ad2-9338-59bc5e2fc665": {
       "user_message_count": 4,
       "agent_message_count": 248,

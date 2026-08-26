@@ -2818,3 +2818,154 @@ SystemExit: 1
 2026-08-26 23:16:48.587 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/platform/video/list | client=127.0.0.1
 2026-08-26 23:16:50.635 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 2048.2ms
 2026-08-26 23:16:50.636 | INFO     | logging:callHandlers:1736 - 127.0.0.1:17596 - "GET /api/platform/video/list?page_no=1&page_size=10 HTTP/1.1" 200
+2026-08-26 23:28:29.102 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/task/cronjob/job/scheduler/jobs | client=127.0.0.1
+2026-08-26 23:28:29.152 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 50.5ms
+2026-08-26 23:28:29.153 | INFO     | logging:callHandlers:1736 - 127.0.0.1:40925 - "GET /api/task/cronjob/job/scheduler/jobs HTTP/1.1" 200
+2026-08-26 23:28:29.352 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/task/cronjob/job/scheduler/status | client=127.0.0.1
+2026-08-26 23:28:29.392 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 40.5ms
+2026-08-26 23:28:29.392 | INFO     | logging:callHandlers:1736 - 127.0.0.1:22147 - "GET /api/task/cronjob/job/scheduler/status HTTP/1.1" 200
+2026-08-26 23:28:30.577 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/task/cronjob/node/list | client=127.0.0.1
+2026-08-26 23:28:30.588 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 10.5ms
+2026-08-26 23:28:30.588 | INFO     | logging:callHandlers:1736 - 127.0.0.1:63711 - "GET /api/task/cronjob/node/list?page_no=1&page_size=10 HTTP/1.1" 200
+2026-08-26 23:28:31.853 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/task/cronjob/job/scheduler/jobs | client=127.0.0.1
+2026-08-26 23:28:31.861 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 7.5ms
+2026-08-26 23:28:31.861 | INFO     | logging:callHandlers:1736 - 127.0.0.1:58412 - "GET /api/task/cronjob/job/scheduler/jobs HTTP/1.1" 200
+2026-08-26 23:28:32.120 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/task/cronjob/job/scheduler/status | client=127.0.0.1
+2026-08-26 23:28:32.127 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 6.6ms
+2026-08-26 23:28:32.127 | INFO     | logging:callHandlers:1736 - 127.0.0.1:54288 - "GET /api/task/cronjob/job/scheduler/status HTTP/1.1" 200
+2026-08-26 23:30:25.465 | WARNING  | logging:callHandlers:1736 - StatReload detected changes in 'app\common\enums.py'. Reloading...
+2026-08-26 23:30:25.485 | INFO     | logging:callHandlers:1736 - Shutting down
+2026-08-26 23:30:25.595 | INFO     | logging:callHandlers:1736 - Waiting for application shutdown.
+2026-08-26 23:30:25.595 | INFO     | app.api.v1.module_platform.video.meta_queue:stop:125 - MetaFetchQueue stopped
+2026-08-26 23:30:25.595 | INFO     | app.api.v1.module_platform.video.downloader:stop:151 - DownloadQueue stopping: 服务关闭
+2026-08-26 23:30:25.598 | INFO     | app.api.v1.module_platform.video.downloader:stop:188 - DownloadQueue stopped
+2026-08-26 23:30:25.600 | INFO     | logging:callHandlers:1736 - Scheduler has been shut down
+2026-08-26 23:30:25.600 | INFO     | app.core.ap_scheduler:_handle_scheduler_shutdown:415 - 调度器已关闭
+2026-08-26 23:30:25.601 | INFO     | app.core.ap_scheduler:_update_scheduler_status:520 - 调度器状态变更: 0
+2026-08-26 23:30:25.602 | INFO     | app.core.database:redis_connect:201 - ✅️ Redis连接已关闭
+2026-08-26 23:30:25.603 | INFO     | logging:callHandlers:1736 - Application shutdown complete.
+2026-08-26 23:30:25.604 | INFO     | logging:callHandlers:1736 - Finished server process [29248]
+2026-08-26 23:30:27.973 | INFO     | logging:callHandlers:1736 - Started server process [27204]
+2026-08-26 23:30:27.974 | INFO     | logging:callHandlers:1736 - Waiting for application startup.
+2026-08-26 23:30:30.017 | INFO     | app.init_app:lifespan:25 - ✅ 全局事件模块加载完成
+2026-08-26 23:30:30.017 | INFO     | app.init_app:lifespan:29 - ✅ fastapi-admin-cache 初始化完成
+2026-08-26 23:30:30.018 | INFO     | app.init_app:lifespan:50 - ✅ 请求限流器初始化完成 (10000次/60秒)
+2026-08-26 23:30:30.065 | INFO     | logging:callHandlers:1736 - Scheduler started
+2026-08-26 23:30:30.303 | WARNING  | logging:callHandlers:1736 - StatReload detected changes in 'tests\test_api_module_system.py'. Reloading...
+2026-08-26 23:30:32.085 | INFO     | app.core.ap_scheduler:_handle_job_added:371 - 任务 system_cleanup_operation_log (操作日志清理) 已添加到 default 存储器
+2026-08-26 23:30:32.146 | INFO     | app.core.ap_scheduler:_cleanup_obsolete_pending_logs:826 - 清理了任务 system_cleanup_operation_log 的 1 条旧 pending 日志
+2026-08-26 23:30:32.171 | INFO     | app.core.ap_scheduler:_create_job_log:864 - 执行日志创建成功: job_id=system_cleanup_operation_log, id=866
+2026-08-26 23:30:32.171 | INFO     | app.core.ap_scheduler:_handle_job_added:384 - 任务 system_cleanup_operation_log 已创建初始 pending 状态日志
+2026-08-26 23:30:32.172 | INFO     | logging:callHandlers:1736 - Added job "操作日志清理" to job store "default"
+2026-08-26 23:30:32.173 | INFO     | app.core.ap_scheduler:_handle_job_added:371 - 任务 system_database_backup (数据库备份) 已添加到 default 存储器
+2026-08-26 23:30:32.201 | INFO     | app.core.ap_scheduler:_cleanup_obsolete_pending_logs:826 - 清理了任务 system_database_backup 的 1 条旧 pending 日志
+2026-08-26 23:30:32.226 | INFO     | app.core.ap_scheduler:_create_job_log:864 - 执行日志创建成功: job_id=system_database_backup, id=867
+2026-08-26 23:30:32.227 | INFO     | app.core.ap_scheduler:_handle_job_added:384 - 任务 system_database_backup 已创建初始 pending 状态日志
+2026-08-26 23:30:32.227 | INFO     | logging:callHandlers:1736 - Added job "数据库备份" to job store "default"
+2026-08-26 23:30:32.227 | INFO     | app.core.ap_scheduler:_register_system_jobs:661 - 系统周期任务已注册 2 个
+2026-08-26 23:30:32.228 | INFO     | app.init_app:lifespan:65 - ✅ APScheduler 初始化完成
+2026-08-26 23:30:34.282 | INFO     | app.api.v1.module_platform.video.meta_queue:start:106 - MetaFetchQueue started workers=1 recover_on_start=False recovered=0
+2026-08-26 23:30:34.285 | INFO     | app.api.v1.module_platform.video.downloader:start:144 - DownloadQueue started workers=2 recovered=0
+2026-08-26 23:30:34.289 | INFO     | app.init_app:lifespan:83 - ✅ 视频队列已启动 (meta_recover_on_start=False, ytdlp_subprocess=True)
+2026-08-26 23:30:34.319 | INFO     | logging:callHandlers:1736 - Application startup complete.
+2026-08-26 23:30:34.320 | INFO     | logging:callHandlers:1736 - Shutting down
+2026-08-26 23:30:34.435 | INFO     | logging:callHandlers:1736 - Waiting for application shutdown.
+2026-08-26 23:30:34.436 | INFO     | app.api.v1.module_platform.video.meta_queue:stop:125 - MetaFetchQueue stopped
+2026-08-26 23:30:34.436 | INFO     | app.api.v1.module_platform.video.downloader:stop:151 - DownloadQueue stopping: 服务关闭
+2026-08-26 23:30:34.439 | INFO     | app.api.v1.module_platform.video.downloader:stop:188 - DownloadQueue stopped
+2026-08-26 23:30:34.440 | INFO     | logging:callHandlers:1736 - Scheduler has been shut down
+2026-08-26 23:30:34.440 | INFO     | app.core.ap_scheduler:_handle_scheduler_shutdown:415 - 调度器已关闭
+2026-08-26 23:30:34.441 | INFO     | app.core.ap_scheduler:_update_scheduler_status:520 - 调度器状态变更: 0
+2026-08-26 23:30:34.441 | INFO     | app.core.database:redis_connect:201 - ✅️ Redis连接已关闭
+2026-08-26 23:30:34.443 | INFO     | logging:callHandlers:1736 - Application shutdown complete.
+2026-08-26 23:30:34.444 | INFO     | logging:callHandlers:1736 - Finished server process [27204]
+2026-08-26 23:30:36.813 | INFO     | logging:callHandlers:1736 - Started server process [24296]
+2026-08-26 23:30:36.814 | INFO     | logging:callHandlers:1736 - Waiting for application startup.
+2026-08-26 23:30:38.869 | INFO     | app.init_app:lifespan:25 - ✅ 全局事件模块加载完成
+2026-08-26 23:30:38.869 | INFO     | app.init_app:lifespan:29 - ✅ fastapi-admin-cache 初始化完成
+2026-08-26 23:30:38.870 | INFO     | app.init_app:lifespan:50 - ✅ 请求限流器初始化完成 (10000次/60秒)
+2026-08-26 23:30:38.918 | INFO     | logging:callHandlers:1736 - Scheduler started
+2026-08-26 23:30:40.955 | INFO     | app.core.ap_scheduler:_handle_job_added:371 - 任务 system_cleanup_operation_log (操作日志清理) 已添加到 default 存储器
+2026-08-26 23:30:41.007 | INFO     | app.core.ap_scheduler:_cleanup_obsolete_pending_logs:826 - 清理了任务 system_cleanup_operation_log 的 1 条旧 pending 日志
+2026-08-26 23:30:41.062 | INFO     | app.core.ap_scheduler:_create_job_log:864 - 执行日志创建成功: job_id=system_cleanup_operation_log, id=868
+2026-08-26 23:30:41.062 | INFO     | app.core.ap_scheduler:_handle_job_added:384 - 任务 system_cleanup_operation_log 已创建初始 pending 状态日志
+2026-08-26 23:30:41.063 | INFO     | logging:callHandlers:1736 - Added job "操作日志清理" to job store "default"
+2026-08-26 23:30:41.064 | INFO     | app.core.ap_scheduler:_handle_job_added:371 - 任务 system_database_backup (数据库备份) 已添加到 default 存储器
+2026-08-26 23:30:41.090 | INFO     | app.core.ap_scheduler:_cleanup_obsolete_pending_logs:826 - 清理了任务 system_database_backup 的 1 条旧 pending 日志
+2026-08-26 23:30:41.117 | INFO     | app.core.ap_scheduler:_create_job_log:864 - 执行日志创建成功: job_id=system_database_backup, id=869
+2026-08-26 23:30:41.117 | INFO     | app.core.ap_scheduler:_handle_job_added:384 - 任务 system_database_backup 已创建初始 pending 状态日志
+2026-08-26 23:30:41.118 | INFO     | logging:callHandlers:1736 - Added job "数据库备份" to job store "default"
+2026-08-26 23:30:41.118 | INFO     | app.core.ap_scheduler:_register_system_jobs:661 - 系统周期任务已注册 2 个
+2026-08-26 23:30:41.118 | INFO     | app.init_app:lifespan:65 - ✅ APScheduler 初始化完成
+2026-08-26 23:30:43.220 | INFO     | app.api.v1.module_platform.video.meta_queue:start:106 - MetaFetchQueue started workers=1 recover_on_start=False recovered=0
+2026-08-26 23:30:43.223 | INFO     | app.api.v1.module_platform.video.downloader:start:144 - DownloadQueue started workers=2 recovered=0
+2026-08-26 23:30:43.228 | INFO     | app.init_app:lifespan:83 - ✅ 视频队列已启动 (meta_recover_on_start=False, ytdlp_subprocess=True)
+2026-08-26 23:30:43.256 | INFO     | logging:callHandlers:1736 - Application startup complete.
+2026-08-26 23:32:52.655 | WARNING  | logging:callHandlers:1736 - StatReload detected changes in 'app\api\v1\module_system\user\crud.py'. Reloading...
+2026-08-26 23:32:52.745 | INFO     | logging:callHandlers:1736 - Shutting down
+2026-08-26 23:32:52.854 | INFO     | logging:callHandlers:1736 - Waiting for application shutdown.
+2026-08-26 23:32:52.854 | INFO     | app.api.v1.module_platform.video.meta_queue:stop:125 - MetaFetchQueue stopped
+2026-08-26 23:32:52.855 | INFO     | app.api.v1.module_platform.video.downloader:stop:151 - DownloadQueue stopping: 服务关闭
+2026-08-26 23:32:52.904 | INFO     | app.api.v1.module_platform.video.downloader:stop:188 - DownloadQueue stopped
+2026-08-26 23:32:52.906 | INFO     | logging:callHandlers:1736 - Scheduler has been shut down
+2026-08-26 23:32:52.907 | INFO     | app.core.ap_scheduler:_handle_scheduler_shutdown:415 - 调度器已关闭
+2026-08-26 23:32:52.907 | INFO     | app.core.ap_scheduler:_update_scheduler_status:520 - 调度器状态变更: 0
+2026-08-26 23:32:52.908 | INFO     | app.core.database:redis_connect:201 - ✅️ Redis连接已关闭
+2026-08-26 23:32:52.910 | INFO     | logging:callHandlers:1736 - Application shutdown complete.
+2026-08-26 23:32:52.910 | INFO     | logging:callHandlers:1736 - Finished server process [24296]
+2026-08-26 23:32:55.414 | INFO     | logging:callHandlers:1736 - Started server process [29392]
+2026-08-26 23:32:55.415 | INFO     | logging:callHandlers:1736 - Waiting for application startup.
+2026-08-26 23:32:57.457 | INFO     | app.init_app:lifespan:25 - ✅ 全局事件模块加载完成
+2026-08-26 23:32:57.457 | INFO     | app.init_app:lifespan:29 - ✅ fastapi-admin-cache 初始化完成
+2026-08-26 23:32:57.458 | INFO     | app.init_app:lifespan:50 - ✅ 请求限流器初始化完成 (10000次/60秒)
+2026-08-26 23:32:57.506 | INFO     | logging:callHandlers:1736 - Scheduler started
+2026-08-26 23:32:59.540 | INFO     | app.core.ap_scheduler:_handle_job_added:371 - 任务 system_cleanup_operation_log (操作日志清理) 已添加到 default 存储器
+2026-08-26 23:32:59.648 | INFO     | app.core.ap_scheduler:_cleanup_obsolete_pending_logs:826 - 清理了任务 system_cleanup_operation_log 的 1 条旧 pending 日志
+2026-08-26 23:32:59.687 | INFO     | app.core.ap_scheduler:_create_job_log:864 - 执行日志创建成功: job_id=system_cleanup_operation_log, id=870
+2026-08-26 23:32:59.687 | INFO     | app.core.ap_scheduler:_handle_job_added:384 - 任务 system_cleanup_operation_log 已创建初始 pending 状态日志
+2026-08-26 23:32:59.688 | INFO     | logging:callHandlers:1736 - Added job "操作日志清理" to job store "default"
+2026-08-26 23:32:59.690 | INFO     | app.core.ap_scheduler:_handle_job_added:371 - 任务 system_database_backup (数据库备份) 已添加到 default 存储器
+2026-08-26 23:32:59.715 | INFO     | app.core.ap_scheduler:_cleanup_obsolete_pending_logs:826 - 清理了任务 system_database_backup 的 1 条旧 pending 日志
+2026-08-26 23:32:59.741 | INFO     | app.core.ap_scheduler:_create_job_log:864 - 执行日志创建成功: job_id=system_database_backup, id=871
+2026-08-26 23:32:59.742 | INFO     | app.core.ap_scheduler:_handle_job_added:384 - 任务 system_database_backup 已创建初始 pending 状态日志
+2026-08-26 23:32:59.742 | INFO     | logging:callHandlers:1736 - Added job "数据库备份" to job store "default"
+2026-08-26 23:32:59.743 | INFO     | app.core.ap_scheduler:_register_system_jobs:661 - 系统周期任务已注册 2 个
+2026-08-26 23:32:59.743 | INFO     | app.init_app:lifespan:65 - ✅ APScheduler 初始化完成
+2026-08-26 23:33:01.775 | INFO     | app.api.v1.module_platform.video.meta_queue:start:106 - MetaFetchQueue started workers=1 recover_on_start=False recovered=0
+2026-08-26 23:33:01.779 | INFO     | app.api.v1.module_platform.video.downloader:start:144 - DownloadQueue started workers=2 recovered=0
+2026-08-26 23:33:01.781 | INFO     | app.init_app:lifespan:83 - ✅ 视频队列已启动 (meta_recover_on_start=False, ytdlp_subprocess=True)
+2026-08-26 23:33:01.818 | INFO     | logging:callHandlers:1736 - Application startup complete.
+2026-08-26 23:33:01.889 | WARNING  | logging:callHandlers:1736 - StatReload detected changes in 'tests\test_api_module_system.py'. Reloading...
+2026-08-26 23:33:01.920 | INFO     | logging:callHandlers:1736 - Shutting down
+2026-08-26 23:33:02.024 | INFO     | logging:callHandlers:1736 - Waiting for application shutdown.
+2026-08-26 23:33:02.025 | INFO     | app.api.v1.module_platform.video.meta_queue:stop:125 - MetaFetchQueue stopped
+2026-08-26 23:33:02.025 | INFO     | app.api.v1.module_platform.video.downloader:stop:151 - DownloadQueue stopping: 服务关闭
+2026-08-26 23:33:02.028 | INFO     | app.api.v1.module_platform.video.downloader:stop:188 - DownloadQueue stopped
+2026-08-26 23:33:02.029 | INFO     | logging:callHandlers:1736 - Scheduler has been shut down
+2026-08-26 23:33:02.029 | INFO     | app.core.ap_scheduler:_handle_scheduler_shutdown:415 - 调度器已关闭
+2026-08-26 23:33:02.029 | INFO     | app.core.ap_scheduler:_update_scheduler_status:520 - 调度器状态变更: 0
+2026-08-26 23:33:02.030 | INFO     | app.core.database:redis_connect:201 - ✅️ Redis连接已关闭
+2026-08-26 23:33:02.033 | INFO     | logging:callHandlers:1736 - Application shutdown complete.
+2026-08-26 23:33:02.033 | INFO     | logging:callHandlers:1736 - Finished server process [29392]
+2026-08-26 23:33:04.548 | INFO     | logging:callHandlers:1736 - Started server process [2076]
+2026-08-26 23:33:04.549 | INFO     | logging:callHandlers:1736 - Waiting for application startup.
+2026-08-26 23:33:06.580 | INFO     | app.init_app:lifespan:25 - ✅ 全局事件模块加载完成
+2026-08-26 23:33:06.580 | INFO     | app.init_app:lifespan:29 - ✅ fastapi-admin-cache 初始化完成
+2026-08-26 23:33:06.581 | INFO     | app.init_app:lifespan:50 - ✅ 请求限流器初始化完成 (10000次/60秒)
+2026-08-26 23:33:06.613 | INFO     | logging:callHandlers:1736 - Scheduler started
+2026-08-26 23:33:08.666 | INFO     | app.core.ap_scheduler:_handle_job_added:371 - 任务 system_cleanup_operation_log (操作日志清理) 已添加到 default 存储器
+2026-08-26 23:33:08.714 | INFO     | app.core.ap_scheduler:_cleanup_obsolete_pending_logs:826 - 清理了任务 system_cleanup_operation_log 的 1 条旧 pending 日志
+2026-08-26 23:33:08.742 | INFO     | app.core.ap_scheduler:_create_job_log:864 - 执行日志创建成功: job_id=system_cleanup_operation_log, id=872
+2026-08-26 23:33:08.742 | INFO     | app.core.ap_scheduler:_handle_job_added:384 - 任务 system_cleanup_operation_log 已创建初始 pending 状态日志
+2026-08-26 23:33:08.742 | INFO     | logging:callHandlers:1736 - Added job "操作日志清理" to job store "default"
+2026-08-26 23:33:08.744 | INFO     | app.core.ap_scheduler:_handle_job_added:371 - 任务 system_database_backup (数据库备份) 已添加到 default 存储器
+2026-08-26 23:33:08.772 | INFO     | app.core.ap_scheduler:_cleanup_obsolete_pending_logs:826 - 清理了任务 system_database_backup 的 1 条旧 pending 日志
+2026-08-26 23:33:08.798 | INFO     | app.core.ap_scheduler:_create_job_log:864 - 执行日志创建成功: job_id=system_database_backup, id=873
+2026-08-26 23:33:08.799 | INFO     | app.core.ap_scheduler:_handle_job_added:384 - 任务 system_database_backup 已创建初始 pending 状态日志
+2026-08-26 23:33:08.799 | INFO     | logging:callHandlers:1736 - Added job "数据库备份" to job store "default"
+2026-08-26 23:33:08.799 | INFO     | app.core.ap_scheduler:_register_system_jobs:661 - 系统周期任务已注册 2 个
+2026-08-26 23:33:08.799 | INFO     | app.init_app:lifespan:65 - ✅ APScheduler 初始化完成
+2026-08-26 23:33:10.862 | INFO     | app.api.v1.module_platform.video.meta_queue:start:106 - MetaFetchQueue started workers=1 recover_on_start=False recovered=0
+2026-08-26 23:33:10.866 | INFO     | app.api.v1.module_platform.video.downloader:start:144 - DownloadQueue started workers=2 recovered=0
+2026-08-26 23:33:10.890 | INFO     | app.init_app:lifespan:83 - ✅ 视频队列已启动 (meta_recover_on_start=False, ytdlp_subprocess=True)
+2026-08-26 23:33:10.899 | INFO     | logging:callHandlers:1736 - Application startup complete.

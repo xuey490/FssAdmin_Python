@@ -1,6 +1,5 @@
 from datetime import datetime
 
-from app.api.v1.module_system.position.crud import PositionCRUD
 from app.api.v1.module_system.role.crud import RoleCRUD
 from app.core.base_crud import CRUDBase
 from app.core.base_schema import AuthSchema
@@ -48,29 +47,6 @@ class UserCRUD(CRUDBase[UserModel, UserCreateSchema, UserUpdateSchema]):
             relationship = obj.roles
             relationship.clear()
             relationship.extend(role_objs)
-        await self.auth.db.flush()
-
-    async def set_user_positions(self, user_ids: list[int], position_ids: list[int]) -> None:
-        """
-        批量设置用户岗位
-
-        参数:
-        - user_ids (list[int]): 用户ID列表
-        - position_ids (list[int]): 岗位ID列表
-
-        返回:
-        - None
-        """
-        user_objs = await self.get_list(search={"id": ("in", user_ids)})
-        if position_ids:
-            position_objs = await PositionCRUD(self.auth).get_list(search={"id": ("in", position_ids)})
-        else:
-            position_objs = []
-
-        for obj in user_objs:
-            relationship = obj.positions
-            relationship.clear()
-            relationship.extend(position_objs)
         await self.auth.db.flush()
 
     async def change_password(self, id: int, password_hash: str) -> UserModel:
