@@ -118,38 +118,81 @@
       v-if="homeDebugEnabled"
       v-model="welcomeDialogVisible"
       title="FssAdmin"
-      width="520px"
+      width="640px"
       align-center
       :close-on-click-modal="false"
+      class="welcome-dialog-modal"
     >
-      <div class="welcome-dialog">
-        <p class="welcome-dialog__intro">
-          本系统后端是基于NestJS11.x, TypeORM1.x, Nestjs Express等，前端是基于Art Pro Design, Vue3, ElementPlus等技术栈的Saas管理系统。
-		  <br /><br />
-		  如果你感兴趣，下面还有php版本的FssAdmin，一套后台适应多个前端的通用Saas后台管理系统
-        </p>
-        <ul class="welcome-dialog__list">
-          <li>
-            适配 Art Design Pro：
-            <a href="https://v3.phpframe.org" target="_blank" rel="noopener noreferrer">https://v3.phpframe.org</a>
-            <span class="welcome-dialog__tag">（已开源）</span>
-          </li>
-          <li>
-            适配 SoyBeanAdmin：
-            <a href="https://v4.phpframe.org" target="_blank" rel="noopener noreferrer">https://v4.phpframe.org</a>
-            <span class="welcome-dialog__tag">（已开源）</span>
-          </li>
-          <li>
-            适配 Vben5-Ele：
-            <a href="https://v5.phpframe.org" target="_blank" rel="noopener noreferrer">https://v5.phpframe.org</a>
-          </li>
-        </ul>
-        <p class="welcome-dialog__footer">目前php版本FssAdmin基础底座已开源，欢迎 Star：</p>
-        <div class="welcome-dialog__links">
-          <a href="https://gitee.com/fsscms/FssAdmin" target="_blank" rel="noopener noreferrer">Gitee</a>
-          <a href="https://github.com/xuey490/FssAdmin" target="_blank" rel="noopener noreferrer">GitHub</a>
-        </div>
-      </div>
+      <ElTabs v-model="welcomeActiveTab" class="welcome-dialog__tabs">
+        <ElTabPane label="PHP版本" name="php">
+          <div class="welcome-dialog">
+            <p class="welcome-dialog__intro">
+              FssAdmin PHP 版本，基于自研 Fssphp 框架，可以基于swoole、workerman、传统fpm等多个模式启动，一个后台适配多个前端系统。
+            </p>
+            <ul class="welcome-dialog__list">
+              <li>
+                适配 Art Design Pro：
+                <a href="https://v3.phpframe.org" target="_blank" rel="noopener noreferrer">https://v3.phpframe.org</a>
+                <span class="welcome-dialog__tag">（本演示，已开源）</span>
+              </li>
+              <li>
+                适配 SoyBeanAdmin：
+                <a href="https://v4.phpframe.org" target="_blank" rel="noopener noreferrer">https://v4.phpframe.org</a>
+                <span class="welcome-dialog__tag">（已开源）</span>
+              </li>
+              <li>
+                适配 Vben5-Ele：
+                <a href="https://v5.phpframe.org" target="_blank" rel="noopener noreferrer">https://v5.phpframe.org</a>
+              </li>
+            </ul>
+            <p class="welcome-dialog__footer">php版本 已开源，欢迎关注 & Star：</p>
+            <div class="welcome-dialog__links">
+              <a href="https://gitee.com/fsscms/FssAdmin" target="_blank" rel="noopener noreferrer">Gitee</a>
+              <a href="https://github.com/xuey490/FssAdmin" target="_blank" rel="noopener noreferrer">GitHub</a>
+            </div>
+          </div>
+        </ElTabPane>
+        <ElTabPane label="NestJs版本" name="nestjs">
+          <div class="welcome-dialog">
+            <p class="welcome-dialog__intro">
+              FssAdmin(NestJs)是一款基于NestJS + TypeScript6 + TypeORM1.0等
+              技术栈的全功能企业级后端管理系统。
+            </p>
+            <ul class="welcome-dialog__list">
+              <li>
+                适配 Art Design Pro：
+                <a href="https://nest.phpframe.org" target="_blank" rel="noopener noreferrer">https://nest.phpframe.org</a>
+              </li>
+            </ul>
+            <p class="welcome-dialog__note">
+              经测试可以几乎可以无损适配php版本的SoyBeanAdmin，Vben5-Ele的前端
+            </p>
+            <p class="welcome-dialog__footer">NestJs 版本已开源，欢迎关注 & Star：</p>
+            <div class="welcome-dialog__links">
+              <a href="https://gitee.com/fsscms/fssadmin-nest" target="_blank" rel="noopener noreferrer">Gitee</a>
+              <a href="https://github.com/xuey490/FssAdmin_NestJs" target="_blank" rel="noopener noreferrer">GitHub</a>
+            </div>
+          </div>
+        </ElTabPane>
+        <ElTabPane label="Python版本" name="python">
+          <div class="welcome-dialog">
+            <p class="welcome-dialog__intro">
+              FssAdmin Python 版本，基于 FastAPI + SQLAlchemy 异步架构，高性能 Python 全栈后台解决方案。
+            </p>
+            <ul class="welcome-dialog__list">
+              <li>
+                适配 Art Design Pro：
+                <a href="https://fast.phpframe.org" target="_blank" rel="noopener noreferrer">https://fast.phpframe.org</a>
+              </li>
+            </ul>
+            <p class="welcome-dialog__footer">Python 版本开源中，欢迎关注 & Star：</p>
+            <div class="welcome-dialog__links">
+              <a href="https://gitee.com/fsscms/FssAdmin_Python" target="_blank" rel="noopener noreferrer">Gitee</a>
+              <a href="https://github.com/xuey490/FssAdmin_Python" target="_blank" rel="noopener noreferrer">GitHub</a>
+            </div>
+          </div>
+        </ElTabPane>
+      </ElTabs>
       <template #footer>
         <ElButton type="primary" @click="welcomeDialogVisible = false">知道了</ElButton>
       </template>
@@ -216,6 +259,7 @@
   const loading = ref(false)
   const homeDebugEnabled = import.meta.env.VITE_HOME_DEGBUG === 'true'
   const welcomeDialogVisible = ref(false)
+  const welcomeActiveTab = ref('python')
   let welcomeDialogTimer: ReturnType<typeof setTimeout> | undefined
 
   const loadSystemName = async () => {
@@ -382,10 +426,32 @@
     margin-top: 20px;
   }
 
+  .welcome-dialog__tabs {
+    :deep(.el-tabs__header) {
+      margin-bottom: 16px;
+    }
+
+    :deep(.el-tabs__nav-wrap::after) {
+      height: 1px;
+      background-color: var(--el-border-color-light);
+    }
+
+    :deep(.el-tabs__item) {
+      padding: 0 20px;
+      height: 40px;
+      font-size: 14px;
+    }
+
+    :deep(.el-tabs__active-bar) {
+      height: 2px;
+    }
+  }
+
   .welcome-dialog {
     line-height: 1.7;
     font-size: 14px;
     color: var(--el-text-color-regular);
+    min-height: 200px;
 
     &__intro {
       margin: 0 0 16px;
@@ -419,6 +485,11 @@
     &__footer {
       margin: 0 0 10px;
       color: var(--el-text-color-primary);
+    }
+
+    &__note {
+      margin: 0;
+      color: var(--el-text-color-secondary);
     }
 
     &__links {
