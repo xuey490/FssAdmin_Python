@@ -1,6 +1,21 @@
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import AliasChoices, BaseModel, ConfigDict, Field
 
 from app.core.base_schema import JWTOutSchema
+
+
+class LoginSchema(BaseModel):
+    """登录（兼容 captcha key 作 uuid）。"""
+
+    model_config = ConfigDict(populate_by_name=True)
+
+    username: str = Field(..., min_length=1, max_length=64, description="账号")
+    password: str = Field(..., min_length=1, max_length=128, description="密码")
+    tenant_id: int | None = Field(default=None, description="租户ID")
+    code: str | None = Field(default=None, description="验证码")
+    uuid: str | None = Field(
+        default=None, description="验证码标识",
+        validation_alias=AliasChoices("uuid", "key"),
+    )
 
 
 class CaptchaOutSchema(BaseModel):

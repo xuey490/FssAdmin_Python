@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from typing import Any
 
-from pydantic import BaseModel, ConfigDict, Field, AliasChoices, model_validator
+from pydantic import BaseModel, ConfigDict, Field, AliasChoices, field_validator, model_validator
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.validator import DateTimeStr
@@ -70,8 +70,11 @@ class JWTOutSchema(BaseModel):
 
 
 class RefreshTokenPayloadSchema(BaseModel):
-    refresh_token: str = Field(..., min_length=1)
-    refreshToken: str | None = None  # web 兼容
+    model_config = ConfigDict(populate_by_name=True)
+    refresh_token: str = Field(
+        ..., min_length=1,
+        validation_alias=AliasChoices("refresh_token", "refreshToken"),
+    )
 
 
 class LogoutPayloadSchema(BaseModel):
@@ -88,7 +91,41 @@ class PageResultSchema[T](BaseModel):
 
 
 class BatchDelete(BaseModel):
-    ids: list[int] = Field(..., min_length=1)
+    model_config = ConfigDict(populate_by_name=True)
+    ids: list[int] = Field(..., min_length=1, validation_alias=AliasChoices("ids", "id"))
+
+    @field_validator("ids", mode="before")
+    @classmethod
+    def split_ids(cls, value):
+        if isinstance(value, str):
+            return [int(x) for x in value.split(",") if x.strip()]
+        if isinstance(value, int):
+            return [value]
+        return value
+
+
+class IdsSchema(BaseModel):
+    """批量 id 列表（允许空；兼容逗号分隔字符串）。"""
+
+    ids: list[int] = Field(default_factory=list)
+
+    @field_validator("ids", mode="before")
+    @classmethod
+    def split_ids(cls, value):
+        if value is None:
+            return []
+        if isinstance(value, str):
+            return [int(x) for x in value.split(",") if x.strip()]
+        if isinstance(value, int):
+            return [value]
+        return value
+
+
+class StatusSchema(BaseModel):
+    """状态开关。1=启用 0=停用；兼容 enabled。"""
+
+    model_config = ConfigDict(populate_by_name=True)
+    status: int = Field(default=1, ge=0, le=1, validation_alias=AliasChoices("status", "enabled"))
 
 
 class BatchSetAvailable(BaseModel):

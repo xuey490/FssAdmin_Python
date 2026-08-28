@@ -8,14 +8,14 @@
       <ArtTableHeader v-model:columns="columnChecks" :loading="loading" @refresh="refreshData">
         <template #left>
           <ElSpace wrap>
-            <ElButton v-permission="'article:create'" @click="showDialog('add')" v-ripple>
+            <ElButton v-permission="'module_platform:article:create'" @click="showDialog('add')" v-ripple>
               <template #icon>
                 <ArtSvgIcon icon="ri:add-fill" />
               </template>
               新增
             </ElButton>
             <ElButton
-              v-permission="'article:delete'"
+              v-permission="'module_platform:article:delete'"
               :disabled="selectedRows.length === 0"
               @click="deleteSelectedRows(api.delete, refreshData)"
               v-ripple
@@ -90,12 +90,12 @@
         <template #operation="{ row }">
           <div class="flex gap-2">
             <SaButton
-              v-permission="'article:update'"
+              v-permission="'module_platform:article:update'"
               type="secondary"
               @click="showDialog('edit', row)"
             />
             <SaButton
-              v-permission="'article:delete'"
+              v-permission="'module_platform:article:delete'"
               type="error"
               @click="deleteRow(row, api.delete, refreshData)"
             />

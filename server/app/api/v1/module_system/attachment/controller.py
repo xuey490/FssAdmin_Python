@@ -7,9 +7,15 @@ from typing import Any
 from fastapi import APIRouter, Depends, File, Form, Request, UploadFile
 from fastapi.responses import FileResponse
 
+from app.api.v1.module_system.attachment.schema import (
+    AttachmentCategoryCreateSchema,
+    AttachmentCategoryUpdateSchema,
+    AttachmentMoveSchema,
+    AttachmentUpdateSchema,
+)
 from app.api.v1.module_system.attachment.service import AttachmentCategoryService, AttachmentService
 from app.common.response import ErrorResponse, SuccessResponse
-from app.core.base_schema import AuthSchema
+from app.core.base_schema import AuthSchema, IdsSchema
 from app.core.dependencies import AuthPermission
 from app.core.exceptions import CustomException
 from app.core.router_class import OperationLogRoute
@@ -22,13 +28,6 @@ AttachmentCategoryRouter = APIRouter(
 
 def _ok(data: Any = None, msg: str = "success") -> SuccessResponse:
     return SuccessResponse(data=data if data is not None else {}, msg=msg)
-
-
-async def _body(request: Request) -> dict:
-    try:
-        return await request.json()
-    except Exception:
-        return {}
 
 
 @AttachmentRouter.get("/list")
@@ -52,17 +51,15 @@ async def attachment_upload(
     auth: AuthSchema = Depends(AuthPermission(permissions=["core:attachment:edit"])),
 ):
     try:
-        # 勿用 request.base_url：含 root_path=/api，会拼出 /api/uploads 导致预览 404
         return _ok(await AttachmentService(auth).upload(file, category_id=category_id), "上传成功")
     except CustomException as e:
         return ErrorResponse(msg=e.msg, code=e.code or 1)
 
 
 @AttachmentRouter.put("/update/{id}")
-async def attachment_update(id: int, request: Request, auth: AuthSchema = Depends(AuthPermission(permissions=["core:attachment:edit"]))):
-    body = await _body(request)
+async def attachment_update(id: int, data: AttachmentUpdateSchema, auth: AuthSchema = Depends(AuthPermission(permissions=["core:attachment:edit"]))):
     try:
-        await AttachmentService(auth).update_name(id, str(body.get("origin_name") or ""))
+        await AttachmentService(auth).update_name(id, data.origin_name)
         return _ok([], "更新成功")
     except CustomException as e:
         return ErrorResponse(msg=e.msg, code=e.code or 1)
@@ -75,25 +72,14 @@ async def attachment_delete(id: int, auth: AuthSchema = Depends(AuthPermission(p
 
 
 @AttachmentRouter.delete("/batchDelete")
-async def attachment_batch_delete(request: Request, auth: AuthSchema = Depends(AuthPermission(permissions=["core:attachment:edit"]))):
-    body = await _body(request)
-    ids = body.get("ids") or []
-    if isinstance(ids, str):
-        ids = [int(x) for x in ids.split(",") if x.strip()]
-    elif isinstance(ids, int):
-        ids = [ids]
-    count = await AttachmentService(auth).batch_delete([int(x) for x in ids])
+async def attachment_batch_delete(data: IdsSchema, auth: AuthSchema = Depends(AuthPermission(permissions=["core:attachment:edit"]))):
+    count = await AttachmentService(auth).batch_delete(data.ids)
     return _ok({"count": count}, "删除成功")
 
 
 @AttachmentRouter.put("/move")
-async def attachment_move(request: Request, auth: AuthSchema = Depends(AuthPermission(permissions=["core:attachment:edit"]))):
-    body = await _body(request)
-    ids = body.get("ids") or []
-    if isinstance(ids, str):
-        ids = [int(x) for x in ids.split(",") if x.strip()]
-    category_id = int(body.get("category_id") or 0)
-    count = await AttachmentService(auth).move([int(x) for x in ids], category_id)
+async def attachment_move(data: AttachmentMoveSchema, auth: AuthSchema = Depends(AuthPermission(permissions=["core:attachment:edit"]))):
+    count = await AttachmentService(auth).move(data.ids, data.category_id)
     return _ok({"count": count}, "移动成功")
 
 
@@ -128,17 +114,17 @@ async def category_detail(id: int, auth: AuthSchema = Depends(AuthPermission(per
 
 
 @AttachmentCategoryRouter.post("/create")
-async def category_create(request: Request, auth: AuthSchema = Depends(AuthPermission(permissions=["core:attachment:edit"]))):
+async def category_create(data: AttachmentCategoryCreateSchema, auth: AuthSchema = Depends(AuthPermission(permissions=["core:attachment:edit"]))):
     try:
-        return _ok(await AttachmentCategoryService(auth).create(await _body(request)), "创建成功")
+        return _ok(await AttachmentCategoryService(auth).create(data.model_dump(exclude_none=True)), "创建成功")
     except CustomException as e:
         return ErrorResponse(msg=e.msg, code=e.code or 1)
 
 
 @AttachmentCategoryRouter.put("/update/{id}")
-async def category_update(id: int, request: Request, auth: AuthSchema = Depends(AuthPermission(permissions=["core:attachment:edit"]))):
+async def category_update(id: int, data: AttachmentCategoryUpdateSchema, auth: AuthSchema = Depends(AuthPermission(permissions=["core:attachment:edit"]))):
     try:
-        await AttachmentCategoryService(auth).update(id, await _body(request))
+        await AttachmentCategoryService(auth).update(id, data.model_dump(exclude_unset=True))
         return _ok([], "更新成功")
     except CustomException as e:
         return ErrorResponse(msg=e.msg, code=e.code or 1)

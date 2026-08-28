@@ -1,11 +1,11 @@
 import re
 from datetime import date, datetime, time
 from typing import Annotated, Any
+from urllib.parse import urlparse
 
 from pydantic import AfterValidator, PlainSerializer, WithJsonSchema
 
-from app.common.constant import DATE_DISPLAY_FMT, DATETIME_DISPLAY_FMT, RET, TIME_DISPLAY_FMT
-from app.core.exceptions import CustomException
+from app.common.constant import DATE_DISPLAY_FMT, DATETIME_DISPLAY_FMT, TIME_DISPLAY_FMT
 
 # 自定义日期时间字符串类型
 DateTimeStr = Annotated[
@@ -79,7 +79,8 @@ def datetime_validator(value: str | datetime) -> datetime:
         if isinstance(value, datetime):
             return value
     except Exception:
-        raise CustomException(code=RET.ERROR.code, msg="无效的日期格式")
+        pass
+    raise ValueError("无效的日期格式")
 
 
 def date_validator(value: str | date) -> date:
@@ -101,7 +102,8 @@ def date_validator(value: str | date) -> date:
         if isinstance(value, date):
             return value
     except Exception:
-        raise CustomException(code=RET.ERROR.code, msg="无效的日期格式")
+        pass
+    raise ValueError("无效的日期格式")
 
 
 def time_validator(value: str | time) -> time:
@@ -123,7 +125,8 @@ def time_validator(value: str | time) -> time:
         if isinstance(value, time):
             return value
     except Exception:
-        raise CustomException(code=RET.ERROR.code, msg="无效的时间格式")
+        pass
+    raise ValueError("无效的时间格式")
 
 
 def email_validator(value: str) -> str:
@@ -137,15 +140,15 @@ def email_validator(value: str) -> str:
     - str: 验证后的邮箱地址。
 
     异常:
-    - CustomException: 邮箱格式无效时抛出。
+    - ValueError: 邮箱格式无效时抛出。
     """
     if not value:
-        raise CustomException(code=RET.ERROR.code, msg="邮箱地址不能为空")
+        raise ValueError("邮箱地址不能为空")
 
     regex = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
 
     if not re.match(regex, value):
-        raise CustomException(code=RET.ERROR.code, msg="邮箱地址格式不正确")
+        raise ValueError("邮箱地址格式不正确")
 
     return value
 
@@ -161,20 +164,68 @@ def mobile_validator(value: str | None) -> str | None:
     - str | None: 验证后的手机号。
 
     异常:
-    - CustomException: 手机号格式无效时抛出。
+    - ValueError: 手机号格式无效时抛出。
     """
     if not value:
         return value
 
     if len(value) != 11 or not value.isdigit():
-        raise CustomException(code=RET.ERROR.code, msg="手机号格式不正确")
+        raise ValueError("手机号格式不正确")
 
     regex = r"^1(3\d|4[4-9]|5[0-35-9]|6[67]|7[013-8]|8[0-9]|9[0-9])\d{8}$"
 
     if not re.match(regex, value):
-        raise CustomException(code=RET.ERROR.code, msg="手机号格式不正确")
+        raise ValueError("手机号格式不正确")
 
     return value
+
+
+def phone_validator(value: str | None) -> str | None:
+    """可选电话：11 位手机号走 mobile_validator，其它号码只限长度。"""
+    if not value or not str(value).strip():
+        return None
+    v = str(value).strip()
+    if len(v) == 11 and v.isdigit():
+        return mobile_validator(v)
+    if len(v) > 20:
+        raise ValueError("联系电话长度不能超过 20")
+    return v
+
+
+def username_validator(value: str) -> str:
+    """账号：字母开头，3–32 位，仅字母/数字/_ . -。"""
+    v = (value or "").strip()
+    if not v:
+        raise ValueError("账号不能为空")
+    if not re.match(r"^[A-Za-z][A-Za-z0-9_.-]{2,31}$", v):
+        raise ValueError("账号需以字母开头，3-32 位，仅允许字母、数字、_ . -")
+    return v
+
+
+def password_validator(value: str | None, *, required: bool = False) -> str | None:
+    """密码：6–128 位；required=False 时空值跳过。"""
+    if not value:
+        if required:
+            raise ValueError("密码不能为空")
+        return value
+    if len(value) < 6:
+        raise ValueError("密码长度不能少于 6 位")
+    if len(value) > 128:
+        raise ValueError("密码长度不能超过 128 位")
+    return value
+
+
+def avatar_validator(value: str | None) -> str | None:
+    """头像：相对路径或 http(s) URL。"""
+    if not value:
+        return value
+    v = value.strip()
+    if v.startswith("/") or v.startswith("uploads") or v.startswith("."):
+        return v
+    parsed = urlparse(v)
+    if parsed.scheme in ("http", "https") and parsed.netloc:
+        return v
+    raise ValueError("头像地址需为有效路径或 HTTP/HTTPS URL")
 
 
 def validate_required_code(value: str | None) -> str:
@@ -219,69 +270,29 @@ def code_validator(value: str | None) -> str | None:
     if not v:
         return None
     if not re.match(r"^[A-Za-z][A-Za-z0-9_]{1,15}$", v):
-        raise CustomException(
-            code=RET.ERROR.code,
-            msg="编码需字母开头，允许字母/数字/下划线，长度2-16",
-        )
+        raise ValueError("编码需字母开头，允许字母/数字/下划线，长度2-16")
     return v
 
 
 def menu_request_validator(data: Any) -> Any:
-    """
-    菜单请求数据验证器。
-
-    参数:
-    - data (Any): 请求数据。
-
-    返回:
-    - Any: 验证后的请求数据。
-
-    异常:
-    - CustomException: 请求数据无效时抛出。
-    """
-    menu_types = {1: "目录", 2: "功能", 3: "权限", 4: "外链"}
+    """菜单提交校验（字段对齐 sa_system_menu：type/path/component/link_url）。"""
+    menu_types = {1: "目录", 2: "菜单", 3: "按钮", 4: "外链"}
 
     if data.type not in menu_types:
-        raise CustomException(
-            code=RET.ERROR.code,
-            msg=f"菜单类型必须为: {','.join(map(str, menu_types.keys()))}",
-        )
+        raise ValueError(f"菜单类型必须为: {','.join(map(str, menu_types.keys()))}")
 
-    if data.type in [1, 2]:
-        if not data.route_name:
-            raise CustomException(code=RET.ERROR.code, msg="路由名称不能为空")
-        if not data.route_path:
-            raise CustomException(code=RET.ERROR.code, msg="路由路径不能为空")
-
-    if data.type == 1 and not (data.redirect and str(data.redirect).strip()):
-        raise CustomException(code=RET.ERROR.code, msg="目录类型必须填写重定向地址")
-
-    if data.type == 2 and not data.component_path:
-        raise CustomException(code=RET.ERROR.code, msg="组件路径不能为空")
-
-    if data.type == 4 and not getattr(data, "link", None):
-        raise CustomException(code=RET.ERROR.code, msg="外链类型必须填写链接地址")
-
-    c = getattr(data, "client", None) or "pc"
-    if c not in ("pc", "app"):
-        raise CustomException(code=RET.ERROR.code, msg="终端 client 仅允许 pc 或 app")
+    if data.type == 2 and not (getattr(data, "path", None) or "").strip():
+        raise ValueError("菜单类型必须填写路由路径")
+    if data.type == 2 and not (getattr(data, "component", None) or "").strip():
+        raise ValueError("菜单类型必须填写组件路径")
+    if data.type == 4 and not (getattr(data, "link_url", None) or "").strip():
+        raise ValueError("外链类型必须填写链接地址")
 
     return data
 
 
 def role_permission_request_validator(data: Any) -> Any:
-    """
-    角色权限设置数据验证器。
-
-    参数:
-    - data (Any): 请求数据。
-
-    返回:
-    - Any: 验证后的请求数据。
-
-    异常:
-    - CustomException: 请求数据无效时抛出。
-    """
+    """角色权限设置数据验证器。"""
     data_scopes = {
         1: "仅本人数据权限",
         2: "本部门数据权限",
@@ -291,12 +302,9 @@ def role_permission_request_validator(data: Any) -> Any:
     }
 
     if data.data_scope not in data_scopes:
-        raise CustomException(
-            code=RET.ERROR.code,
-            msg=f"数据权限范围必须为: {','.join(map(str, data_scopes.keys()))}",
-        )
+        raise ValueError(f"数据权限范围必须为: {','.join(map(str, data_scopes.keys()))}")
 
     if not data.role_ids:
-        raise CustomException(code=RET.ERROR.code, msg="角色不能为空")
+        raise ValueError("角色不能为空")
 
     return data

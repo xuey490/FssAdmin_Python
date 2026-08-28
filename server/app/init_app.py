@@ -173,11 +173,14 @@ def register_routers(app: FastAPI) -> None:
     # ponytail: 整包 platform_router 目前被 email.UserMixin 等阻塞；视频模块单独挂载
     from fastapi import APIRouter
 
+    from app.api.v1.module_platform.article.controller import ArticleRouter
     from app.api.v1.module_platform.video.controller import VideoRouter
 
     platform_video = APIRouter(prefix="/platform")
     platform_video.include_router(VideoRouter)
     app.include_router(platform_video, dependencies=rate_deps)
+    # Vue 调 /api/article/*，不套 /platform
+    app.include_router(ArticleRouter, dependencies=rate_deps)
 
     # 动态插件 discover 停用；仅显式挂载 cronjob
     from app.plugin.module_task.cronjob.job.controller import JobRouter

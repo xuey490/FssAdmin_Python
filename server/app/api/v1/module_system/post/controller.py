@@ -2,9 +2,10 @@ from typing import Any
 
 from fastapi import APIRouter, Depends, Request
 
+from app.api.v1.module_system.post.schema import PostCreateSchema, PostUpdateSchema
 from app.api.v1.module_system.post.service import PostService
 from app.common.response import ErrorResponse, SuccessResponse
-from app.core.base_schema import AuthSchema
+from app.core.base_schema import AuthSchema, StatusSchema
 from app.core.dependencies import AuthPermission, get_current_user
 from app.core.exceptions import CustomException
 from app.core.router_class import OperationLogRoute
@@ -14,13 +15,6 @@ PostRouter = APIRouter(route_class=OperationLogRoute, prefix="/post", tags=["岗
 
 def _ok(data: Any = None) -> SuccessResponse:
     return SuccessResponse(data=data if data is not None else {})
-
-
-async def _body(request: Request) -> dict:
-    try:
-        return await request.json()
-    except Exception:
-        return {}
 
 
 @PostRouter.get("/list")
@@ -35,17 +29,17 @@ async def detail(id: int, auth: AuthSchema = Depends(get_current_user)):
 
 
 @PostRouter.post("/create")
-async def create(request: Request, auth: AuthSchema = Depends(AuthPermission())):
+async def create(data: PostCreateSchema, auth: AuthSchema = Depends(AuthPermission())):
     try:
-        return _ok(await PostService(auth).create(await _body(request), auth.user.id))
+        return _ok(await PostService(auth).create(data.model_dump(exclude_none=True), auth.user.id))
     except CustomException as e:
         return ErrorResponse(msg=e.msg, code=e.code or 1)
 
 
 @PostRouter.put("/update/{id}")
-async def update(id: int, request: Request, auth: AuthSchema = Depends(AuthPermission())):
+async def update(id: int, data: PostUpdateSchema, auth: AuthSchema = Depends(AuthPermission())):
     try:
-        await PostService(auth).update(id, await _body(request), auth.user.id)
+        await PostService(auth).update(id, data.model_dump(exclude_unset=True), auth.user.id)
         return _ok({})
     except CustomException as e:
         return ErrorResponse(msg=e.msg, code=e.code or 1)
@@ -58,11 +52,8 @@ async def delete(id: int, auth: AuthSchema = Depends(AuthPermission())):
 
 
 @PostRouter.put("/status/{id}")
-async def status(id: int, request: Request, auth: AuthSchema = Depends(AuthPermission())):
-    body = await _body(request)
-    # 前端可能传 status 或 enabled
-    val = body.get("status", body.get("enabled", 1))
-    await PostService(auth).update_status(id, int(val))
+async def status(id: int, data: StatusSchema, auth: AuthSchema = Depends(AuthPermission())):
+    await PostService(auth).update_status(id, data.status)
     return _ok({})
 
 
@@ -73,5 +64,4 @@ async def enabled(auth: AuthSchema = Depends(get_current_user)):
 
 @PostRouter.get("/access-post")
 async def access_post(auth: AuthSchema = Depends(get_current_user)):
-    """用户编辑弹窗岗位下拉（对齐 phpserver post.accessPost）。"""
     return _ok(await PostService(auth).get_access_post())

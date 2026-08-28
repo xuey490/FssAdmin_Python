@@ -1,15 +1,51 @@
 from typing import Any
 
 from fastapi import APIRouter, Depends, File, Form, Request, UploadFile
+from fastapi.exceptions import RequestValidationError
+from pydantic import ValidationError
 from redis.asyncio import Redis
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.api.v1.module_system.auth.schema import LoginSchema, SelectTenantSchema
 from app.api.v1.module_system.auth.service import AuthService
+from app.api.v1.module_system.user.schema import ProfileUpdateSchema, UserChangePasswordSchema
 from app.common.response import ErrorResponse, SuccessResponse
-from app.core.base_schema import AuthSchema
+from app.core.base_schema import AuthSchema, RefreshTokenPayloadSchema
 from app.core.dependencies import db_getter, get_current_user, redis_getter
 from app.core.exceptions import CustomException
 from app.utils.ip_local_util import get_client_ip
+
+AuthRouter = APIRouter(prefix="/auth", tags=["认证(旧路径兼容)"])
+CoreRouter = APIRouter(tags=["核心认证"])
+
+
+def _ok(data: Any = None, msg: str = "success") -> SuccessResponse:
+    return SuccessResponse(data=data if data is not None else {}, msg=msg)
+
+
+async def _merged(request: Request) -> dict[str, Any]:
+    """json + form + query。登录仍兼容三种来源。"""
+    body: dict[str, Any] = {}
+    try:
+        raw = await request.json()
+        if isinstance(raw, dict):
+            body = raw
+    except Exception:
+        body = {}
+    if not body:
+        try:
+            form = await request.form()
+            body = dict(form)
+        except Exception:
+            body = {}
+    return {**dict(request.query_params), **body}
+
+
+def _validate(schema: type, raw: dict):
+    try:
+        return schema.model_validate(raw)
+    except ValidationError as e:
+        raise RequestValidationError(e.errors()) from e
 
 AuthRouter = APIRouter(prefix="/auth", tags=["认证(旧路径兼容)"])
 CoreRouter = APIRouter(tags=["核心认证"])
@@ -30,17 +66,10 @@ async def login(
     db: AsyncSession = Depends(db_getter),
     redis: Redis = Depends(redis_getter),
 ):
-    body = {}
-    try:
-        body = await request.json()
-    except Exception:
-        body = {}
-    # 兼容 query/form
-    params = dict(request.query_params)
-    data = {**params, **body}
+    data = _validate(LoginSchema, await _merged(request))
     try:
         result = await AuthService(db, redis).login(
-            data,
+            data.model_dump(),
             client_ip=get_client_ip(request) or "",
             user_agent=request.headers.get("User-Agent") or "",
         )
@@ -51,14 +80,9 @@ async def login(
 
 @CoreRouter.post("/core/refresh")
 async def refresh(request: Request, db: AsyncSession = Depends(db_getter), redis: Redis = Depends(redis_getter)):
-    body = {}
+    data = _validate(RefreshTokenPayloadSchema, await _merged(request))
     try:
-        body = await request.json()
-    except Exception:
-        body = {}
-    token = body.get("refreshToken") or body.get("refresh_token") or ""
-    try:
-        return _ok(await AuthService(db, redis).refresh(token))
+        return _ok(await AuthService(db, redis).refresh(data.refresh_token))
     except CustomException as e:
         return ErrorResponse(msg=e.msg, code=e.code or 401, status_code=401)
 
@@ -94,14 +118,9 @@ async def switch_tenant(
     auth: AuthSchema = Depends(get_current_user),
     redis: Redis = Depends(redis_getter),
 ):
-    body = {}
+    data = _validate(SelectTenantSchema, await _merged(request))
     try:
-        body = await request.json()
-    except Exception:
-        body = {}
-    tenant_id = int(body.get("tenant_id") or request.query_params.get("tenant_id") or 0)
-    try:
-        return _ok(await AuthService(auth.db, redis).switch_tenant(auth, tenant_id))  # type: ignore[arg-type]
+        return _ok(await AuthService(auth.db, redis).switch_tenant(auth, data.tenant_id))  # type: ignore[arg-type]
     except CustomException as e:
         return ErrorResponse(msg=e.msg, code=e.code or 1)
 
@@ -178,51 +197,29 @@ async def system_upload_image(
 
 
 @CoreRouter.post("/core/user/updateInfo")
-async def user_update_info(request: Request, auth: AuthSchema = Depends(get_current_user)):
+async def user_update_info(data: ProfileUpdateSchema, auth: AuthSchema = Depends(get_current_user)):
     """对齐 phpserver /api/core/user/updateInfo（个人中心改资料/头像）。"""
     from app.api.v1.module_system.user.service import UserService
 
-    body: dict[str, Any] = {}
-    try:
-        body = await request.json()
-    except Exception:
-        body = {}
-    # 兼容 query / form 拼参
-    body = {**dict(request.query_params), **body}
-    data = {
-        k: body[k]
-        for k in ("realname", "email", "phone", "gender", "signed", "avatar")
-        if k in body and body[k] is not None
-    }
     user_id = int(getattr(auth.user, "id", 0) or 0)
     if not user_id:
         return ErrorResponse(msg="未登录", code=401, status_code=401)
     try:
-        return _ok(await UserService(auth).update_profile(user_id, data), "资料修改成功")
+        return _ok(await UserService(auth).update_profile(user_id, data.model_dump(exclude_unset=True)), "资料修改成功")
     except CustomException as e:
         return ErrorResponse(msg=e.msg, code=e.code or 1)
 
 
 @CoreRouter.post("/core/user/modifyPassword")
-async def user_modify_password(request: Request, auth: AuthSchema = Depends(get_current_user)):
+async def user_modify_password(data: UserChangePasswordSchema, auth: AuthSchema = Depends(get_current_user)):
     """对齐 phpserver /api/core/user/modifyPassword（个人中心改密码）。"""
     from app.api.v1.module_system.user.service import UserService
 
-    body: dict[str, Any] = {}
-    try:
-        body = await request.json()
-    except Exception:
-        body = {}
-    body = {**dict(request.query_params), **body}
     user_id = int(getattr(auth.user, "id", 0) or 0)
     if not user_id:
         return ErrorResponse(msg="未登录", code=401, status_code=401)
     try:
-        await UserService(auth).change_own_password(
-            user_id,
-            str(body.get("oldPassword") or body.get("old_password") or ""),
-            str(body.get("newPassword") or body.get("new_password") or ""),
-        )
+        await UserService(auth).change_own_password(user_id, data.old_password, data.new_password)
         return _ok({}, "密码修改成功")
     except CustomException as e:
         return ErrorResponse(msg=e.msg, code=e.code or 1)

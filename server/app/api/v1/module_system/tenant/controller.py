@@ -2,9 +2,16 @@ from typing import Any
 
 from fastapi import APIRouter, Depends, Request
 
+from app.api.v1.module_system.tenant.schema import (
+    TenantCreateSchema,
+    TenantDefaultSchema,
+    TenantFlagSchema,
+    TenantUpdateSchema,
+    TenantUsersSchema,
+)
 from app.api.v1.module_system.tenant.service import TenantService
 from app.common.response import ErrorResponse, SuccessResponse
-from app.core.base_schema import AuthSchema
+from app.core.base_schema import AuthSchema, StatusSchema
 from app.core.dependencies import AuthPermission, get_current_user
 from app.core.exceptions import CustomException
 from app.core.router_class import OperationLogRoute
@@ -14,13 +21,6 @@ TenantRouter = APIRouter(route_class=OperationLogRoute, prefix="/tenant", tags=[
 
 def _ok(data: Any = None) -> SuccessResponse:
     return SuccessResponse(data=data if data is not None else {})
-
-
-async def _body(request: Request) -> dict:
-    try:
-        return await request.json()
-    except Exception:
-        return {}
 
 
 @TenantRouter.get("/list")
@@ -35,17 +35,17 @@ async def detail(id: int, auth: AuthSchema = Depends(get_current_user)):
 
 
 @TenantRouter.post("/create")
-async def create(request: Request, auth: AuthSchema = Depends(AuthPermission())):
+async def create(data: TenantCreateSchema, auth: AuthSchema = Depends(AuthPermission())):
     try:
-        return _ok(await TenantService(auth).create(await _body(request), auth.user.id))
+        return _ok(await TenantService(auth).create(data.model_dump(exclude_none=True), auth.user.id))
     except CustomException as e:
         return ErrorResponse(msg=e.msg, code=e.code or 1)
 
 
 @TenantRouter.put("/update/{id}")
-async def update(id: int, request: Request, auth: AuthSchema = Depends(AuthPermission())):
+async def update(id: int, data: TenantUpdateSchema, auth: AuthSchema = Depends(AuthPermission())):
     try:
-        return _ok(await TenantService(auth).update(id, await _body(request), auth.user.id))
+        return _ok(await TenantService(auth).update(id, data.model_dump(exclude_unset=True), auth.user.id))
     except CustomException as e:
         return ErrorResponse(msg=e.msg, code=e.code or 1)
 
@@ -60,9 +60,8 @@ async def delete(id: int, auth: AuthSchema = Depends(AuthPermission())):
 
 
 @TenantRouter.put("/status/{id}")
-async def status(id: int, request: Request, auth: AuthSchema = Depends(AuthPermission())):
-    body = await _body(request)
-    await TenantService(auth).update_status(id, int(body.get("status", 1)))
+async def status(id: int, data: StatusSchema, auth: AuthSchema = Depends(AuthPermission())):
+    await TenantService(auth).update_status(id, data.status)
     return _ok({})
 
 
@@ -77,9 +76,8 @@ async def available_users(tenantId: int, request: Request, auth: AuthSchema = De
 
 
 @TenantRouter.post("/add-users/{tenantId}")
-async def add_users(tenantId: int, request: Request, auth: AuthSchema = Depends(AuthPermission())):
-    body = await _body(request)
-    n = await TenantService(auth).add_users(tenantId, body.get("user_ids") or [], auth.user.id)
+async def add_users(tenantId: int, data: TenantUsersSchema, auth: AuthSchema = Depends(AuthPermission())):
+    n = await TenantService(auth).add_users(tenantId, data.user_ids, auth.user.id)
     return _ok({"added": n})
 
 
@@ -90,14 +88,12 @@ async def remove_user(tenantId: int, userId: int, auth: AuthSchema = Depends(Aut
 
 
 @TenantRouter.put("/set-admin/{tenantId}/{userId}")
-async def set_admin(tenantId: int, userId: int, request: Request, auth: AuthSchema = Depends(AuthPermission())):
-    body = await _body(request)
-    await TenantService(auth).set_admin(tenantId, userId, int(body.get("is_super", 0)))
+async def set_admin(tenantId: int, userId: int, data: TenantFlagSchema, auth: AuthSchema = Depends(AuthPermission())):
+    await TenantService(auth).set_admin(tenantId, userId, data.is_super)
     return _ok({})
 
 
 @TenantRouter.put("/set-default/{tenantId}/{userId}")
-async def set_default(tenantId: int, userId: int, request: Request, auth: AuthSchema = Depends(AuthPermission())):
-    body = await _body(request)
-    await TenantService(auth).set_default(tenantId, userId, int(body.get("is_default", 0)))
+async def set_default(tenantId: int, userId: int, data: TenantDefaultSchema, auth: AuthSchema = Depends(AuthPermission())):
+    await TenantService(auth).set_default(tenantId, userId, data.is_default)
     return _ok({})

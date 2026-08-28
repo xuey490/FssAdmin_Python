@@ -2,9 +2,10 @@ from typing import Any
 
 from fastapi import APIRouter, Depends, Request
 
+from app.api.v1.module_system.dept.schema import DeptCreateSchema, DeptUpdateSchema
 from app.api.v1.module_system.dept.service import DeptService
 from app.common.response import ErrorResponse, SuccessResponse
-from app.core.base_schema import AuthSchema
+from app.core.base_schema import AuthSchema, StatusSchema
 from app.core.dependencies import AuthPermission, get_current_user
 from app.core.exceptions import CustomException
 from app.core.router_class import OperationLogRoute
@@ -14,13 +15,6 @@ DeptRouter = APIRouter(route_class=OperationLogRoute, prefix="/dept", tags=["部
 
 def _ok(data: Any = None) -> SuccessResponse:
     return SuccessResponse(data=data if data is not None else {})
-
-
-async def _body(request: Request) -> dict:
-    try:
-        return await request.json()
-    except Exception:
-        return {}
 
 
 @DeptRouter.get("/list")
@@ -50,17 +44,17 @@ async def detail(id: int, auth: AuthSchema = Depends(get_current_user)):
 
 
 @DeptRouter.post("/create")
-async def create(request: Request, auth: AuthSchema = Depends(AuthPermission())):
+async def create(data: DeptCreateSchema, auth: AuthSchema = Depends(AuthPermission())):
     try:
-        return _ok(await DeptService(auth).create(await _body(request), auth.user.id))
+        return _ok(await DeptService(auth).create(data.model_dump(exclude_none=True), auth.user.id))
     except CustomException as e:
         return ErrorResponse(msg=e.msg, code=e.code or 1)
 
 
 @DeptRouter.put("/update/{id}")
-async def update(id: int, request: Request, auth: AuthSchema = Depends(AuthPermission())):
+async def update(id: int, data: DeptUpdateSchema, auth: AuthSchema = Depends(AuthPermission())):
     try:
-        return _ok(await DeptService(auth).update(id, await _body(request), auth.user.id))
+        return _ok(await DeptService(auth).update(id, data.model_dump(exclude_unset=True), auth.user.id))
     except CustomException as e:
         return ErrorResponse(msg=e.msg, code=e.code or 1)
 
@@ -72,9 +66,8 @@ async def delete(id: int, auth: AuthSchema = Depends(AuthPermission())):
 
 
 @DeptRouter.put("/status/{id}")
-async def status(id: int, request: Request, auth: AuthSchema = Depends(AuthPermission())):
-    body = await _body(request)
-    await DeptService(auth).update_status(id, int(body.get("status", 1)))
+async def status(id: int, data: StatusSchema, auth: AuthSchema = Depends(AuthPermission())):
+    await DeptService(auth).update_status(id, data.status)
     return _ok({})
 
 

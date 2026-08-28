@@ -40,7 +40,25 @@ class AuthService:
 
     @staticmethod
     def _parse_ua(user_agent: str) -> tuple[str, str]:
-        ua = (user_agent or "").lower()
+        """解析 UA → (操作系统, 浏览器含版本)。优先 ua-parser，失败再走关键字。"""
+        raw = (user_agent or "").strip()
+        if not raw:
+            return "", ""
+        try:
+            from ua_parser import parse as parse_ua
+
+            r = parse_ua(raw)
+            os_name = (r.os.family if r.os else None) or "Unknown"
+            ua = r.user_agent
+            if ua and ua.family:
+                ver = ".".join(p for p in (ua.major, ua.minor, ua.patch) if p is not None)
+                browser = f"{ua.family} {ver}".strip() if ver else ua.family
+            else:
+                browser = "Unknown"
+            return os_name, browser
+        except Exception:
+            pass
+        ua = raw.lower()
         if "windows" in ua:
             os_name = "Windows"
         elif "android" in ua:
@@ -64,6 +82,44 @@ class AuthService:
         else:
             browser = "Unknown"
         return os_name, browser
+
+    async def _client_meta(self, client_ip: str, user_agent: str) -> tuple[str, str, str]:
+        os_name, browser = self._parse_ua(user_agent)
+        location = ""
+        try:
+            from app.utils.ip_local_util import IpLocalUtil
+
+            location = await IpLocalUtil.resolve_location_for_log(self.redis, client_ip or None) or ""
+        except Exception:
+            location = ""
+        return os_name, browser, location
+
+    async def _write_login_log(
+        self,
+        username: str,
+        *,
+        ip: str,
+        status: int,
+        message: str,
+        os: str = "",
+        browser: str = "",
+        ip_location: str = "",
+    ) -> None:
+        from app.api.v1.module_system.logs.service import LogService
+
+        try:
+            await LogService.write_login(
+                self.db,
+                username=username,
+                ip=ip,
+                status=status,
+                message=message,
+                os=os,
+                browser=browser,
+                ip_location=ip_location,
+            )
+        except Exception:
+            pass
 
     async def _dept_name(self, user_id: int, tenant_id: int) -> str:
         from app.api.v1.module_system.user.model import UserDeptModel
@@ -100,16 +156,7 @@ class AuthService:
             ttl = 3600
 
         role_codes = await self._role_codes(user.id, tenant_id, user)
-        os_name, browser = self._parse_ua(user_agent)
-        login_location = ""
-        try:
-            from app.utils.ip_local_util import IpLocalUtil
-
-            login_location = (
-                await IpLocalUtil.resolve_location_for_log(self.redis, client_ip or None) or ""
-            )
-        except Exception:
-            login_location = ""
+        os_name, browser, login_location = await self._client_meta(client_ip, user_agent)
 
         pair = await self._token_manager().generate_token(
             TokenIssueContext(
@@ -198,8 +245,6 @@ class AuthService:
             raise CustomException(msg="验证码错误或已过期", code=400)
 
     async def login(self, data: dict[str, Any], client_ip: str = "", user_agent: str = "") -> dict[str, Any]:
-        from app.api.v1.module_system.logs.service import LogService
-
         username = (data.get("username") or "").strip()
         password = data.get("password") or ""
         tenant_id = int(data.get("tenant_id") or 0)
@@ -209,23 +254,16 @@ class AuthService:
             raise CustomException(msg="租户ID不能为空", code=400)
         await self._verify_captcha(str(data.get("uuid") or ""), str(data.get("code") or ""))
 
+        os_name, browser, ip_location = await self._client_meta(client_ip, user_agent)
+        log_kw = dict(ip=client_ip, os=os_name, browser=browser, ip_location=ip_location)
+
         uq = await self.db.execute(select(UserModel).where(UserModel.username == username, not_deleted(UserModel)))
         user = uq.scalar_one_or_none()
         if not user or not PwdUtil.verify_password(password, user.password):
-            try:
-                await LogService.write_login(
-                    self.db, username=username, ip=client_ip, status=2, message="用户名或密码错误"
-                )
-            except Exception:
-                pass
+            await self._write_login_log(username, status=2, message="用户名或密码错误", **log_kw)
             raise CustomException(msg="用户名或密码错误", code=400)
         if int(user.status or 0) != 1:
-            try:
-                await LogService.write_login(
-                    self.db, username=username, ip=client_ip, status=2, message="账号已被禁用"
-                )
-            except Exception:
-                pass
+            await self._write_login_log(username, status=2, message="账号已被禁用", **log_kw)
             raise CustomException(msg="账号已被禁用", code=403)
 
         if int(user.is_super or 0) != 1:
@@ -237,35 +275,20 @@ class AuthService:
                 )
             )
             if not memb.scalar_one_or_none():
-                try:
-                    await LogService.write_login(
-                        self.db, username=username, ip=client_ip, status=2, message="您不属于该租户"
-                    )
-                except Exception:
-                    pass
+                await self._write_login_log(username, status=2, message="您不属于该租户", **log_kw)
                 raise CustomException(msg="您不属于该租户", code=403)
 
         tq = await self.db.execute(select(TenantModel).where(TenantModel.id == tenant_id, not_deleted(TenantModel)))
         tenant = tq.scalar_one_or_none()
         if not tenant or not tenant.is_valid():
-            try:
-                await LogService.write_login(
-                    self.db, username=username, ip=client_ip, status=2, message="租户无效或已过期"
-                )
-            except Exception:
-                pass
+            await self._write_login_log(username, status=2, message="租户无效或已过期", **log_kw)
             raise CustomException(msg="租户无效或已过期", code=403)
 
         user.login_time = datetime.now()
         user.login_ip = client_ip or user.login_ip
         await self.db.flush()
 
-        try:
-            await LogService.write_login(
-                self.db, username=username, ip=client_ip, status=1, message="登录成功"
-            )
-        except Exception:
-            pass
+        await self._write_login_log(username, status=1, message="登录成功", **log_kw)
 
         tokens = await self._issue_tokens(
             user,

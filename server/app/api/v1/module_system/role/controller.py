@@ -2,9 +2,10 @@ from typing import Any
 
 from fastapi import APIRouter, Depends, Request
 
+from app.api.v1.module_system.role.schema import RoleCreateSchema, RoleMenusSchema, RoleUpdateSchema
 from app.api.v1.module_system.role.service import RoleService
 from app.common.response import ErrorResponse, SuccessResponse
-from app.core.base_schema import AuthSchema
+from app.core.base_schema import AuthSchema, StatusSchema
 from app.core.dependencies import AuthPermission, get_current_user
 from app.core.exceptions import CustomException
 from app.core.router_class import OperationLogRoute
@@ -14,13 +15,6 @@ RoleRouter = APIRouter(route_class=OperationLogRoute, prefix="/role", tags=["角
 
 def _ok(data: Any = None) -> SuccessResponse:
     return SuccessResponse(data=data if data is not None else {})
-
-
-async def _body(request: Request) -> dict:
-    try:
-        return await request.json()
-    except Exception:
-        return {}
 
 
 @RoleRouter.get("/list")
@@ -50,17 +44,17 @@ async def detail(id: int, auth: AuthSchema = Depends(get_current_user)):
 
 
 @RoleRouter.post("/create")
-async def create(request: Request, auth: AuthSchema = Depends(AuthPermission())):
+async def create(data: RoleCreateSchema, auth: AuthSchema = Depends(AuthPermission())):
     try:
-        return _ok(await RoleService(auth).create(await _body(request), auth.user.id))
+        return _ok(await RoleService(auth).create(data.model_dump(exclude_none=True), auth.user.id))
     except CustomException as e:
         return ErrorResponse(msg=e.msg, code=e.code or 1)
 
 
 @RoleRouter.put("/update/{id}")
-async def update(id: int, request: Request, auth: AuthSchema = Depends(AuthPermission())):
+async def update(id: int, data: RoleUpdateSchema, auth: AuthSchema = Depends(AuthPermission())):
     try:
-        return _ok(await RoleService(auth).update(id, await _body(request), auth.user.id))
+        return _ok(await RoleService(auth).update(id, data.model_dump(exclude_unset=True), auth.user.id))
     except CustomException as e:
         return ErrorResponse(msg=e.msg, code=e.code or 1)
 
@@ -75,22 +69,20 @@ async def delete(id: int, auth: AuthSchema = Depends(AuthPermission())):
 
 
 @RoleRouter.put("/status/{id}")
-async def status(id: int, request: Request, auth: AuthSchema = Depends(AuthPermission())):
-    body = await _body(request)
-    await RoleService(auth).update_status(id, int(body.get("status", 1)))
+async def status(id: int, data: StatusSchema, auth: AuthSchema = Depends(AuthPermission())):
+    await RoleService(auth).update_status(id, data.status)
     return _ok({})
 
 
 @RoleRouter.put("/assign-menus/{id}")
-async def assign_menus(id: int, request: Request, auth: AuthSchema = Depends(AuthPermission())):
-    body = await _body(request)
-    await RoleService(auth).assign_menus(id, body.get("menu_ids") or [], auth.user.id)
+async def assign_menus(id: int, data: RoleMenusSchema, auth: AuthSchema = Depends(AuthPermission())):
+    await RoleService(auth).assign_menus(id, data.menu_ids, auth.user.id)
     return _ok({})
 
 
 @RoleRouter.put("/menu-permission/{id}")
-async def menu_permission(id: int, request: Request, auth: AuthSchema = Depends(AuthPermission())):
-    return await assign_menus(id, request, auth)
+async def menu_permission(id: int, data: RoleMenusSchema, auth: AuthSchema = Depends(AuthPermission())):
+    return await assign_menus(id, data, auth)
 
 
 @RoleRouter.get("/menu-by-role/{id}")

@@ -1,8 +1,8 @@
 from dataclasses import dataclass
-from urllib.parse import urlparse
 
 from fastapi import Query
 from pydantic import (
+    AliasChoices,
     BaseModel,
     ConfigDict,
     EmailStr,
@@ -15,7 +15,14 @@ from app.api.v1.module_system.role.schema import MenuBriefSchema, RoleOutSchema
 from app.common.enums import QueueEnum
 from app.core.base_params import BaseQueryParam, TenantByQueryParam, UserByQueryParam
 from app.core.base_schema import BaseSchema, CommonSchema, TenantBySchema, UserBySchema
-from app.core.validator import email_validator, mobile_validator
+from app.core.validator import (
+    avatar_validator,
+    email_validator,
+    mobile_validator,
+    password_validator,
+    phone_validator,
+    username_validator,
+)
 
 
 class CurrentUserUpdateSchema(BaseModel):
@@ -52,13 +59,7 @@ class CurrentUserUpdateSchema(BaseModel):
     @field_validator("avatar")
     @classmethod
     def validate_avatar(cls, value: str | None):
-        """校验头像地址为合法的 HTTP/HTTPS URL"""
-        if not value:
-            return value
-        parsed = urlparse(value)
-        if parsed.scheme in ("http", "https") and parsed.netloc:
-            return value
-        raise ValueError("头像地址需为有效的 HTTP/HTTPS URL")
+        return avatar_validator(value)
 
     @model_validator(mode="after")
     def check_model(self):
@@ -160,18 +161,27 @@ class UserForgetPasswordSchema(BaseModel):
 class UserChangePasswordSchema(BaseModel):
     """修改密码"""
 
-    old_password: str = Field(..., min_length=6, max_length=128, description="旧密码")
-    new_password: str = Field(..., min_length=6, max_length=128, description="新密码")
+    model_config = ConfigDict(populate_by_name=True)
+
+    old_password: str = Field(
+        ...,
+        min_length=1,
+        max_length=128,
+        description="旧密码",
+        validation_alias=AliasChoices("old_password", "oldPassword"),
+    )
+    new_password: str = Field(
+        ...,
+        min_length=6,
+        max_length=128,
+        description="新密码",
+        validation_alias=AliasChoices("new_password", "newPassword"),
+    )
 
     @field_validator("new_password")
     @classmethod
     def validate_new_password(cls, value: str):
-        """校验新密码：6-128 位"""
-        if len(value) < 6:
-            raise ValueError("新密码长度不能少于 6 位")
-        if len(value) > 128:
-            raise ValueError("新密码长度不能超过 128 位")
-        return value
+        return password_validator(value, required=True)
 
 
 class ResetPasswordSchema(BaseModel):
@@ -183,102 +193,190 @@ class ResetPasswordSchema(BaseModel):
     @field_validator("password")
     @classmethod
     def validate_password(cls, value: str):
-        """校验新密码：6-128 位"""
-        if len(value) < 6:
-            raise ValueError("新密码长度不能少于 6 位")
-        if len(value) > 128:
-            raise ValueError("新密码长度不能超过 128 位")
-        return value
+        return password_validator(value, required=True)
 
 
-class UserCreateSchema(CurrentUserUpdateSchema):
-    """
-    新增用户
-    """
+class UserCreateSchema(BaseModel):
+    """新增用户（字段对齐 sa_system_user；兼容 name/mobile/description/position_ids）。"""
 
-    username: str | None = Field(default=None, max_length=32, description="用户名")
-    password: str | None = Field(default=None, min_length=6, max_length=128, description="密码")
-    status: int = Field(default=0, ge=0, le=1, description="状态(0:启动 1:停用)")
-    description: str | None = Field(default=None, max_length=255, description="备注")
-    is_superuser: bool | None = Field(default=False, description="是否超管")
+    model_config = ConfigDict(populate_by_name=True)
+
+    username: str = Field(..., min_length=3, max_length=32, description="用户名")
+    password: str | None = Field(default=None, max_length=128, description="密码")
+    realname: str | None = Field(
+        default=None, max_length=64, description="姓名",
+        validation_alias=AliasChoices("realname", "name"),
+    )
+    phone: str | None = Field(
+        default=None, max_length=20, description="手机号",
+        validation_alias=AliasChoices("phone", "mobile"),
+    )
+    email: str | None = Field(default=None, max_length=128, description="邮箱")
+    gender: str | None = Field(default=None, max_length=10, description="性别")
+    avatar: str | None = Field(default=None, max_length=255, description="头像")
+    status: int = Field(default=1, ge=0, le=1, description="状态(1:启用 0:停用)")
+    remark: str | None = Field(
+        default=None, max_length=255, description="备注",
+        validation_alias=AliasChoices("remark", "description"),
+    )
     dept_id: int | None = Field(default=None, description="部门ID")
-    tenant_id: int | None = Field(default=None, description="租户ID，仅平台管理员创建时可指定")
-    role_ids: list[int] | None = Field(default=[], description="角色ID列表")
-    position_ids: list[int] | None = Field(default=[], description="岗位ID列表")
-
-    @field_validator("status")
-    @classmethod
-    def validate_status(cls, value: int):
-        """校验状态：仅支持 0(正常)、1(禁用)"""
-        if value not in {0, 1}:
-            raise ValueError("状态仅支持 0(正常) 或 1(禁用)")
-        return value
+    tenant_id: int | None = Field(default=None, description="租户ID")
+    role_ids: list[int] = Field(default_factory=list, description="角色ID列表")
+    post_ids: list[int] = Field(
+        default_factory=list, description="岗位ID列表",
+        validation_alias=AliasChoices("post_ids", "position_ids"),
+    )
+    menu_ids: list[int] | None = Field(default=None, description="菜单ID列表")
+    dashboard: str | None = Field(default=None, max_length=255, description="首页")
 
     @field_validator("username")
     @classmethod
-    def validate_username(cls, value: str | None):
-        """校验账号：字母开头，2-32 位"""
-        if not value:
-            return value
-        v = value.strip()
-        import re
-
-        if not re.match(r"^[A-Za-z][A-Za-z0-9_.-]{1,31}$", v):
-            raise ValueError("账号需以字母开头，2-32 位，仅允许字母、数字、_ . -")
-        return v
+    def validate_username(cls, value: str):
+        return username_validator(value)
 
     @field_validator("password")
     @classmethod
     def validate_password(cls, value: str | None):
-        """校验密码：6-128 位"""
-        if value and len(value) < 6:
-            raise ValueError("密码长度不能少于 6 位")
-        if value and len(value) > 128:
-            raise ValueError("密码长度不能超过 128 位")
-        return value
+        return password_validator(value)
+
+    @field_validator("phone")
+    @classmethod
+    def validate_phone(cls, value: str | None):
+        return phone_validator(value)
+
+    @field_validator("email")
+    @classmethod
+    def validate_email(cls, value: str | None):
+        if not value:
+            return value
+        return email_validator(value)
+
+    @field_validator("avatar")
+    @classmethod
+    def validate_avatar(cls, value: str | None):
+        return avatar_validator(value)
 
 
-class UserUpdateSchema(CurrentUserUpdateSchema):
-    """更新"""
+class UserUpdateSchema(BaseModel):
+    """更新用户"""
 
-    model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True, populate_by_name=True)
 
     username: str | None = Field(default=None, max_length=32, description="用户名")
-    status: int | None = Field(default=None, ge=0, le=1, description="状态(0:启动 1:停用)")
-    description: str | None = Field(default=None, max_length=255, description="备注")
+    password: str | None = Field(default=None, max_length=128, description="密码")
+    realname: str | None = Field(
+        default=None, max_length=64, description="姓名",
+        validation_alias=AliasChoices("realname", "name"),
+    )
+    phone: str | None = Field(
+        default=None, max_length=20, description="手机号",
+        validation_alias=AliasChoices("phone", "mobile"),
+    )
+    email: str | None = Field(default=None, max_length=128, description="邮箱")
+    gender: str | None = Field(default=None, max_length=10, description="性别")
+    avatar: str | None = Field(default=None, max_length=255, description="头像")
+    status: int | None = Field(default=None, ge=0, le=1, description="状态")
+    remark: str | None = Field(
+        default=None, max_length=255, description="备注",
+        validation_alias=AliasChoices("remark", "description"),
+    )
     dept_id: int | None = Field(default=None, description="部门ID")
-    role_ids: list[int] | None = Field(default=[], description="角色ID列表")
-    position_ids: list[int] | None = Field(default=[], description="岗位ID列表")
-
-    @field_validator("status")
-    @classmethod
-    def validate_status(cls, value: int | None):
-        """校验状态：仅支持 0(正常)、1(禁用)"""
-        if value is not None and value not in {0, 1}:
-            raise ValueError("状态仅支持 0(正常) 或 1(禁用)")
-        return value
+    role_ids: list[int] | None = Field(default=None, description="角色ID列表")
+    post_ids: list[int] | None = Field(
+        default=None, description="岗位ID列表",
+        validation_alias=AliasChoices("post_ids", "position_ids"),
+    )
+    menu_ids: list[int] | None = Field(default=None, description="菜单ID列表")
+    dashboard: str | None = Field(default=None, max_length=255, description="首页")
 
     @field_validator("username")
     @classmethod
     def validate_username(cls, value: str | None):
-        """校验账号：字母开头，2-32 位"""
         if not value:
             return value
-        v = value.strip()
-        import re
+        return username_validator(value)
 
-        if not re.match(r"^[A-Za-z][A-Za-z0-9_.-]{1,31}$", v):
-            raise ValueError("账号需以字母开头，2-32 位，仅允许字母、数字、_ . -")
-        return v
+    @field_validator("password")
+    @classmethod
+    def validate_password(cls, value: str | None):
+        return password_validator(value)
+
+    @field_validator("phone")
+    @classmethod
+    def validate_phone(cls, value: str | None):
+        return phone_validator(value)
+
+    @field_validator("email")
+    @classmethod
+    def validate_email(cls, value: str | None):
+        if not value:
+            return value
+        return email_validator(value)
+
+    @field_validator("avatar")
+    @classmethod
+    def validate_avatar(cls, value: str | None):
+        return avatar_validator(value)
 
 
-class UserOutSchema(UserUpdateSchema, BaseSchema, UserBySchema, TenantBySchema):
+class ProfileUpdateSchema(BaseModel):
+    """个人中心改资料"""
+
+    model_config = ConfigDict(populate_by_name=True)
+
+    realname: str | None = Field(
+        default=None, max_length=64,
+        validation_alias=AliasChoices("realname", "name"),
+    )
+    phone: str | None = Field(
+        default=None, max_length=20,
+        validation_alias=AliasChoices("phone", "mobile"),
+    )
+    email: str | None = Field(default=None, max_length=128)
+    gender: str | None = Field(default=None, max_length=10)
+    signed: str | None = Field(default=None, max_length=255)
+    avatar: str | None = Field(default=None, max_length=255)
+
+    @field_validator("phone")
+    @classmethod
+    def validate_phone(cls, value: str | None):
+        return phone_validator(value)
+
+    @field_validator("email")
+    @classmethod
+    def validate_email(cls, value: str | None):
+        if not value:
+            return value
+        return email_validator(value)
+
+    @field_validator("avatar")
+    @classmethod
+    def validate_avatar(cls, value: str | None):
+        return avatar_validator(value)
+
+
+class UserMenusSchema(BaseModel):
+    menu_ids: list[int] = Field(default_factory=list)
+
+
+class DashboardSchema(BaseModel):
+    dashboard: str = Field(default="work", max_length=255)
+
+
+class UserOutSchema(BaseSchema, UserBySchema, TenantBySchema):
     """响应"""
 
     model_config = ConfigDict(arbitrary_types_allowed=True, from_attributes=True)
 
     username: str | None = Field(default=None, max_length=32, description="用户名")
-
+    realname: str | None = Field(default=None, max_length=64, description="姓名")
+    phone: str | None = Field(default=None, description="手机号")
+    email: str | None = Field(default=None, description="邮箱")
+    gender: str | None = Field(default=None, description="性别")
+    avatar: str | None = Field(default=None, description="头像")
+    status: int | None = Field(default=None, description="状态")
+    remark: str | None = Field(default=None, description="备注")
+    dept_id: int | None = Field(default=None, description="部门ID")
     tenant_id: int | None = Field(
         default=None,
         exclude=True,

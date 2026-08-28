@@ -104,12 +104,13 @@ class LogService:
         message: str = "",
         os: str = "",
         browser: str = "",
+        ip_location: str = "",
     ) -> None:
         db.add(
             LoginLogModel(
                 username=username[:20] if username else "",
                 ip=(ip or "")[:45],
-                ip_location="",
+                ip_location=(ip_location or "")[:255],
                 os=(os or "")[:50],
                 browser=(browser or "")[:50],
                 status=status,

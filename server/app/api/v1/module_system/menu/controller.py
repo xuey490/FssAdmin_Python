@@ -2,9 +2,10 @@ from typing import Any
 
 from fastapi import APIRouter, Depends, Request
 
+from app.api.v1.module_system.menu.schema import MenuCreateSchema, MenuUpdateSchema
 from app.api.v1.module_system.menu.service import MenuService
 from app.common.response import ErrorResponse, SuccessResponse
-from app.core.base_schema import AuthSchema
+from app.core.base_schema import AuthSchema, StatusSchema
 from app.core.dependencies import AuthPermission, get_current_user
 from app.core.exceptions import CustomException
 from app.core.router_class import OperationLogRoute
@@ -14,13 +15,6 @@ MenuRouter = APIRouter(route_class=OperationLogRoute, prefix="/menu", tags=["菜
 
 def _ok(data: Any = None) -> SuccessResponse:
     return SuccessResponse(data=data if data is not None else {})
-
-
-async def _body(request: Request) -> dict:
-    try:
-        return await request.json()
-    except Exception:
-        return {}
 
 
 @MenuRouter.get("/list")
@@ -65,18 +59,18 @@ async def detail(id: int, auth: AuthSchema = Depends(get_current_user)):
 
 
 @MenuRouter.post("/create")
-async def create(request: Request, auth: AuthSchema = Depends(AuthPermission())):
+async def create(data: MenuCreateSchema, auth: AuthSchema = Depends(AuthPermission())):
     try:
-        return _ok(await MenuService(auth).create(await _body(request), auth.user.id))
+        return _ok(await MenuService(auth).create(data.model_dump(exclude_none=True), auth.user.id))
     except CustomException as e:
         return ErrorResponse(msg=e.msg, code=e.code or 1)
 
 
 @MenuRouter.put("/update/{id}")
-async def update(id: int, request: Request, auth: AuthSchema = Depends(AuthPermission())):
+async def update(id: int, data: MenuUpdateSchema, auth: AuthSchema = Depends(AuthPermission())):
     try:
-        data = await MenuService(auth).update(id, await _body(request), auth.user.id)
-        return _ok(data) if data else ErrorResponse(msg="菜单不存在", code=404)
+        data_out = await MenuService(auth).update(id, data.model_dump(exclude_unset=True), auth.user.id)
+        return _ok(data_out) if data_out else ErrorResponse(msg="菜单不存在", code=404)
     except CustomException as e:
         return ErrorResponse(msg=e.msg, code=e.code or 1)
 
@@ -88,7 +82,6 @@ async def delete(id: int, auth: AuthSchema = Depends(AuthPermission())):
 
 
 @MenuRouter.put("/status/{id}")
-async def status(id: int, request: Request, auth: AuthSchema = Depends(AuthPermission())):
-    body = await _body(request)
-    await MenuService(auth).update_status(id, int(body.get("status", 1)))
+async def status(id: int, data: StatusSchema, auth: AuthSchema = Depends(AuthPermission())):
+    await MenuService(auth).update_status(id, data.status)
     return _ok({})
