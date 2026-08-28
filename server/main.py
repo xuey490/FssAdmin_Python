@@ -1,4 +1,9 @@
 import os
+
+from app.core.timezone import pin_process_timezone
+
+pin_process_timezone()
+
 from typing import Annotated
 
 import typer

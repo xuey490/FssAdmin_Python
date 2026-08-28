@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from redis import exceptions
 from redis.asyncio import Redis
-from sqlalchemy import Engine, create_engine
+from sqlalchemy import Engine, create_engine, event
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
     AsyncSession,
@@ -15,6 +15,25 @@ from app.core.base_model import MappedBase
 from app.core.exceptions import CustomException
 from app.core.logger import logger
 from app.core.sql_echo import install_sql_echo
+
+
+def _pin_mysql_session_tz(engine: Engine | AsyncEngine) -> None:
+    """每条连接 SET time_zone，跟随 .env TIMEZONE。"""
+    from app.config.setting import settings as cfg
+    from app.core.timezone import mysql_time_zone
+
+    if cfg.DATABASE_TYPE != "mysql":
+        return
+    sync_eng = getattr(engine, "sync_engine", engine)
+    offset = mysql_time_zone()
+
+    @event.listens_for(sync_eng, "connect")
+    def _set_tz(dbapi_conn, _connection_record) -> None:  # noqa: ANN001
+        cur = dbapi_conn.cursor()
+        try:
+            cur.execute(f"SET time_zone = '{offset}'")
+        finally:
+            cur.close()
 
 
 def create_engine_and_session(
@@ -47,6 +66,7 @@ def create_engine_and_session(
             pool_recycle=cfg.POOL_RECYCLE,
         )
         install_sql_echo(engine)
+        _pin_mysql_session_tz(engine)
     except Exception as e:
         logger.error(f"❌ 数据库连接失败 {e}")
         raise
@@ -103,6 +123,7 @@ def create_async_engine_and_session(
                 pool_use_lifo=cfg.POOL_USE_LIFO,
             )
         install_sql_echo(async_engine)
+        _pin_mysql_session_tz(async_engine)
     except Exception as e:
         logger.error(f"❌ 数据库连接失败 {e}")
         raise

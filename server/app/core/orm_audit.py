@@ -9,7 +9,6 @@
 
 from __future__ import annotations
 
-from datetime import datetime
 from typing import Any
 
 from sqlalchemy import Integer, bindparam, event, inspect as sa_inspect
@@ -22,6 +21,7 @@ from app.core.request_context import (
     should_apply_soft_delete,
     should_apply_tenant,
 )
+from app.core.timezone import now as beijing_now
 
 
 def _tenant_bindparam():
@@ -135,7 +135,7 @@ def _is_empty_audit_val(val: Any) -> bool:
 
 
 def _on_before_insert(mapper, connection, target) -> None:  # noqa: ANN001
-    now = datetime.now()
+    now = beijing_now()
     uid = get_current_user_id()
 
     if has_mapped_column(type(target), "tenant_id") and should_apply_tenant():
@@ -161,7 +161,7 @@ def _on_before_insert(mapper, connection, target) -> None:  # noqa: ANN001
 
 
 def _on_before_update(mapper, connection, target) -> None:  # noqa: ANN001
-    now = datetime.now()
+    now = beijing_now()
     uid = get_current_user_id()
     cls = type(target)
 
@@ -182,9 +182,9 @@ def _on_before_flush(session: Session, flush_context, instances) -> None:  # noq
             # 已标记软删又被 delete：仍转 UPDATE，避免二次硬删
             pass
         session.deleted.discard(obj)
-        obj.delete_time = datetime.now()
+        obj.delete_time = beijing_now()
         if has_mapped_column(type(obj), "update_time"):
-            obj.update_time = datetime.now()
+            obj.update_time = beijing_now()
         uid = get_current_user_id()
         if uid is not None and int(uid) > 0 and has_mapped_column(type(obj), "updated_by"):
             obj.updated_by = int(uid)

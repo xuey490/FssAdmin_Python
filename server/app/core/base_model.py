@@ -5,6 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncAttrs
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 from app.common.enums import PermissionFilterStrategy
+from app.core.timezone import now
 
 
 class MappedBase(AsyncAttrs, DeclarativeBase):
@@ -20,9 +21,9 @@ class SaModelMixin(MappedBase):
     __abstract__ = True
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True, comment="主键ID")
-    create_time: Mapped[datetime | None] = mapped_column(DateTime, default=datetime.now, nullable=True)
+    create_time: Mapped[datetime | None] = mapped_column(DateTime, default=now, nullable=True)
     update_time: Mapped[datetime | None] = mapped_column(
-        DateTime, default=datetime.now, onupdate=datetime.now, nullable=True
+        DateTime, default=now, onupdate=now, nullable=True
     )
     delete_time: Mapped[datetime | None] = mapped_column(DateTime, default=None, nullable=True)
 

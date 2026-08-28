@@ -130,3 +130,4 @@ temp/
 server/logs/fssadmin.log
 server/logs/fssadmin.log
 .specstory/statistics.json
+server/logs/fssadmin.log

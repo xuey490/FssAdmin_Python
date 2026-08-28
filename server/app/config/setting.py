@@ -25,6 +25,14 @@ class Settings(BaseSettings):
     # ******************* 项目环境 ****************** #
     # ================================================= #
     ENVIRONMENT: EnvironmentEnum = EnvironmentEnum.DEV
+    TIMEZONE: str = "Asia/Shanghai"  # IANA 时区，默认北京；.env 里改 TIMEZONE 即可
+
+    @field_validator("TIMEZONE")
+    @classmethod
+    def _valid_timezone(cls, v: str) -> str:
+        from app.core.timezone import validate_tz_name
+
+        return validate_tz_name(v)
 
     # ================================================= #
     # ******************* 服务器配置 ****************** #
@@ -345,9 +353,11 @@ def get_settings() -> Settings:
     """按当前 ENVIRONMENT 加载对应 .env.{env}（须在设置 ENVIRONMENT 后调用/刷新）。"""
     env = os.getenv("ENVIRONMENT") or EnvironmentEnum.DEV.value
     env_file = ENV_DIR / f".env.{env}"
-    if env_file.is_file():
-        return Settings(_env_file=env_file)
-    return Settings()
+    loaded = Settings(_env_file=env_file) if env_file.is_file() else Settings()
+    from app.core.timezone import pin_process_timezone
+
+    pin_process_timezone(loaded.TIMEZONE)
+    return loaded
 
 
 def reload_settings() -> Settings:

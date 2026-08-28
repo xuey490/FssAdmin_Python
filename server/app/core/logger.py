@@ -6,11 +6,15 @@ from loguru import logger
 from app.config.path_conf import LOG_DIR
 from app.config.setting import settings
 from app.core.request_context import get_correlation_id
+from app.core.timezone import zone
 
 
 def _context_patcher(record: dict) -> None:
     cid = get_correlation_id()
     record["extra"]["ctx"] = f" | cid={cid[:8]}" if cid else ""
+    t = record.get("time")
+    if t is not None:
+        record["time"] = t.astimezone(zone())
 
 
 class InterceptHandler(logging.Handler):

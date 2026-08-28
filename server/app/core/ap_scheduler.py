@@ -44,6 +44,7 @@ from redis.asyncio import Redis
 from app.config.setting import settings
 from app.core.database import engine
 from app.core.logger import logger
+from app.core.timezone import tz_name
 from app.plugin.module_task.cronjob.node.model import NodeModel
 from app.utils.cron_util import CronUtil
 
@@ -83,7 +84,7 @@ scheduler.configure(
         "coalesce": True,
         "max_instances": 5,
     },
-    timezone="Asia/Shanghai",
+    timezone=tz_name(),
 )
 
 
@@ -1133,7 +1134,7 @@ class SchedulerUtil:
             year=year,
             start_date=start_date or job_info.start_date,
             end_date=end_date or job_info.end_date,
-            timezone="Asia/Shanghai",
+            timezone=tz_name(),
         )
         return cls._add_job_with_trigger(job_info, trigger)
 
@@ -1176,7 +1177,7 @@ class SchedulerUtil:
             seconds=second,
             start_date=start_date or job_info.start_date,
             end_date=end_date or job_info.end_date,
-            timezone="Asia/Shanghai",
+            timezone=tz_name(),
         )
         return cls._add_job_with_trigger(job_info, trigger)
 
@@ -1196,7 +1197,7 @@ class SchedulerUtil:
         if not date_str:
             raise ValueError("date触发器缺少执行时间参数")
 
-        trigger = DateTrigger(run_date=date_str, timezone="Asia/Shanghai")
+        trigger = DateTrigger(run_date=date_str, timezone=tz_name())
         return cls._add_job_with_trigger(job_info, trigger)
 
     @classmethod
@@ -1539,7 +1540,7 @@ class SchedulerUtil:
         from datetime import timedelta
 
         trigger = DateTrigger(
-            run_date=datetime.now() + timedelta(seconds=0.1), timezone="Asia/Shanghai"
+            run_date=datetime.now() + timedelta(seconds=0.1), timezone=tz_name()
         )
         temp_job = scheduler.add_job(
             func=job.func,

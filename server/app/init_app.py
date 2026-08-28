@@ -22,6 +22,9 @@ from .utils.console import console_end, console_start
 async def lifespan(app: FastAPI) -> AsyncGenerator[Any, Any]:
     try:
         await import_modules_async(modules=settings.EVENT_LIST, desc="全局事件", app=app, status=True)
+        from app.core.timezone import tz_name
+
+        logger.info("时区 {}", tz_name())
         logger.info("✅ 全局事件模块加载完成")
         # ponytail: 旧 plugin/platform 调度器有循环依赖，本阶段跳过
         try:
