@@ -1,3 +1,5 @@
+
+
 # FssAdmin 后台管理系统（Python 版）
 
 **Fast · Safe · Simple** — 基于 FastAPI + Vue 3 的开箱即用后台管理系统。
@@ -186,7 +188,7 @@ cp .env.dev.example .env.dev   # Windows: copy .env.dev.example .env.dev
 # 填写 DATABASE_*、REDIS_*；先建好空库
 # SERVER_PORT 与前端代理一致，开发常用 8001
 
-uv sync
+uv sync   # 默认包含 dev 依赖（如 pytest、ruff、fakeredis）
 uv run main.py run --env=dev
 ```
 
@@ -269,4 +271,3 @@ uv run main.py upgrade --env=dev    # 应用到数据库
 - [Element Plus](https://element-plus.org/)
 - [Art Design Pro](https://www.artd.pro/)
 - PHP 版：[https://v3.phpframe.org](https://v3.phpframe.org) · NestJs 版：[https://nest.phpframe.org](https://nest.phpframe.org)
-
