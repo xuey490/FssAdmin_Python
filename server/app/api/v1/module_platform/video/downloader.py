@@ -307,7 +307,7 @@ class DownloadQueue:
                 job.local_dir = str(out_dir)
                 db.commit()
 
-        opts = build_download_opts(outtmpl=outtmpl, mode=mode, options=options, continuedl=continuedl)
+        opts = build_download_opts(outtmpl=outtmpl, mode=mode, options=options, continuedl=continuedl, url=url)
         last_flush = 0.0
         state: dict[str, Any] = {"progress": 0.0, "downloaded_bytes": 0, "total_bytes": None, "speed": None, "eta": None}
 

@@ -54,14 +54,20 @@ class _NullLogger:
         pass
 
 
-def ydl_opts_base() -> dict[str, Any]:
-    return {
+def ydl_opts_base(extra: dict[str, Any] | None = None) -> dict[str, Any]:
+    opts: dict[str, Any] = {
         "quiet": True,
         "no_warnings": True,
         "noprogress": True,
         "skip_download": True,
         "logger": _NullLogger(),
     }
+    if extra:
+        opts.update(extra)
+        cb = opts.get("cookiesfrombrowser")
+        if isinstance(cb, list):
+            opts["cookiesfrombrowser"] = tuple(cb)
+    return opts
 
 
 def slim_info(info: dict[str, Any], *, max_formats: int = 40, max_desc: int = 4000) -> dict[str, Any]:
@@ -157,20 +163,20 @@ def pick_playable_url(info: dict[str, Any]) -> str | None:
     return str(pool[0]["url"])
 
 
-def extract_info_inproc(url: str) -> dict[str, Any]:
+def extract_info_inproc(url: str, extra: dict[str, Any] | None = None) -> dict[str, Any]:
     import yt_dlp
 
-    with yt_dlp.YoutubeDL(ydl_opts_base()) as ydl:
+    with yt_dlp.YoutubeDL(ydl_opts_base(extra)) as ydl:
         info = ydl.extract_info(url, download=False)
     if not isinstance(info, dict):
         raise RuntimeError("yt-dlp 返回空信息")
     return slim_info(info)
 
 
-def expand_playlist_inproc(url: str) -> list[str]:
+def expand_playlist_inproc(url: str, extra: dict[str, Any] | None = None) -> list[str]:
     import yt_dlp
 
-    opts = {**ydl_opts_base(), "extract_flat": "in_playlist", "noplaylist": False}
+    opts = {**ydl_opts_base(extra), "extract_flat": "in_playlist", "noplaylist": False}
     with yt_dlp.YoutubeDL(opts) as ydl:
         info = ydl.extract_info(url, download=False)
     if not isinstance(info, dict):
@@ -178,10 +184,10 @@ def expand_playlist_inproc(url: str) -> list[str]:
     return urls_from_flat_info(info, url)
 
 
-def list_formats_inproc(url: str) -> list[dict[str, Any]]:
+def list_formats_inproc(url: str, extra: dict[str, Any] | None = None) -> list[dict[str, Any]]:
     import yt_dlp
 
-    with yt_dlp.YoutubeDL(ydl_opts_base()) as ydl:
+    with yt_dlp.YoutubeDL(ydl_opts_base(extra)) as ydl:
         info = ydl.extract_info(url, download=False)
     if not isinstance(info, dict):
         return []
@@ -202,10 +208,10 @@ def list_formats_inproc(url: str) -> list[dict[str, Any]]:
     return items
 
 
-def list_video_qualities_inproc(url: str) -> list[dict[str, Any]]:
+def list_video_qualities_inproc(url: str, extra: dict[str, Any] | None = None) -> list[dict[str, Any]]:
     import yt_dlp
 
-    with yt_dlp.YoutubeDL(ydl_opts_base()) as ydl:
+    with yt_dlp.YoutubeDL(ydl_opts_base(extra)) as ydl:
         info = ydl.extract_info(url, download=False, process=False)
     if not isinstance(info, dict):
         return []
@@ -239,10 +245,10 @@ def list_video_qualities_inproc(url: str) -> list[dict[str, Any]]:
     return items
 
 
-def get_stream_url_inproc(url: str, format_id: str | None = None) -> str:
+def get_stream_url_inproc(url: str, format_id: str | None = None, extra: dict[str, Any] | None = None) -> str:
     import yt_dlp
 
-    opts = ydl_opts_base()
+    opts = ydl_opts_base(extra)
     opts["format"] = str(format_id) if format_id else "bestvideo"
     try:
         with yt_dlp.YoutubeDL(opts) as ydl:
@@ -255,7 +261,7 @@ def get_stream_url_inproc(url: str, format_id: str | None = None) -> str:
             raise
     if format_id:
         raise RuntimeError(f"未找到 format_id={format_id} 的直链")
-    quals = list_video_qualities_inproc(url)
+    quals = list_video_qualities_inproc(url, extra)
     if quals:
         return str(quals[0]["url"])
     raise RuntimeError("未找到 bestvideo 直链")
@@ -276,6 +282,9 @@ def run_download_inproc(url: str, opts: dict[str, Any], progress_hook=None) -> N
     import yt_dlp
 
     opts = {**opts, "logger": _NullLogger(), "quiet": True, "color": "never"}
+    cb = opts.get("cookiesfrombrowser")
+    if isinstance(cb, list):
+        opts["cookiesfrombrowser"] = tuple(cb)
     if progress_hook:
         hooks = list(opts.get("progress_hooks") or [])
         hooks.append(progress_hook)

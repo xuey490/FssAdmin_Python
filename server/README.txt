@@ -25,7 +25,7 @@ python -m pip install -r requirements.txt
 
 ## 4. 启动开发服务
 ```powershell
-.\.venv\Scripts\python -m uvicorn src.main:app --reload --host 0.0.0.0 --port 8001
+.\.venv\Scripts\python -m uvicorn main:create_app --factory --reload --host 0.0.0.0 --port 8001
 ```
 
 

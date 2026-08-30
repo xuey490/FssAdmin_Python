@@ -215,6 +215,9 @@ class Settings(BaseSettings):
     VIDEO_META_WORKERS: int = 1  # 元数据拉取并发工人数（yt-dlp 在子进程，1 足够）
     VIDEO_META_RECOVER_ON_START: bool = False  # 启动时不要把库里所有 pending 元数据丢进队列
     VIDEO_YTDLP_SUBPROCESS: bool = True  # yt-dlp 放到子进程，跑完即退，避免 RSS 堆在 API 进程
+    # X/Twitter 专用登录态：仅对这些站点生效。cookie 文件优先于浏览器。
+    VIDEO_X_COOKIES_FILE: str = ""  # Netscape cookies.txt，相对 server/ 或绝对路径
+    VIDEO_X_COOKIES_FROM_BROWSER: str = "chrome:Default"  # chrome|edge|firefox|brave，可选 chrome:Default
     MEMORY_DIAGNOSTICS_ENABLE: bool = False  # 开发期 tracemalloc 诊断；定位后必须关闭
     ALLOWED_EXTENSIONS: list[str] = [  # 允许的文件类型
         ".gif",

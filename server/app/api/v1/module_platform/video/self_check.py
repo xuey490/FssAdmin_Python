@@ -11,14 +11,18 @@ from app.api.v1.module_platform.video.constants import (
     JOB_STOPPED,
     can_transition,
 )
-from app.api.v1.module_platform.video.ytdlp_util import (
-    _entry_webpage_url,
-    _pick_playable_url,
-    is_risk_control_error,
-    normalize_meta,
-    safe_title,
+from app.api.v1.module_platform.video.ytdlp_core import (
+    entry_webpage_url as _entry_webpage_url,
+    pick_playable_url as _pick_playable_url,
     slim_info,
     urls_from_flat_info,
+)
+from app.api.v1.module_platform.video.ytdlp_util import (
+    is_risk_control_error,
+    is_x_url,
+    normalize_meta,
+    safe_title,
+    ydl_extra_for_url,
 )
 
 
@@ -167,6 +171,15 @@ def _check_transitions() -> None:
     assert not can_transition(JOB_QUEUED, JOB_DONE)
 
 
+def _check_x_url() -> None:
+    assert is_x_url("https://x.com/a/status/1")
+    assert is_x_url("https://www.x.com/a/status/1")
+    assert is_x_url("https://twitter.com/a/status/1")
+    assert is_x_url("https://mobile.twitter.com/a/status/1")
+    assert not is_x_url("https://youtube.com/watch?v=1")
+    assert ydl_extra_for_url("https://youtube.com/watch?v=1") == {}
+
+
 def main() -> None:
     _check_title_json_pipe()
     _check_safe_title()
@@ -176,6 +189,7 @@ def main() -> None:
     _check_slim_info()
     _check_risk()
     _check_transitions()
+    _check_x_url()
     print('video_self_check ok')
 
 

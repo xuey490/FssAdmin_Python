@@ -50,17 +50,18 @@ def _dispatch(cmd: str, payload: dict) -> object:
     )
 
     url = str(payload.get("url") or "")
+    extra = payload.get("opts") if isinstance(payload.get("opts"), dict) else None
     if cmd == "extract":
-        return extract_info_inproc(url)
+        return extract_info_inproc(url, extra)
     if cmd == "expand":
-        return expand_playlist_inproc(url)
+        return expand_playlist_inproc(url, extra)
     if cmd == "formats":
-        return list_formats_inproc(url)
+        return list_formats_inproc(url, extra)
     if cmd == "qualities":
-        return list_video_qualities_inproc(url)
+        return list_video_qualities_inproc(url, extra)
     if cmd == "stream":
         fmt = payload.get("format_id")
-        return get_stream_url_inproc(url, str(fmt) if fmt else None)
+        return get_stream_url_inproc(url, str(fmt) if fmt else None, extra)
     raise ValueError(f"unknown cmd={cmd}")
 
 
