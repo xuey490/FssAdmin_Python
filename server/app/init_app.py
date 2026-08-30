@@ -6,13 +6,12 @@ from fastapi.concurrency import asynccontextmanager
 from fastapi.openapi.docs import get_redoc_html, get_swagger_ui_html, get_swagger_ui_oauth2_redirect_html
 from fastapi.responses import HTMLResponse
 from fastapi_limiter import FastAPILimiter
-from fastapi_limiter.depends import RateLimiter, WebSocketRateLimiter
 
 from app.core import cache_util
 
 from .config.setting import settings
 from .core.exceptions import handle_exception
-from .core.http_limit import http_limit_callback, ws_limit_callback
+from .core.http_limit import RateLimiter, http_limit_callback, ws_limit_callback
 from .core.logger import logger
 from .utils.common_util import import_modules_async
 from .utils.console import console_end, console_start

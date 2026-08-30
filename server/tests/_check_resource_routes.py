@@ -6,12 +6,14 @@ import os
 
 os.environ.setdefault("ENVIRONMENT", "dev")
 
+from fastapi.routing import iter_route_contexts
+
 from main import create_app
 
 
 def main() -> None:
     app = create_app()
-    paths = {getattr(r, "path", "") for r in app.routes}
+    paths = {c.path for c in iter_route_contexts(app.routes) if c.path}
     need = (
         "/core/system/getResourceCategory",
         "/core/system/getResourceList",

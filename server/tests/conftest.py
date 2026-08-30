@@ -161,9 +161,12 @@ patch("app.core.ap_scheduler.SchedulerUtil.init_scheduler", new=AsyncMock()).sta
 patch("app.core.ap_scheduler.SchedulerUtil.shutdown", new=AsyncMock()).start()
 
 # RateLimiter → no-op（需匹配 FastAPI 依赖注入签名）
-from fastapi_limiter.depends import RateLimiter, WebSocketRateLimiter
+from fastapi_limiter.depends import RateLimiter as _LibRateLimiter
+from fastapi_limiter.depends import WebSocketRateLimiter
 from starlette.requests import Request
 from starlette.responses import Response
+
+from app.core.http_limit import RateLimiter
 
 
 async def _noop_rate_limit(request: Request, response: Response) -> None:
@@ -171,6 +174,7 @@ async def _noop_rate_limit(request: Request, response: Response) -> None:
 
 
 RateLimiter.__call__ = _noop_rate_limit
+_LibRateLimiter.__call__ = _noop_rate_limit
 WebSocketRateLimiter.__call__ = _noop_rate_limit
 
 # ============================================================

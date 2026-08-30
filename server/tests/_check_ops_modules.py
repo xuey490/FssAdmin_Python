@@ -4,10 +4,12 @@ from __future__ import annotations
 
 
 def main() -> None:
+    from fastapi.routing import iter_route_contexts
+
     from app.api.v1.module_system import CoreRouter, system_router
 
-    core_paths = {getattr(r, "path", "") for r in CoreRouter.routes}
-    sys_paths = {getattr(r, "path", "") for r in system_router.routes}
+    core_paths = {c.path for c in iter_route_contexts(CoreRouter.routes) if c.path}
+    sys_paths = {c.path for c in iter_route_contexts(system_router.routes) if c.path}
 
     need_core = [
         "/core/configGroup/list",
@@ -28,7 +30,7 @@ def main() -> None:
 
     from app.api.v1.module_monitor.core_server import CoreServerRouter
 
-    mon_paths = {getattr(r, "path", "") for r in CoreServerRouter.routes}
+    mon_paths = {c.path for c in iter_route_contexts(CoreServerRouter.routes) if c.path}
     assert "/core/server/monitor" in mon_paths
     assert "/core/server/redis" in mon_paths
     assert "/core/redis/operations" in mon_paths
