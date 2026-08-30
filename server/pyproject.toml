@@ -20,7 +20,7 @@ dependencies = [
     "cryptography==49.0.0",                     # mysql8 密码加密
     "fastapi==0.141.1",                         # FastAPI 框架
     "fastapi-limiter==0.1.6",                   # 接口限流
-    "fastapi-cache2[redis]>=0.2.2",             # 缓存（redis<5.0）
+    "fastapi-cachex[redis]>=0.3.2",             # 缓存（redis6.0）
     "fastapi-mail==1.5.1",                      # 邮件发送
     "greenlet==3.5.2",                          # SQLAlchemy 异步协程核心
     "httpx==0.28.1",                            # HTTP 客户端
@@ -37,7 +37,7 @@ dependencies = [
     "pyjwt==2.13.0",                            # JWT / OAuth2
     "pymysql==1.2.0",                           # mysql 同步驱动（纯 Python）
     "python-multipart==0.0.32",                 # 表单解析
-    "redis>=4.6.0,<5.0.0",                      # Redis（fastapi-cache2 要求 <5.0）
+    "redis>=6.0.0",                      		# Redis（fastapi-cachex 要求 >6.0）
     "rich==15.0.0",                             # 终端美化
     "sqlalchemy>=2.0.51,<2.1",                  # 数据库 ORM
     "sqlglot[rs]==27.8.0",                      # SQL 解析/转译
@@ -62,6 +62,7 @@ dev = [
 
 [tool.uv]
 default-groups = ["dev"]     # 本地 uv sync 含 dev；生产 pip -r requirements.txt 不含 pytest/ruff/fakeredis
+index-strategy = "unsafe-best-match"   # 允许从所有索引中选取最佳匹配版本
 
 [[tool.uv.index]]
 name = "tuna"

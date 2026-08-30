@@ -61,6 +61,7 @@ class MetaFetchQueue:
                 port=settings.REDIS_PORT,
                 db=int(settings.REDIS_DB_NAME),
                 decode_responses=True,
+                protocol=2,
                 **auth_kwargs,
             )
             client.ping()

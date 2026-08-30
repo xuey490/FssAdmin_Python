@@ -71,6 +71,7 @@ scheduler.configure(
             username=settings.REDIS_USER or None,
             password=settings.REDIS_PASSWORD or None,
             db=int(settings.REDIS_DB_NAME),
+            protocol=2,
         ),
         "sqlalchemy": SQLAlchemyJobStore(url=settings.DB_URI, engine=engine),
         "memory": MemoryJobStore(),

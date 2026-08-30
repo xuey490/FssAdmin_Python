@@ -4431,3 +4431,741 @@ AttributeError: '_IncludedRouter' object has no attribute 'path'
 2026-08-30 14:09:41.464 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/core/server/redis/browser/level1 | client=127.0.0.1
 2026-08-30 14:09:41.474 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 9.5ms
 2026-08-30 14:09:41.474 | INFO     | logging:callHandlers:1736 - 127.0.0.1:18242 - "GET /api/core/server/redis/browser/level1?pattern=* HTTP/1.1" 200
+2026-08-30 14:14:27.734 | INFO     | logging:callHandlers:1736 - Shutting down
+2026-08-30 14:14:27.855 | INFO     | logging:callHandlers:1736 - Waiting for application shutdown.
+2026-08-30 14:14:27.873 | INFO     | app.api.v1.module_platform.video.meta_queue:stop:125 - MetaFetchQueue stopped
+2026-08-30 14:14:27.873 | INFO     | app.api.v1.module_platform.video.downloader:stop:151 - DownloadQueue stopping: 服务关闭
+2026-08-30 14:14:27.918 | INFO     | app.api.v1.module_platform.video.downloader:stop:188 - DownloadQueue stopped
+2026-08-30 14:14:27.920 | INFO     | logging:callHandlers:1736 - Scheduler has been shut down
+2026-08-30 14:14:27.921 | INFO     | app.core.ap_scheduler:_handle_scheduler_shutdown:416 - 调度器已关闭
+2026-08-30 14:14:27.921 | INFO     | app.core.ap_scheduler:_update_scheduler_status:521 - 调度器状态变更: 0
+2026-08-30 14:14:27.922 | INFO     | app.core.database:redis_connect:222 - ✅️ Redis连接已关闭
+2026-08-30 14:14:27.923 | ERROR    | logging:callHandlers:1736 - Exception closing connection <AdaptedConnection <asyncmy.connection.Connection object at 0x000001A904466D50>>
+Traceback (most recent call last):
+
+  File "C:\Users\Administrator\Desktop\fssadmin_nestjs\FastAdmin\FssAdmin_Python\server\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 3220, in dispose
+    self.pool.dispose()
+    │    │    └ <function QueuePool.dispose at 0x000001A97EDE7C40>
+    │    └ <sqlalchemy.pool.impl.AsyncAdaptedQueuePool object at 0x000001A901E430E0>
+    └ Engine(mysql+asyncmy://root:***@127.0.0.1:3306/fssoa-net?charset=utf8mb4)
+  File "C:\Users\Administrator\Desktop\fssadmin_nestjs\FastAdmin\FssAdmin_Python\server\.venv\Lib\site-packages\sqlalchemy\pool\impl.py", line 224, in dispose
+    conn.close()
+    │    └ <function _ConnectionRecord.close at 0x000001A97EDCB420>
+    └ <sqlalchemy.pool.base._ConnectionRecord object at 0x000001A9044F96D0>
+  File "C:\Users\Administrator\Desktop\fssadmin_nestjs\FastAdmin\FssAdmin_Python\server\.venv\Lib\site-packages\sqlalchemy\pool\base.py", line 784, in close
+    self.__close()
+    └ <sqlalchemy.pool.base._ConnectionRecord object at 0x000001A9044F96D0>
+  File "C:\Users\Administrator\Desktop\fssadmin_nestjs\FastAdmin\FssAdmin_Python\server\.venv\Lib\site-packages\sqlalchemy\pool\base.py", line 883, in __close
+    self.__pool._close_connection(
+    └ <sqlalchemy.pool.base._ConnectionRecord object at 0x000001A9044F96D0>
+> File "C:\Users\Administrator\Desktop\fssadmin_nestjs\FastAdmin\FssAdmin_Python\server\.venv\Lib\site-packages\sqlalchemy\pool\base.py", line 375, in _close_connection
+    self._dialect.do_close(connection)
+    │    │        │        └ <AdaptedConnection <asyncmy.connection.Connection object at 0x000001A904466D50>>
+    │    │        └ <function DefaultDialect.do_close at 0x000001A97F3005E0>
+    │    └ <sqlalchemy.dialects.mysql.asyncmy.MySQLDialect_asyncmy object at 0x000001A901E42F90>
+    └ <sqlalchemy.pool.impl.AsyncAdaptedQueuePool object at 0x000001A901E430E0>
+  File "C:\Users\Administrator\Desktop\fssadmin_nestjs\FastAdmin\FssAdmin_Python\server\.venv\Lib\site-packages\sqlalchemy\engine\default.py", line 721, in do_close
+    dbapi_connection.close()
+    │                └ <function AsyncAdapt_asyncmy_connection.close at 0x000001A901D658A0>
+    └ <AdaptedConnection <asyncmy.connection.Connection object at 0x000001A904466D50>>
+  File "C:\Users\Administrator\Desktop\fssadmin_nestjs\FastAdmin\FssAdmin_Python\server\.venv\Lib\site-packages\sqlalchemy\dialects\mysql\asyncmy.py", line 120, in close
+    self.await_(self._connection.ensure_closed())
+    │    │      │    └ <member '_connection' of 'AdaptedConnection' objects>
+    │    │      └ <AdaptedConnection <asyncmy.connection.Connection object at 0x000001A904466D50>>
+    │    └ <staticmethod(<function await_only at 0x000001A97E46AC00>)>
+    └ <AdaptedConnection <asyncmy.connection.Connection object at 0x000001A904466D50>>
+  File "C:\Users\Administrator\Desktop\fssadmin_nestjs\FastAdmin\FssAdmin_Python\server\.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py", line 132, in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           │       │             └ <_cython_3_2_4.coroutine object at 0x000001A901EB79D0>
+           │       └ <attribute 'parent' of 'greenlet.greenlet' objects>
+           └ <_AsyncIoGreenlet object at 0x000001A90478F780 (otid=0x000001A97D949810) current active started>
+  File "C:\Users\Administrator\Desktop\fssadmin_nestjs\FastAdmin\FssAdmin_Python\server\.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py", line 196, in greenlet_spawn
+    value = await result
+                  └ <_cython_3_2_4.coroutine object at 0x000001A901EB79D0>
+  File "asyncmy/connection.pyx", line 365, in ensure_closed
+    await self._writer.drain()
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\asyncio\streams.py", line 386, in drain
+    await self._protocol._drain_helper()
+          │    │         └ <function FlowControlMixin._drain_helper at 0x000001A97DD74040>
+          │    └ <asyncio.streams.StreamReaderProtocol object at 0x000001A904466FD0>
+          └ <StreamWriter transport=<_SelectorSocketTransport closed fd=964> reader=<StreamReader eof exception=ConnectionAbortedError(10...
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\asyncio\streams.py", line 166, in _drain_helper
+    raise ConnectionResetError('Connection lost')
+
+ConnectionResetError: Connection lost
+2026-08-30 14:14:27.930 | ERROR    | logging:callHandlers:1736 - Exception closing connection <AdaptedConnection <asyncmy.connection.Connection object at 0x000001A904467D90>>
+Traceback (most recent call last):
+
+  File "C:\Users\Administrator\Desktop\fssadmin_nestjs\FastAdmin\FssAdmin_Python\server\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 3220, in dispose
+    self.pool.dispose()
+    │    │    └ <function QueuePool.dispose at 0x000001A97EDE7C40>
+    │    └ <sqlalchemy.pool.impl.AsyncAdaptedQueuePool object at 0x000001A901E430E0>
+    └ Engine(mysql+asyncmy://root:***@127.0.0.1:3306/fssoa-net?charset=utf8mb4)
+  File "C:\Users\Administrator\Desktop\fssadmin_nestjs\FastAdmin\FssAdmin_Python\server\.venv\Lib\site-packages\sqlalchemy\pool\impl.py", line 224, in dispose
+    conn.close()
+    │    └ <function _ConnectionRecord.close at 0x000001A97EDCB420>
+    └ <sqlalchemy.pool.base._ConnectionRecord object at 0x000001A904558CB0>
+  File "C:\Users\Administrator\Desktop\fssadmin_nestjs\FastAdmin\FssAdmin_Python\server\.venv\Lib\site-packages\sqlalchemy\pool\base.py", line 784, in close
+    self.__close()
+    └ <sqlalchemy.pool.base._ConnectionRecord object at 0x000001A904558CB0>
+  File "C:\Users\Administrator\Desktop\fssadmin_nestjs\FastAdmin\FssAdmin_Python\server\.venv\Lib\site-packages\sqlalchemy\pool\base.py", line 883, in __close
+    self.__pool._close_connection(
+    └ <sqlalchemy.pool.base._ConnectionRecord object at 0x000001A904558CB0>
+> File "C:\Users\Administrator\Desktop\fssadmin_nestjs\FastAdmin\FssAdmin_Python\server\.venv\Lib\site-packages\sqlalchemy\pool\base.py", line 375, in _close_connection
+    self._dialect.do_close(connection)
+    │    │        │        └ <AdaptedConnection <asyncmy.connection.Connection object at 0x000001A904467D90>>
+    │    │        └ <function DefaultDialect.do_close at 0x000001A97F3005E0>
+    │    └ <sqlalchemy.dialects.mysql.asyncmy.MySQLDialect_asyncmy object at 0x000001A901E42F90>
+    └ <sqlalchemy.pool.impl.AsyncAdaptedQueuePool object at 0x000001A901E430E0>
+  File "C:\Users\Administrator\Desktop\fssadmin_nestjs\FastAdmin\FssAdmin_Python\server\.venv\Lib\site-packages\sqlalchemy\engine\default.py", line 721, in do_close
+    dbapi_connection.close()
+    │                └ <function AsyncAdapt_asyncmy_connection.close at 0x000001A901D658A0>
+    └ <AdaptedConnection <asyncmy.connection.Connection object at 0x000001A904467D90>>
+  File "C:\Users\Administrator\Desktop\fssadmin_nestjs\FastAdmin\FssAdmin_Python\server\.venv\Lib\site-packages\sqlalchemy\dialects\mysql\asyncmy.py", line 120, in close
+    self.await_(self._connection.ensure_closed())
+    │    │      │    └ <member '_connection' of 'AdaptedConnection' objects>
+    │    │      └ <AdaptedConnection <asyncmy.connection.Connection object at 0x000001A904467D90>>
+    │    └ <staticmethod(<function await_only at 0x000001A97E46AC00>)>
+    └ <AdaptedConnection <asyncmy.connection.Connection object at 0x000001A904467D90>>
+  File "C:\Users\Administrator\Desktop\fssadmin_nestjs\FastAdmin\FssAdmin_Python\server\.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py", line 132, in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           │       │             └ <_cython_3_2_4.coroutine object at 0x000001A904317570>
+           │       └ <attribute 'parent' of 'greenlet.greenlet' objects>
+           └ <_AsyncIoGreenlet object at 0x000001A90478F780 (otid=0x000001A97D949810) current active started>
+  File "C:\Users\Administrator\Desktop\fssadmin_nestjs\FastAdmin\FssAdmin_Python\server\.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py", line 196, in greenlet_spawn
+    value = await result
+                  └ <_cython_3_2_4.coroutine object at 0x000001A904317570>
+  File "asyncmy/connection.pyx", line 365, in ensure_closed
+    await self._writer.drain()
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\asyncio\streams.py", line 386, in drain
+    await self._protocol._drain_helper()
+          │    │         └ <function FlowControlMixin._drain_helper at 0x000001A97DD74040>
+          │    └ <asyncio.streams.StreamReaderProtocol object at 0x000001A90452A7A0>
+          └ <StreamWriter transport=<_SelectorSocketTransport closed fd=956> reader=<StreamReader eof exception=ConnectionAbortedError(10...
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\asyncio\streams.py", line 166, in _drain_helper
+    raise ConnectionResetError('Connection lost')
+
+ConnectionResetError: Connection lost
+2026-08-30 14:14:27.942 | ERROR    | logging:callHandlers:1736 - Exception closing connection <AdaptedConnection <asyncmy.connection.Connection object at 0x000001A903E992B0>>
+Traceback (most recent call last):
+
+  File "C:\Users\Administrator\Desktop\fssadmin_nestjs\FastAdmin\FssAdmin_Python\server\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 3220, in dispose
+    self.pool.dispose()
+    │    │    └ <function QueuePool.dispose at 0x000001A97EDE7C40>
+    │    └ <sqlalchemy.pool.impl.AsyncAdaptedQueuePool object at 0x000001A901E430E0>
+    └ Engine(mysql+asyncmy://root:***@127.0.0.1:3306/fssoa-net?charset=utf8mb4)
+  File "C:\Users\Administrator\Desktop\fssadmin_nestjs\FastAdmin\FssAdmin_Python\server\.venv\Lib\site-packages\sqlalchemy\pool\impl.py", line 224, in dispose
+    conn.close()
+    │    └ <function _ConnectionRecord.close at 0x000001A97EDCB420>
+    └ <sqlalchemy.pool.base._ConnectionRecord object at 0x000001A903CB8AD0>
+  File "C:\Users\Administrator\Desktop\fssadmin_nestjs\FastAdmin\FssAdmin_Python\server\.venv\Lib\site-packages\sqlalchemy\pool\base.py", line 784, in close
+    self.__close()
+    └ <sqlalchemy.pool.base._ConnectionRecord object at 0x000001A903CB8AD0>
+  File "C:\Users\Administrator\Desktop\fssadmin_nestjs\FastAdmin\FssAdmin_Python\server\.venv\Lib\site-packages\sqlalchemy\pool\base.py", line 883, in __close
+    self.__pool._close_connection(
+    └ <sqlalchemy.pool.base._ConnectionRecord object at 0x000001A903CB8AD0>
+> File "C:\Users\Administrator\Desktop\fssadmin_nestjs\FastAdmin\FssAdmin_Python\server\.venv\Lib\site-packages\sqlalchemy\pool\base.py", line 375, in _close_connection
+    self._dialect.do_close(connection)
+    │    │        │        └ <AdaptedConnection <asyncmy.connection.Connection object at 0x000001A903E992B0>>
+    │    │        └ <function DefaultDialect.do_close at 0x000001A97F3005E0>
+    │    └ <sqlalchemy.dialects.mysql.asyncmy.MySQLDialect_asyncmy object at 0x000001A901E42F90>
+    └ <sqlalchemy.pool.impl.AsyncAdaptedQueuePool object at 0x000001A901E430E0>
+  File "C:\Users\Administrator\Desktop\fssadmin_nestjs\FastAdmin\FssAdmin_Python\server\.venv\Lib\site-packages\sqlalchemy\engine\default.py", line 721, in do_close
+    dbapi_connection.close()
+    │                └ <function AsyncAdapt_asyncmy_connection.close at 0x000001A901D658A0>
+    └ <AdaptedConnection <asyncmy.connection.Connection object at 0x000001A903E992B0>>
+  File "C:\Users\Administrator\Desktop\fssadmin_nestjs\FastAdmin\FssAdmin_Python\server\.venv\Lib\site-packages\sqlalchemy\dialects\mysql\asyncmy.py", line 120, in close
+    self.await_(self._connection.ensure_closed())
+    │    │      │    └ <member '_connection' of 'AdaptedConnection' objects>
+    │    │      └ <AdaptedConnection <asyncmy.connection.Connection object at 0x000001A903E992B0>>
+    │    └ <staticmethod(<function await_only at 0x000001A97E46AC00>)>
+    └ <AdaptedConnection <asyncmy.connection.Connection object at 0x000001A903E992B0>>
+  File "C:\Users\Administrator\Desktop\fssadmin_nestjs\FastAdmin\FssAdmin_Python\server\.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py", line 132, in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           │       │             └ <_cython_3_2_4.coroutine object at 0x000001A9047B9590>
+           │       └ <attribute 'parent' of 'greenlet.greenlet' objects>
+           └ <_AsyncIoGreenlet object at 0x000001A90478F780 (otid=0x000001A97D949810) current active started>
+  File "C:\Users\Administrator\Desktop\fssadmin_nestjs\FastAdmin\FssAdmin_Python\server\.venv\Lib\site-packages\sqlalchemy\util\_concurrency_py3k.py", line 196, in greenlet_spawn
+    value = await result
+                  └ <_cython_3_2_4.coroutine object at 0x000001A9047B9590>
+  File "asyncmy/connection.pyx", line 365, in ensure_closed
+    await self._writer.drain()
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\asyncio\streams.py", line 386, in drain
+    await self._protocol._drain_helper()
+          │    │         └ <function FlowControlMixin._drain_helper at 0x000001A97DD74040>
+          │    └ <asyncio.streams.StreamReaderProtocol object at 0x000001A903E90550>
+          └ <StreamWriter transport=<_SelectorSocketTransport closed fd=996> reader=<StreamReader eof exception=ConnectionAbortedError(10...
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\asyncio\streams.py", line 166, in _drain_helper
+    raise ConnectionResetError('Connection lost')
+
+ConnectionResetError: Connection lost
+2026-08-30 14:14:27.946 | INFO     | logging:callHandlers:1736 - Application shutdown complete.
+2026-08-30 14:14:27.946 | INFO     | logging:callHandlers:1736 - Finished server process [31900]
+2026-08-30 14:14:28.295 | INFO     | logging:callHandlers:1736 - Stopping reloader process [28768]
+2026-08-30 14:22:47.284 | INFO     | logging:callHandlers:1736 - Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+2026-08-30 14:22:47.285 | INFO     | logging:callHandlers:1736 - Started reloader process [1964] using StatReload
+2026-08-30 14:22:49.865 | INFO     | logging:callHandlers:1736 - Started server process [23984]
+2026-08-30 14:22:49.866 | INFO     | logging:callHandlers:1736 - Waiting for application startup.
+2026-08-30 14:22:51.891 | ERROR    | app.core.database:redis_connect:218 - ❌ 数据库 Redis 连接错误: unknown command `HELLO`, with args beginning with: `3`, 
+2026-08-30 14:22:51.892 | ERROR    | app.init_app:lifespan:106 - app init failed: unknown command `HELLO`, with args beginning with: `3`, 
+2026-08-30 14:22:51.913 | ERROR    | logging:callHandlers:1736 - Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\fssadmin_nestjs\FastAdmin\FssAdmin_Python\server\app\init_app.py", line 23, in lifespan
+    await import_modules_async(modules=settings.EVENT_LIST, desc="全局事件", app=app, status=True)
+  File "C:\Users\Administrator\Desktop\fssadmin_nestjs\FastAdmin\FssAdmin_Python\server\app\utils\common_util.py", line 61, in import_modules_async
+    await getattr(module_obj, module_name)(**kwargs)
+  File "C:\Users\Administrator\Desktop\fssadmin_nestjs\FastAdmin\FssAdmin_Python\server\app\core\database.py", line 209, in redis_connect
+    if await rd.ping():  # pyright: ignore[reportGeneralTypeIssues]
+       ^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\Desktop\fssadmin_nestjs\FastAdmin\FssAdmin_Python\server\.venv\Lib\site-packages\redis\asyncio\client.py", line 929, in execute_command
+    conn = self.connection or await pool.get_connection()
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\Desktop\fssadmin_nestjs\FastAdmin\FssAdmin_Python\server\.venv\Lib\site-packages\redis\utils.py", line 249, in async_wrapper
+    return await func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\Desktop\fssadmin_nestjs\FastAdmin\FssAdmin_Python\server\.venv\Lib\site-packages\redis\asyncio\connection.py", line 2824, in get_connection
+    await self.ensure_connection(connection)
+  File "C:\Users\Administrator\Desktop\fssadmin_nestjs\FastAdmin\FssAdmin_Python\server\.venv\Lib\site-packages\redis\asyncio\connection.py", line 2865, in ensure_connection
+    await connection.connect()
+  File "C:\Users\Administrator\Desktop\fssadmin_nestjs\FastAdmin\FssAdmin_Python\server\.venv\Lib\site-packages\redis\asyncio\connection.py", line 819, in connect
+    await self.retry.call_with_retry(
+    ...<7 lines>...
+    )
+  File "C:\Users\Administrator\Desktop\fssadmin_nestjs\FastAdmin\FssAdmin_Python\server\.venv\Lib\site-packages\redis\asyncio\retry.py", line 69, in call_with_retry
+    return await do()
+           ^^^^^^^^^^
+  File "C:\Users\Administrator\Desktop\fssadmin_nestjs\FastAdmin\FssAdmin_Python\server\.venv\Lib\site-packages\redis\asyncio\connection.py", line 883, in connect_check_health
+    await self.on_connect_check_health(check_health=check_health)
+  File "C:\Users\Administrator\Desktop\fssadmin_nestjs\FastAdmin\FssAdmin_Python\server\.venv\Lib\site-packages\redis\asyncio\connection.py", line 1003, in on_connect_check_health
+    response = await self.read_response()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\Desktop\fssadmin_nestjs\FastAdmin\FssAdmin_Python\server\.venv\Lib\site-packages\redis\asyncio\connection.py", line 1328, in read_response
+    raise response from None
+redis.exceptions.ResponseError: unknown command `HELLO`, with args beginning with: `3`, 
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Administrator\Desktop\fssadmin_nestjs\FastAdmin\FssAdmin_Python\server\.venv\Lib\site-packages\starlette\routing.py", line 694, in lifespan
+    async with self.lifespan_context(app) as maybe_state:
+               ~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\contextlib.py", line 214, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\Desktop\fssadmin_nestjs\FastAdmin\FssAdmin_Python\server\.venv\Lib\site-packages\fastapi\routing.py", line 240, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+               ~~~~~~~~~~~~~~~~^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\contextlib.py", line 214, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\Desktop\fssadmin_nestjs\FastAdmin\FssAdmin_Python\server\.venv\Lib\site-packages\fastapi\routing.py", line 240, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+               ~~~~~~~~~~~~~~~~^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\contextlib.py", line 214, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\Desktop\fssadmin_nestjs\FastAdmin\FssAdmin_Python\server\.venv\Lib\site-packages\fastapi\routing.py", line 240, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+               ~~~~~~~~~~~~~~~~^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\contextlib.py", line 214, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\Desktop\fssadmin_nestjs\FastAdmin\FssAdmin_Python\server\.venv\Lib\site-packages\fastapi\routing.py", line 240, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+               ~~~~~~~~~~~~~~~~^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\contextlib.py", line 214, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\Desktop\fssadmin_nestjs\FastAdmin\FssAdmin_Python\server\.venv\Lib\site-packages\fastapi\routing.py", line 240, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+               ~~~~~~~~~~~~~~~~^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\contextlib.py", line 214, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\Desktop\fssadmin_nestjs\FastAdmin\FssAdmin_Python\server\.venv\Lib\site-packages\fastapi\routing.py", line 240, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+               ~~~~~~~~~~~~~~~~^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\contextlib.py", line 214, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\Desktop\fssadmin_nestjs\FastAdmin\FssAdmin_Python\server\.venv\Lib\site-packages\fastapi\routing.py", line 240, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+               ~~~~~~~~~~~~~~~~^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\contextlib.py", line 214, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\Desktop\fssadmin_nestjs\FastAdmin\FssAdmin_Python\server\.venv\Lib\site-packages\fastapi\routing.py", line 240, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+               ~~~~~~~~~~~~~~~~^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\contextlib.py", line 214, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\Desktop\fssadmin_nestjs\FastAdmin\FssAdmin_Python\server\.venv\Lib\site-packages\fastapi\routing.py", line 240, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+               ~~~~~~~~~~~~~~~~^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python313\Lib\contextlib.py", line 214, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\Desktop\fssadmin_nestjs\FastAdmin\FssAdmin_Python\server\app\init_app.py", line 107, in lifespan
+    raise SystemExit(1)
+SystemExit: 1
+
+2026-08-30 14:22:51.914 | ERROR    | logging:callHandlers:1736 - Application startup failed. Exiting.
+2026-08-30 14:26:09.838 | WARNING  | logging:callHandlers:1736 - StatReload detected changes in 'app\core\database.py'. Reloading...
+2026-08-30 14:26:12.368 | INFO     | logging:callHandlers:1736 - Started server process [23480]
+2026-08-30 14:26:12.369 | INFO     | logging:callHandlers:1736 - Waiting for application startup.
+2026-08-30 14:26:12.447 | WARNING  | logging:callHandlers:1736 - StatReload detected changes in 'app\api\v1\module_platform\video\downloader.py'. Reloading...
+2026-08-30 14:26:14.418 | INFO     | app.init_app:lifespan:26 - 时区 Asia/Shanghai
+2026-08-30 14:26:14.418 | INFO     | app.init_app:lifespan:27 - ✅ 全局事件模块加载完成
+2026-08-30 14:26:14.420 | INFO     | app.init_app:lifespan:31 - ✅ fastapi-admin-cache 初始化完成
+2026-08-30 14:26:14.421 | INFO     | app.init_app:lifespan:52 - ✅ 请求限流器初始化完成 (10000次/60秒)
+2026-08-30 14:26:14.466 | INFO     | logging:callHandlers:1736 - Scheduler started
+2026-08-30 14:26:16.517 | WARNING  | app.core.ap_scheduler:_add:647 - 系统任务注册跳过 system_cleanup_operation_log: unknown command `HELLO`, with args beginning with: `3`, 
+2026-08-30 14:26:18.587 | WARNING  | app.core.ap_scheduler:_add:647 - 系统任务注册跳过 system_database_backup: unknown command `HELLO`, with args beginning with: `3`, 
+2026-08-30 14:26:18.587 | INFO     | app.core.ap_scheduler:_register_system_jobs:662 - 系统周期任务已注册 0 个
+2026-08-30 14:26:18.590 | INFO     | app.init_app:lifespan:67 - ✅ APScheduler 初始化完成
+2026-08-30 14:26:20.654 | WARNING  | logging:callHandlers:1736 - Error getting due jobs from job store 'default': unknown command `HELLO`, with args beginning with: `3`, 
+2026-08-30 14:26:22.732 | WARNING  | app.api.v1.module_platform.video.meta_queue:_get_redis:70 - video meta redis unavailable, use memory queue: unknown command `HELLO`, with args beginning with: `3`, 
+2026-08-30 14:26:22.732 | INFO     | app.api.v1.module_platform.video.meta_queue:start:106 - MetaFetchQueue started workers=1 recover_on_start=False recovered=0
+2026-08-30 14:26:22.762 | INFO     | app.api.v1.module_platform.video.downloader:start:145 - DownloadQueue started workers=2 recovered=0
+2026-08-30 14:26:22.769 | INFO     | app.init_app:lifespan:85 - ✅ 视频队列已启动 (meta_recover_on_start=False, ytdlp_subprocess=True)
+2026-08-30 14:26:22.798 | INFO     | logging:callHandlers:1736 - Application startup complete.
+2026-08-30 14:26:22.805 | INFO     | logging:callHandlers:1736 - Shutting down
+2026-08-30 14:26:22.919 | INFO     | logging:callHandlers:1736 - Waiting for application shutdown.
+2026-08-30 14:26:22.919 | INFO     | app.api.v1.module_platform.video.meta_queue:stop:125 - MetaFetchQueue stopped
+2026-08-30 14:26:22.922 | INFO     | app.api.v1.module_platform.video.downloader:stop:152 - DownloadQueue stopping: 服务关闭
+2026-08-30 14:26:22.924 | INFO     | app.api.v1.module_platform.video.downloader:stop:189 - DownloadQueue stopped
+2026-08-30 14:26:22.925 | INFO     | logging:callHandlers:1736 - Scheduler has been shut down
+2026-08-30 14:26:22.926 | INFO     | app.core.ap_scheduler:_handle_scheduler_shutdown:416 - 调度器已关闭
+2026-08-30 14:26:22.926 | INFO     | app.core.ap_scheduler:_update_scheduler_status:521 - 调度器状态变更: 0
+2026-08-30 14:26:22.927 | INFO     | app.core.database:redis_connect:223 - ✅️ Redis连接已关闭
+2026-08-30 14:26:22.929 | INFO     | logging:callHandlers:1736 - Application shutdown complete.
+2026-08-30 14:26:22.930 | INFO     | logging:callHandlers:1736 - Finished server process [23480]
+2026-08-30 14:26:25.525 | INFO     | logging:callHandlers:1736 - Started server process [24380]
+2026-08-30 14:26:25.526 | INFO     | logging:callHandlers:1736 - Waiting for application startup.
+2026-08-30 14:26:27.558 | INFO     | app.init_app:lifespan:26 - 时区 Asia/Shanghai
+2026-08-30 14:26:27.558 | INFO     | app.init_app:lifespan:27 - ✅ 全局事件模块加载完成
+2026-08-30 14:26:27.561 | INFO     | app.init_app:lifespan:31 - ✅ fastapi-admin-cache 初始化完成
+2026-08-30 14:26:27.561 | INFO     | app.init_app:lifespan:52 - ✅ 请求限流器初始化完成 (10000次/60秒)
+2026-08-30 14:26:27.604 | INFO     | logging:callHandlers:1736 - Scheduler started
+2026-08-30 14:26:29.629 | WARNING  | app.core.ap_scheduler:_add:647 - 系统任务注册跳过 system_cleanup_operation_log: unknown command `HELLO`, with args beginning with: `3`, 
+2026-08-30 14:26:31.667 | WARNING  | app.core.ap_scheduler:_add:647 - 系统任务注册跳过 system_database_backup: unknown command `HELLO`, with args beginning with: `3`, 
+2026-08-30 14:26:31.667 | INFO     | app.core.ap_scheduler:_register_system_jobs:662 - 系统周期任务已注册 0 个
+2026-08-30 14:26:31.670 | INFO     | app.init_app:lifespan:67 - ✅ APScheduler 初始化完成
+2026-08-30 14:26:33.720 | WARNING  | logging:callHandlers:1736 - Error getting due jobs from job store 'default': unknown command `HELLO`, with args beginning with: `3`, 
+2026-08-30 14:26:35.743 | INFO     | app.api.v1.module_platform.video.meta_queue:start:107 - MetaFetchQueue started workers=1 recover_on_start=False recovered=0
+2026-08-30 14:26:35.768 | INFO     | app.api.v1.module_platform.video.downloader:start:145 - DownloadQueue started workers=2 recovered=0
+2026-08-30 14:26:35.787 | INFO     | app.init_app:lifespan:85 - ✅ 视频队列已启动 (meta_recover_on_start=False, ytdlp_subprocess=True)
+2026-08-30 14:26:35.802 | INFO     | logging:callHandlers:1736 - Application startup complete.
+2026-08-30 14:26:43.719 | WARNING  | logging:callHandlers:1736 - Error getting due jobs from job store 'default': unknown command `HELLO`, with args beginning with: `3`, 
+2026-08-30 14:26:53.726 | WARNING  | logging:callHandlers:1736 - Error getting due jobs from job store 'default': unknown command `HELLO`, with args beginning with: `3`, 
+2026-08-30 14:27:00.013 | INFO     | app.core.middlewares:dispatch:88 - 请求: POST /api/core/refresh | client=127.0.0.1
+2026-08-30 14:27:00.058 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 45.4ms
+2026-08-30 14:27:00.059 | INFO     | logging:callHandlers:1736 - 127.0.0.1:33503 - "POST /api/core/refresh HTTP/1.1" 200
+2026-08-30 14:27:03.751 | WARNING  | logging:callHandlers:1736 - Error getting due jobs from job store 'default': unknown command `HELLO`, with args beginning with: `3`, 
+2026-08-30 14:27:03.755 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/core/server/redis/browser/level1 | client=127.0.0.1
+2026-08-30 14:27:03.788 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 32.6ms
+2026-08-30 14:27:03.788 | INFO     | logging:callHandlers:1736 - 127.0.0.1:33510 - "GET /api/core/server/redis/browser/level1?pattern=* HTTP/1.1" 200
+2026-08-30 14:27:05.190 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/core/server/redis | client=127.0.0.1
+2026-08-30 14:27:05.197 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 7.5ms
+2026-08-30 14:27:05.198 | INFO     | logging:callHandlers:1736 - 127.0.0.1:33514 - "GET /api/core/server/redis HTTP/1.1" 200
+2026-08-30 14:27:06.556 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/core/server/monitor | client=127.0.0.1
+2026-08-30 14:27:06.564 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 8.1ms
+2026-08-30 14:27:06.564 | INFO     | logging:callHandlers:1736 - 127.0.0.1:33519 - "GET /api/core/server/monitor HTTP/1.1" 200
+2026-08-30 14:27:08.640 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/core/logs/getLoginLogPageList | client=127.0.0.1
+2026-08-30 14:27:08.657 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 17.8ms
+2026-08-30 14:27:08.658 | INFO     | logging:callHandlers:1736 - 127.0.0.1:33545 - "GET /api/core/logs/getLoginLogPageList?page=1&limit=10&orderField=login_time&orderType=desc HTTP/1.1" 200
+2026-08-30 14:27:10.070 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/core/system/statistics | client=127.0.0.1
+2026-08-30 14:27:10.072 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/core/system/loginChart | client=127.0.0.1
+2026-08-30 14:27:10.074 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/core/system/loginBarChart | client=127.0.0.1
+2026-08-30 14:27:10.096 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 26.6ms
+2026-08-30 14:27:10.097 | INFO     | logging:callHandlers:1736 - 127.0.0.1:33552 - "GET /api/core/system/statistics HTTP/1.1" 200
+2026-08-30 14:27:11.231 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/system/user/list | client=127.0.0.1
+2026-08-30 14:27:11.232 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/system/dept/access-dept | client=127.0.0.1
+2026-08-30 14:27:11.343 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 112.0ms
+2026-08-30 14:27:11.343 | INFO     | logging:callHandlers:1736 - 127.0.0.1:33570 - "GET /api/system/user/list?page=1&limit=10&status= HTTP/1.1" 200
+2026-08-30 14:27:11.594 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /uploads/2026/03/28/69c7a3a1cae578.20110121.png | client=127.0.0.1
+2026-08-30 14:27:11.729 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /uploads/2026/03/28/69c7a3a83f9f14.20042528.png | client=127.0.0.1
+2026-08-30 14:27:13.758 | WARNING  | logging:callHandlers:1736 - Error getting due jobs from job store 'default': unknown command `HELLO`, with args beginning with: `3`, 
+2026-08-30 14:27:13.763 | INFO     | app.core.middlewares:dispatch:100 - 响应: 404 | 2169.0ms
+2026-08-30 14:27:13.763 | INFO     | logging:callHandlers:1736 - 127.0.0.1:33576 - "GET /uploads/2026/03/28/69c7a3a1cae578.20110121.png HTTP/1.1" 404
+2026-08-30 14:27:13.765 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /uploads/2026/03/28/69c7a3b2058589.44968839.webp | client=127.0.0.1
+2026-08-30 14:27:13.766 | INFO     | app.core.middlewares:dispatch:100 - 响应: 404 | 2037.1ms
+2026-08-30 14:27:13.767 | INFO     | logging:callHandlers:1736 - 127.0.0.1:33578 - "GET /uploads/2026/03/28/69c7a3a83f9f14.20042528.png HTTP/1.1" 404
+2026-08-30 14:27:13.777 | INFO     | app.core.middlewares:dispatch:100 - 响应: 404 | 12.1ms
+2026-08-30 14:27:13.781 | INFO     | logging:callHandlers:1736 - 127.0.0.1:33583 - "GET /uploads/2026/03/28/69c7a3b2058589.44968839.webp HTTP/1.1" 404
+2026-08-30 14:27:13.819 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 2586.9ms
+2026-08-30 14:27:13.819 | INFO     | logging:callHandlers:1736 - 127.0.0.1:33571 - "GET /api/system/dept/access-dept HTTP/1.1" 200
+2026-08-30 14:27:13.833 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 3758.4ms
+2026-08-30 14:27:13.833 | INFO     | logging:callHandlers:1736 - 127.0.0.1:33553 - "GET /api/core/system/loginBarChart HTTP/1.1" 200
+2026-08-30 14:27:13.855 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 3783.6ms
+2026-08-30 14:27:13.856 | INFO     | logging:callHandlers:1736 - 127.0.0.1:33554 - "GET /api/core/system/loginChart HTTP/1.1" 200
+2026-08-30 14:27:14.105 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /uploads/2026/03/28/69c7a3acd6b581.21163358.png | client=127.0.0.1
+2026-08-30 14:27:14.107 | INFO     | app.core.middlewares:dispatch:100 - 响应: 404 | 2.8ms
+2026-08-30 14:27:14.108 | INFO     | logging:callHandlers:1736 - 127.0.0.1:33595 - "GET /uploads/2026/03/28/69c7a3acd6b581.21163358.png HTTP/1.1" 404
+2026-08-30 14:27:14.768 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/system/user/list | client=127.0.0.1
+2026-08-30 14:27:14.769 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/system/dept/access-dept | client=127.0.0.1
+2026-08-30 14:27:14.791 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 22.3ms
+2026-08-30 14:27:14.792 | INFO     | logging:callHandlers:1736 - 127.0.0.1:33603 - "GET /api/system/dept/access-dept HTTP/1.1" 200
+2026-08-30 14:27:14.799 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 31.5ms
+2026-08-30 14:27:14.800 | INFO     | logging:callHandlers:1736 - 127.0.0.1:33602 - "GET /api/system/user/list?page=1&limit=10&status= HTTP/1.1" 200
+2026-08-30 14:27:15.040 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /uploads/2026/03/28/69c7a3a1cae578.20110121.png | client=127.0.0.1
+2026-08-30 14:27:15.043 | INFO     | app.core.middlewares:dispatch:100 - 响应: 404 | 3.4ms
+2026-08-30 14:27:15.044 | INFO     | logging:callHandlers:1736 - 127.0.0.1:33609 - "GET /uploads/2026/03/28/69c7a3a1cae578.20110121.png HTTP/1.1" 404
+2026-08-30 14:27:15.348 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /uploads/2026/03/28/69c7a3a83f9f14.20042528.png | client=127.0.0.1
+2026-08-30 14:27:15.348 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /uploads/2026/03/28/69c7a3acd6b581.21163358.png | client=127.0.0.1
+2026-08-30 14:27:15.350 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /uploads/2026/03/28/69c7a3b2058589.44968839.webp | client=127.0.0.1
+2026-08-30 14:27:15.355 | INFO     | app.core.middlewares:dispatch:100 - 响应: 404 | 7.5ms
+2026-08-30 14:27:15.355 | INFO     | logging:callHandlers:1736 - 127.0.0.1:33617 - "GET /uploads/2026/03/28/69c7a3a83f9f14.20042528.png HTTP/1.1" 404
+2026-08-30 14:27:15.356 | INFO     | app.core.middlewares:dispatch:100 - 响应: 404 | 7.4ms
+2026-08-30 14:27:15.356 | INFO     | logging:callHandlers:1736 - 127.0.0.1:33618 - "GET /uploads/2026/03/28/69c7a3acd6b581.21163358.png HTTP/1.1" 404
+2026-08-30 14:27:15.357 | INFO     | app.core.middlewares:dispatch:100 - 响应: 404 | 6.3ms
+2026-08-30 14:27:15.357 | INFO     | logging:callHandlers:1736 - 127.0.0.1:33619 - "GET /uploads/2026/03/28/69c7a3b2058589.44968839.webp HTTP/1.1" 404
+2026-08-30 14:27:16.679 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/system/dept/list | client=127.0.0.1
+2026-08-30 14:27:16.691 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 11.4ms
+2026-08-30 14:27:16.691 | INFO     | logging:callHandlers:1736 - 127.0.0.1:33624 - "GET /api/system/dept/list?page=1&limit=10 HTTP/1.1" 200
+2026-08-30 14:27:17.808 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/system/role/list | client=127.0.0.1
+2026-08-30 14:27:17.865 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 56.9ms
+2026-08-30 14:27:17.877 | INFO     | logging:callHandlers:1736 - 127.0.0.1:33634 - "GET /api/system/role/list?page=1&limit=10 HTTP/1.1" 200
+2026-08-30 14:27:19.171 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/core/logs/getLoginLogPageList | client=127.0.0.1
+2026-08-30 14:27:19.182 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 10.7ms
+2026-08-30 14:27:19.183 | INFO     | logging:callHandlers:1736 - 127.0.0.1:33639 - "GET /api/core/logs/getLoginLogPageList?page=1&limit=10&orderField=login_time&orderType=desc HTTP/1.1" 200
+2026-08-30 14:27:21.441 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/core/server/redis/browser/level1 | client=127.0.0.1
+2026-08-30 14:27:21.448 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 7.5ms
+2026-08-30 14:27:21.449 | INFO     | logging:callHandlers:1736 - 127.0.0.1:33654 - "GET /api/core/server/redis/browser/level1?pattern=* HTTP/1.1" 200
+2026-08-30 14:27:23.767 | WARNING  | logging:callHandlers:1736 - Error getting due jobs from job store 'default': unknown command `HELLO`, with args beginning with: `3`, 
+2026-08-30 14:27:23.772 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/core/server/redis/browser/level2 | client=127.0.0.1
+2026-08-30 14:27:23.773 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/core/server/redis/browser/level2 | client=127.0.0.1
+2026-08-30 14:27:23.785 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 11.8ms
+2026-08-30 14:27:23.785 | INFO     | logging:callHandlers:1736 - 127.0.0.1:33663 - "GET /api/core/server/redis/browser/level2?prefix=apscheduler.run_times HTTP/1.1" 200
+2026-08-30 14:27:23.787 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 14.4ms
+2026-08-30 14:27:23.787 | INFO     | logging:callHandlers:1736 - 127.0.0.1:33660 - "GET /api/core/server/redis/browser/level2?prefix=apscheduler.jobs HTTP/1.1" 200
+2026-08-30 14:27:25.386 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/core/server/redis/browser/level2 | client=127.0.0.1
+2026-08-30 14:27:25.392 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 6.3ms
+2026-08-30 14:27:25.393 | INFO     | logging:callHandlers:1736 - 127.0.0.1:33669 - "GET /api/core/server/redis/browser/level2?prefix=fssadmin HTTP/1.1" 200
+2026-08-30 14:27:26.361 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/core/server/redis/browser/key-info | client=127.0.0.1
+2026-08-30 14:27:26.367 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 6.4ms
+2026-08-30 14:27:26.367 | INFO     | logging:callHandlers:1736 - 127.0.0.1:33672 - "GET /api/core/server/redis/browser/key-info?key=fssadmin:request_limiter::127.0.0.1 HTTP/1.1" 200
+2026-08-30 14:27:27.737 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/core/server/redis/browser/level2 | client=127.0.0.1
+2026-08-30 14:27:27.744 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 6.8ms
+2026-08-30 14:27:27.744 | INFO     | logging:callHandlers:1736 - 127.0.0.1:33677 - "GET /api/core/server/redis/browser/level2?prefix=token HTTP/1.1" 200
+2026-08-30 14:27:28.458 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/core/server/redis/browser/key-info | client=127.0.0.1
+2026-08-30 14:27:28.464 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 5.9ms
+2026-08-30 14:27:28.464 | INFO     | logging:callHandlers:1736 - 127.0.0.1:33680 - "GET /api/core/server/redis/browser/key-info?key=token:session:8b396593cb6c460793d680c3a5e6a171 HTTP/1.1" 200
+2026-08-30 14:27:30.371 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/core/server/redis/browser/level2 | client=127.0.0.1
+2026-08-30 14:27:30.380 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 8.9ms
+2026-08-30 14:27:30.380 | INFO     | logging:callHandlers:1736 - 127.0.0.1:33685 - "GET /api/core/server/redis/browser/level2?prefix=video HTTP/1.1" 200
+2026-08-30 14:27:31.385 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/core/server/redis/browser/key-info | client=127.0.0.1
+2026-08-30 14:27:31.392 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 6.9ms
+2026-08-30 14:27:31.392 | INFO     | logging:callHandlers:1736 - 127.0.0.1:33688 - "GET /api/core/server/redis/browser/key-info?key=video:dl:ctrl:36 HTTP/1.1" 200
+2026-08-30 14:27:33.806 | WARNING  | logging:callHandlers:1736 - Error getting due jobs from job store 'default': unknown command `HELLO`, with args beginning with: `3`, 
+2026-08-30 14:27:33.812 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/core/server/redis/browser/key-info | client=127.0.0.1
+2026-08-30 14:27:33.812 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/core/server/redis/browser/key-info | client=127.0.0.1
+2026-08-30 14:27:33.821 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 8.6ms
+2026-08-30 14:27:33.821 | INFO     | logging:callHandlers:1736 - 127.0.0.1:33697 - "GET /api/core/server/redis/browser/key-info?key=video:dl:ctrl:37 HTTP/1.1" 200
+2026-08-30 14:27:33.822 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 10.3ms
+2026-08-30 14:27:33.822 | INFO     | logging:callHandlers:1736 - 127.0.0.1:33694 - "GET /api/core/server/redis/browser/key-info?key=video:dl:ctrl:35 HTTP/1.1" 200
+2026-08-30 14:27:34.979 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/core/server/redis/browser/key-info | client=127.0.0.1
+2026-08-30 14:27:34.985 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 6.5ms
+2026-08-30 14:27:34.986 | INFO     | logging:callHandlers:1736 - 127.0.0.1:33703 - "GET /api/core/server/redis/browser/key-info?key=video:dl:ctrl:35 HTTP/1.1" 200
+2026-08-30 14:27:35.300 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/core/server/redis/browser/key-info | client=127.0.0.1
+2026-08-30 14:27:35.306 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 6.2ms
+2026-08-30 14:27:35.306 | INFO     | logging:callHandlers:1736 - 127.0.0.1:33706 - "GET /api/core/server/redis/browser/key-info?key=video:dl:ctrl:36 HTTP/1.1" 200
+2026-08-30 14:27:38.932 | INFO     | app.core.middlewares:dispatch:88 - 请求: POST /api/core/logout | client=127.0.0.1
+2026-08-30 14:27:38.936 | ERROR    | app.core.exceptions:custom_exception_handler:55 - [自定义异常] POST /api/core/logout | source=C:\Users\Administrator\Desktop\fssadmin_nestjs\FastAdmin\FssAdmin_Python\server\app\core\security.py:54:__call__ | code=401 | msg=认证失败,请登录后再试 | data=None | cid=bd02b241
+2026-08-30 14:27:38.937 | INFO     | app.core.middlewares:dispatch:100 - 响应: 401 | 5.2ms
+2026-08-30 14:27:38.938 | INFO     | logging:callHandlers:1736 - 127.0.0.1:39906 - "POST /api/core/logout HTTP/1.1" 401
+2026-08-30 14:27:39.457 | INFO     | app.core.middlewares:dispatch:88 - 请求: POST /api/core/logout | client=127.0.0.1
+2026-08-30 14:27:39.459 | ERROR    | app.core.exceptions:custom_exception_handler:55 - [自定义异常] POST /api/core/logout | source=C:\Users\Administrator\Desktop\fssadmin_nestjs\FastAdmin\FssAdmin_Python\server\app\core\security.py:54:__call__ | code=401 | msg=认证失败,请登录后再试 | data=None | cid=87048a78
+2026-08-30 14:27:39.461 | INFO     | app.core.middlewares:dispatch:100 - 响应: 401 | 4.2ms
+2026-08-30 14:27:39.461 | INFO     | logging:callHandlers:1736 - 127.0.0.1:39915 - "POST /api/core/logout HTTP/1.1" 401
+2026-08-30 14:27:39.854 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/core/config/public/site_name | client=127.0.0.1
+2026-08-30 14:27:39.854 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/core/captcha | client=127.0.0.1
+2026-08-30 14:27:39.857 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/core/tenants-by-username | client=127.0.0.1
+2026-08-30 14:27:39.909 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 54.8ms
+2026-08-30 14:27:39.909 | INFO     | logging:callHandlers:1736 - 127.0.0.1:39920 - "GET /api/core/captcha HTTP/1.1" 200
+2026-08-30 14:27:39.914 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 60.5ms
+2026-08-30 14:27:39.914 | INFO     | logging:callHandlers:1736 - 127.0.0.1:39919 - "GET /api/core/config/public/site_name HTTP/1.1" 200
+2026-08-30 14:27:39.917 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 60.2ms
+2026-08-30 14:27:39.918 | INFO     | logging:callHandlers:1736 - 127.0.0.1:39921 - "GET /api/core/tenants-by-username?username=admin HTTP/1.1" 200
+2026-08-30 14:27:43.795 | WARNING  | logging:callHandlers:1736 - Error getting due jobs from job store 'default': unknown command `HELLO`, with args beginning with: `3`, 
+2026-08-30 14:27:53.811 | WARNING  | logging:callHandlers:1736 - Error getting due jobs from job store 'default': unknown command `HELLO`, with args beginning with: `3`, 
+2026-08-30 14:28:03.852 | WARNING  | logging:callHandlers:1736 - Error getting due jobs from job store 'default': unknown command `HELLO`, with args beginning with: `3`, 
+2026-08-30 14:28:13.849 | WARNING  | logging:callHandlers:1736 - Error getting due jobs from job store 'default': unknown command `HELLO`, with args beginning with: `3`, 
+2026-08-30 14:28:23.857 | WARNING  | logging:callHandlers:1736 - Error getting due jobs from job store 'default': unknown command `HELLO`, with args beginning with: `3`, 
+2026-08-30 14:28:33.856 | WARNING  | logging:callHandlers:1736 - Error getting due jobs from job store 'default': unknown command `HELLO`, with args beginning with: `3`, 
+2026-08-30 14:28:43.866 | WARNING  | logging:callHandlers:1736 - Error getting due jobs from job store 'default': unknown command `HELLO`, with args beginning with: `3`, 
+2026-08-30 14:28:53.895 | WARNING  | logging:callHandlers:1736 - Error getting due jobs from job store 'default': unknown command `HELLO`, with args beginning with: `3`, 
+2026-08-30 14:29:01.676 | WARNING  | logging:callHandlers:1736 - StatReload detected changes in 'app\core\ap_scheduler.py'. Reloading...
+2026-08-30 14:29:01.696 | INFO     | logging:callHandlers:1736 - Shutting down
+2026-08-30 14:29:01.804 | INFO     | logging:callHandlers:1736 - Waiting for application shutdown.
+2026-08-30 14:29:01.805 | INFO     | app.api.v1.module_platform.video.meta_queue:stop:126 - MetaFetchQueue stopped
+2026-08-30 14:29:01.807 | INFO     | app.api.v1.module_platform.video.downloader:stop:152 - DownloadQueue stopping: 服务关闭
+2026-08-30 14:29:01.811 | INFO     | app.api.v1.module_platform.video.downloader:stop:189 - DownloadQueue stopped
+2026-08-30 14:29:01.813 | INFO     | logging:callHandlers:1736 - Scheduler has been shut down
+2026-08-30 14:29:01.814 | INFO     | app.core.ap_scheduler:_handle_scheduler_shutdown:416 - 调度器已关闭
+2026-08-30 14:29:01.814 | INFO     | app.core.ap_scheduler:_update_scheduler_status:521 - 调度器状态变更: 0
+2026-08-30 14:29:01.815 | INFO     | app.core.database:redis_connect:223 - ✅️ Redis连接已关闭
+2026-08-30 14:29:01.818 | INFO     | logging:callHandlers:1736 - Application shutdown complete.
+2026-08-30 14:29:01.818 | INFO     | logging:callHandlers:1736 - Finished server process [24380]
+2026-08-30 14:29:04.496 | INFO     | logging:callHandlers:1736 - Started server process [2200]
+2026-08-30 14:29:04.497 | INFO     | logging:callHandlers:1736 - Waiting for application startup.
+2026-08-30 14:29:06.552 | INFO     | app.init_app:lifespan:26 - 时区 Asia/Shanghai
+2026-08-30 14:29:06.553 | INFO     | app.init_app:lifespan:27 - ✅ 全局事件模块加载完成
+2026-08-30 14:29:06.553 | INFO     | app.init_app:lifespan:31 - ✅ fastapi-admin-cache 初始化完成
+2026-08-30 14:29:06.554 | INFO     | app.init_app:lifespan:52 - ✅ 请求限流器初始化完成 (10000次/60秒)
+2026-08-30 14:29:06.600 | INFO     | logging:callHandlers:1736 - Scheduler started
+2026-08-30 14:29:08.637 | INFO     | app.core.ap_scheduler:_handle_job_added:373 - 任务 system_cleanup_operation_log (操作日志清理) 已添加到 default 存储器
+2026-08-30 14:29:08.688 | INFO     | app.core.ap_scheduler:_cleanup_obsolete_pending_logs:828 - 清理了任务 system_cleanup_operation_log 的 1 条旧 pending 日志
+2026-08-30 14:29:08.719 | INFO     | app.core.ap_scheduler:_create_job_log:866 - 执行日志创建成功: job_id=system_cleanup_operation_log, id=976
+2026-08-30 14:29:08.719 | INFO     | app.core.ap_scheduler:_handle_job_added:386 - 任务 system_cleanup_operation_log 已创建初始 pending 状态日志
+2026-08-30 14:29:08.720 | INFO     | logging:callHandlers:1736 - Added job "操作日志清理" to job store "default"
+2026-08-30 14:29:08.721 | INFO     | app.core.ap_scheduler:_handle_job_added:373 - 任务 system_database_backup (数据库备份) 已添加到 default 存储器
+2026-08-30 14:29:08.749 | INFO     | app.core.ap_scheduler:_cleanup_obsolete_pending_logs:828 - 清理了任务 system_database_backup 的 1 条旧 pending 日志
+2026-08-30 14:29:08.783 | INFO     | app.core.ap_scheduler:_create_job_log:866 - 执行日志创建成功: job_id=system_database_backup, id=977
+2026-08-30 14:29:08.784 | INFO     | app.core.ap_scheduler:_handle_job_added:386 - 任务 system_database_backup 已创建初始 pending 状态日志
+2026-08-30 14:29:08.784 | INFO     | logging:callHandlers:1736 - Added job "数据库备份" to job store "default"
+2026-08-30 14:29:08.785 | INFO     | app.core.ap_scheduler:_register_system_jobs:663 - 系统周期任务已注册 2 个
+2026-08-30 14:29:08.785 | INFO     | app.init_app:lifespan:67 - ✅ APScheduler 初始化完成
+2026-08-30 14:29:10.862 | INFO     | app.api.v1.module_platform.video.meta_queue:start:107 - MetaFetchQueue started workers=1 recover_on_start=False recovered=0
+2026-08-30 14:29:10.865 | INFO     | app.api.v1.module_platform.video.downloader:start:145 - DownloadQueue started workers=2 recovered=0
+2026-08-30 14:29:10.871 | INFO     | app.init_app:lifespan:85 - ✅ 视频队列已启动 (meta_recover_on_start=False, ytdlp_subprocess=True)
+2026-08-30 14:29:10.899 | INFO     | logging:callHandlers:1736 - Application startup complete.
+2026-08-30 14:29:32.974 | INFO     | logging:callHandlers:1736 - Shutting down
+2026-08-30 14:29:33.081 | INFO     | logging:callHandlers:1736 - Waiting for application shutdown.
+2026-08-30 14:29:33.082 | INFO     | app.api.v1.module_platform.video.meta_queue:stop:126 - MetaFetchQueue stopped
+2026-08-30 14:29:33.084 | INFO     | app.api.v1.module_platform.video.downloader:stop:152 - DownloadQueue stopping: 服务关闭
+2026-08-30 14:29:33.086 | INFO     | app.api.v1.module_platform.video.downloader:stop:189 - DownloadQueue stopped
+2026-08-30 14:29:33.087 | INFO     | logging:callHandlers:1736 - Scheduler has been shut down
+2026-08-30 14:29:33.088 | INFO     | app.core.ap_scheduler:_handle_scheduler_shutdown:417 - 调度器已关闭
+2026-08-30 14:29:33.089 | INFO     | app.core.ap_scheduler:_update_scheduler_status:522 - 调度器状态变更: 0
+2026-08-30 14:29:33.090 | INFO     | app.core.database:redis_connect:223 - ✅️ Redis连接已关闭
+2026-08-30 14:29:33.092 | INFO     | logging:callHandlers:1736 - Application shutdown complete.
+2026-08-30 14:29:33.092 | INFO     | logging:callHandlers:1736 - Finished server process [2200]
+2026-08-30 14:29:33.397 | INFO     | logging:callHandlers:1736 - Stopping reloader process [1964]
+2026-08-30 14:29:45.265 | INFO     | __main__:run:80 - 🚀 当前运行环境: dev
+
+
+
+////////////////////////////////////////////////////////////////////
+//                          _ooOoo_                               //
+//                         o8888888o                              //
+//                         88" . "88                              //
+//                         (| ^_^ |)                              //
+//                         O\  =  /O                              //
+//                      ____/`---'\____                           //
+//                    .'  \\|     |//  `.                         //
+//                   /  \\|||  :  |||//  \                        //
+//                  /  _||||| -:- |||||-  \                       //
+//                  |   | \\\  -  /// |   |                       //
+//                  | \_|  ''\---/''  |   |                       //
+//                  \  .-\__  `-`  ___/-. /                       //
+//                ___`. .'  /--.--\  `. . ___                     //
+//              ."" '<  `.___\_<|>_/___.'  >'"".                  //
+//            | | :  `- \`.;`\ _ /`;.`/ - ` : | |                 //
+//            \  \ `-.   \_ __\ /__ _/   .-` /  /                 //
+//      ========`-.____`-.___\_____/___.-`____.-'========         //
+//                           `=---='                              //
+//      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^        //
+//         佛祖保佑       永无BUG     永不修改                     //
+////////////////////////////////////////////////////////////////////
+
+
+
+2026-08-30 14:29:45.267 | INFO     | logging:callHandlers:1736 - Will watch for changes in these directories: ['C:\\Users\\Administrator\\Desktop\\fssadmin_nestjs\\FastAdmin\\FssAdmin_Python\\server']
+2026-08-30 14:29:45.271 | INFO     | logging:callHandlers:1736 - Uvicorn running on http://localhost:8001 (Press CTRL+C to quit)
+2026-08-30 14:29:45.271 | INFO     | logging:callHandlers:1736 - Started reloader process [2924] using StatReload
+2026-08-30 14:29:47.259 | INFO     | logging:callHandlers:1736 - Started server process [31588]
+2026-08-30 14:29:47.260 | INFO     | logging:callHandlers:1736 - Waiting for application startup.
+2026-08-30 14:29:49.287 | INFO     | app.init_app:lifespan:26 - 时区 Asia/Shanghai
+2026-08-30 14:29:49.287 | INFO     | app.init_app:lifespan:27 - ✅ 全局事件模块加载完成
+2026-08-30 14:29:49.290 | INFO     | app.init_app:lifespan:31 - ✅ fastapi-admin-cache 初始化完成
+2026-08-30 14:29:49.291 | INFO     | app.init_app:lifespan:52 - ✅ 请求限流器初始化完成 (10000次/60秒)
+2026-08-30 14:29:49.319 | INFO     | logging:callHandlers:1736 - Scheduler started
+2026-08-30 14:29:51.357 | INFO     | app.core.ap_scheduler:_handle_job_added:373 - 任务 system_cleanup_operation_log (操作日志清理) 已添加到 default 存储器
+2026-08-30 14:29:51.410 | INFO     | app.core.ap_scheduler:_cleanup_obsolete_pending_logs:828 - 清理了任务 system_cleanup_operation_log 的 1 条旧 pending 日志
+2026-08-30 14:29:51.447 | INFO     | app.core.ap_scheduler:_create_job_log:866 - 执行日志创建成功: job_id=system_cleanup_operation_log, id=978
+2026-08-30 14:29:51.447 | INFO     | app.core.ap_scheduler:_handle_job_added:386 - 任务 system_cleanup_operation_log 已创建初始 pending 状态日志
+2026-08-30 14:29:51.449 | INFO     | logging:callHandlers:1736 - Added job "操作日志清理" to job store "default"
+2026-08-30 14:29:51.451 | INFO     | app.core.ap_scheduler:_handle_job_added:373 - 任务 system_database_backup (数据库备份) 已添加到 default 存储器
+2026-08-30 14:29:51.485 | INFO     | app.core.ap_scheduler:_cleanup_obsolete_pending_logs:828 - 清理了任务 system_database_backup 的 1 条旧 pending 日志
+2026-08-30 14:29:51.519 | INFO     | app.core.ap_scheduler:_create_job_log:866 - 执行日志创建成功: job_id=system_database_backup, id=979
+2026-08-30 14:29:51.520 | INFO     | app.core.ap_scheduler:_handle_job_added:386 - 任务 system_database_backup 已创建初始 pending 状态日志
+2026-08-30 14:29:51.520 | INFO     | logging:callHandlers:1736 - Added job "数据库备份" to job store "default"
+2026-08-30 14:29:51.521 | INFO     | app.core.ap_scheduler:_register_system_jobs:663 - 系统周期任务已注册 2 个
+2026-08-30 14:29:51.521 | INFO     | app.init_app:lifespan:67 - ✅ APScheduler 初始化完成
+2026-08-30 14:29:53.578 | INFO     | app.api.v1.module_platform.video.meta_queue:start:107 - MetaFetchQueue started workers=1 recover_on_start=False recovered=0
+2026-08-30 14:29:53.582 | INFO     | app.api.v1.module_platform.video.downloader:start:145 - DownloadQueue started workers=2 recovered=0
+2026-08-30 14:29:53.586 | INFO     | app.init_app:lifespan:85 - ✅ 视频队列已启动 (meta_recover_on_start=False, ytdlp_subprocess=True)
+2026-08-30 14:29:53.615 | INFO     | logging:callHandlers:1736 - Application startup complete.
+2026-08-30 14:30:04.544 | INFO     | app.core.middlewares:dispatch:88 - 请求: POST /api/core/login | client=127.0.0.1
+2026-08-30 14:30:04.558 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 14.7ms
+2026-08-30 14:30:04.559 | INFO     | logging:callHandlers:1736 - 127.0.0.1:26058 - "POST /api/core/login HTTP/1.1" 200
+2026-08-30 14:30:04.790 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/core/captcha | client=127.0.0.1
+2026-08-30 14:30:04.809 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 19.7ms
+2026-08-30 14:30:04.810 | INFO     | logging:callHandlers:1736 - 127.0.0.1:26062 - "GET /api/core/captcha HTTP/1.1" 200
+2026-08-30 14:30:06.733 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/core/config/public/site_name | client=127.0.0.1
+2026-08-30 14:30:06.801 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/core/tenants-by-username | client=127.0.0.1
+2026-08-30 14:30:06.804 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/core/captcha | client=127.0.0.1
+2026-08-30 14:30:06.827 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 94.6ms
+2026-08-30 14:30:06.828 | INFO     | logging:callHandlers:1736 - 127.0.0.1:26077 - "GET /api/core/config/public/site_name HTTP/1.1" 200
+2026-08-30 14:30:06.840 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 38.9ms
+2026-08-30 14:30:06.843 | INFO     | logging:callHandlers:1736 - 127.0.0.1:26081 - "GET /api/core/tenants-by-username?username=admin HTTP/1.1" 200
+2026-08-30 14:30:08.863 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 2059.1ms
+2026-08-30 14:30:08.863 | INFO     | logging:callHandlers:1736 - 127.0.0.1:26080 - "GET /api/core/captcha HTTP/1.1" 200
+2026-08-30 14:30:13.247 | INFO     | app.core.middlewares:dispatch:88 - 请求: POST /api/core/login | client=127.0.0.1
+2026-08-30 14:30:13.501 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 254.7ms
+2026-08-30 14:30:13.502 | INFO     | logging:callHandlers:1736 - 127.0.0.1:26097 - "POST /api/core/login HTTP/1.1" 200
+2026-08-30 14:30:13.510 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/core/system/user | client=127.0.0.1
+2026-08-30 14:30:13.522 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 12.5ms
+2026-08-30 14:30:13.523 | INFO     | logging:callHandlers:1736 - 127.0.0.1:26100 - "GET /api/core/system/user HTTP/1.1" 200
+2026-08-30 14:30:13.846 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/core/captcha | client=127.0.0.1
+2026-08-30 14:30:13.853 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 6.8ms
+2026-08-30 14:30:13.853 | INFO     | logging:callHandlers:1736 - 127.0.0.1:26106 - "GET /api/core/captcha HTTP/1.1" 200
+2026-08-30 14:30:13.857 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/core/system/user | client=127.0.0.1
+2026-08-30 14:30:13.867 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 10.1ms
+2026-08-30 14:30:13.867 | INFO     | logging:callHandlers:1736 - 127.0.0.1:26109 - "GET /api/core/system/user HTTP/1.1" 200
+2026-08-30 14:30:14.097 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/core/system/dictAll | client=127.0.0.1
+2026-08-30 14:30:14.124 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 27.1ms
+2026-08-30 14:30:14.124 | INFO     | logging:callHandlers:1736 - 127.0.0.1:26113 - "GET /api/core/system/dictAll HTTP/1.1" 200
+2026-08-30 14:30:14.180 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/core/system/menu | client=127.0.0.1
+2026-08-30 14:30:14.199 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 19.1ms
+2026-08-30 14:30:14.199 | INFO     | logging:callHandlers:1736 - 127.0.0.1:26117 - "GET /api/core/system/menu HTTP/1.1" 200
+2026-08-30 14:30:14.937 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/core/tenants-by-username | client=127.0.0.1
+2026-08-30 14:30:14.940 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/core/system/loginChart | client=127.0.0.1
+2026-08-30 14:30:14.940 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/core/system/statistics | client=127.0.0.1
+2026-08-30 14:30:14.940 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/core/system/loginBarChart | client=127.0.0.1
+2026-08-30 14:30:14.955 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 18.2ms
+2026-08-30 14:30:14.956 | INFO     | logging:callHandlers:1736 - 127.0.0.1:26131 - "GET /api/core/tenants-by-username?username=admin HTTP/1.1" 200
+2026-08-30 14:30:14.993 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 53.1ms
+2026-08-30 14:30:15.008 | INFO     | logging:callHandlers:1736 - 127.0.0.1:26134 - "GET /api/core/system/statistics HTTP/1.1" 200
+2026-08-30 14:30:15.157 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 217.6ms
+2026-08-30 14:30:15.158 | INFO     | logging:callHandlers:1736 - 127.0.0.1:26137 - "GET /api/core/system/loginChart HTTP/1.1" 200
+2026-08-30 14:30:16.994 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 2053.6ms
+2026-08-30 14:30:16.994 | INFO     | logging:callHandlers:1736 - 127.0.0.1:26135 - "GET /api/core/system/loginBarChart HTTP/1.1" 200
+2026-08-30 14:30:17.059 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/system/user/list | client=127.0.0.1
+2026-08-30 14:30:17.061 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/system/dept/access-dept | client=127.0.0.1
+2026-08-30 14:30:17.163 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 101.3ms
+2026-08-30 14:30:17.163 | INFO     | logging:callHandlers:1736 - 127.0.0.1:26150 - "GET /api/system/dept/access-dept HTTP/1.1" 200
+2026-08-30 14:30:17.171 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 112.2ms
+2026-08-30 14:30:17.172 | INFO     | logging:callHandlers:1736 - 127.0.0.1:26148 - "GET /api/system/user/list?page=1&limit=10&status= HTTP/1.1" 200
+2026-08-30 14:30:17.441 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /uploads/2026/03/28/69c7a3a1cae578.20110121.png | client=127.0.0.1
+2026-08-30 14:30:17.442 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /uploads/2026/03/28/69c7a3a83f9f14.20042528.png | client=127.0.0.1
+2026-08-30 14:30:17.444 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /uploads/2026/03/28/69c7a3acd6b581.21163358.png | client=127.0.0.1
+2026-08-30 14:30:17.572 | INFO     | app.core.middlewares:dispatch:100 - 响应: 404 | 131.3ms
+2026-08-30 14:30:17.572 | INFO     | logging:callHandlers:1736 - 127.0.0.1:26156 - "GET /uploads/2026/03/28/69c7a3a1cae578.20110121.png HTTP/1.1" 404
+2026-08-30 14:30:17.575 | INFO     | app.core.middlewares:dispatch:100 - 响应: 404 | 133.6ms
+2026-08-30 14:30:17.576 | INFO     | logging:callHandlers:1736 - 127.0.0.1:26157 - "GET /uploads/2026/03/28/69c7a3a83f9f14.20042528.png HTTP/1.1" 404
+2026-08-30 14:30:17.577 | INFO     | app.core.middlewares:dispatch:100 - 响应: 404 | 132.7ms
+2026-08-30 14:30:17.577 | INFO     | logging:callHandlers:1736 - 127.0.0.1:26158 - "GET /uploads/2026/03/28/69c7a3acd6b581.21163358.png HTTP/1.1" 404
+2026-08-30 14:30:17.742 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /uploads/2026/03/28/69c7a3b2058589.44968839.webp | client=127.0.0.1
+2026-08-30 14:30:17.745 | INFO     | app.core.middlewares:dispatch:100 - 响应: 404 | 2.8ms
+2026-08-30 14:30:17.745 | INFO     | logging:callHandlers:1736 - 127.0.0.1:26162 - "GET /uploads/2026/03/28/69c7a3b2058589.44968839.webp HTTP/1.1" 404
+2026-08-30 14:30:20.266 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/system/dept/list | client=127.0.0.1
+2026-08-30 14:30:20.277 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 11.0ms
+2026-08-30 14:30:20.277 | INFO     | logging:callHandlers:1736 - 127.0.0.1:26186 - "GET /api/system/dept/list?page=1&limit=10 HTTP/1.1" 200
+2026-08-30 14:30:22.045 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/core/logs/getLoginLogPageList | client=127.0.0.1
+2026-08-30 14:30:22.059 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 13.7ms
+2026-08-30 14:30:22.059 | INFO     | logging:callHandlers:1736 - 127.0.0.1:26191 - "GET /api/core/logs/getLoginLogPageList?page=1&limit=10&orderField=login_time&orderType=desc HTTP/1.1" 200
+2026-08-30 14:30:23.249 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/core/server/monitor | client=127.0.0.1
+2026-08-30 14:30:23.259 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 10.3ms
+2026-08-30 14:30:23.259 | INFO     | logging:callHandlers:1736 - 127.0.0.1:26194 - "GET /api/core/server/monitor HTTP/1.1" 200
+2026-08-30 14:30:24.529 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/core/server/redis/browser/level1 | client=127.0.0.1
+2026-08-30 14:30:24.537 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 7.5ms
+2026-08-30 14:30:24.538 | INFO     | logging:callHandlers:1736 - 127.0.0.1:26198 - "GET /api/core/server/redis/browser/level1?pattern=* HTTP/1.1" 200
+2026-08-30 14:30:27.512 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/core/server/redis/browser/level2 | client=127.0.0.1
+2026-08-30 14:30:27.519 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 7.4ms
+2026-08-30 14:30:27.521 | INFO     | logging:callHandlers:1736 - 127.0.0.1:26209 - "GET /api/core/server/redis/browser/level2?prefix=token HTTP/1.1" 200
+2026-08-30 14:30:28.828 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/core/server/redis/browser/level2 | client=127.0.0.1
+2026-08-30 14:30:28.835 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 6.6ms
+2026-08-30 14:30:28.835 | INFO     | logging:callHandlers:1736 - 127.0.0.1:26214 - "GET /api/core/server/redis/browser/level2?prefix=captcha_codes HTTP/1.1" 200
+2026-08-30 14:30:29.948 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/core/server/redis/browser/key-info | client=127.0.0.1
+2026-08-30 14:30:29.955 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 6.3ms
+2026-08-30 14:30:29.955 | INFO     | logging:callHandlers:1736 - 127.0.0.1:26217 - "GET /api/core/server/redis/browser/key-info?key=captcha_codes:f31ee71b83f040f44742c13263d52ba0 HTTP/1.1" 200
+2026-08-30 14:30:31.603 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/core/server/redis/browser/key-info | client=127.0.0.1
+2026-08-30 14:30:31.609 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 6.2ms
+2026-08-30 14:30:31.609 | INFO     | logging:callHandlers:1736 - 127.0.0.1:26222 - "GET /api/core/server/redis/browser/key-info?key=captcha_codes:001caf8a3e20196915eb62ce0972c500 HTTP/1.1" 200
+2026-08-30 14:30:32.302 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/core/server/redis/browser/key-info | client=127.0.0.1
+2026-08-30 14:30:32.308 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 6.0ms
+2026-08-30 14:30:32.309 | INFO     | logging:callHandlers:1736 - 127.0.0.1:33218 - "GET /api/core/server/redis/browser/key-info?key=captcha_codes:f31ee71b83f040f44742c13263d52ba0 HTTP/1.1" 200
+2026-08-30 14:31:42.528 | WARNING  | logging:callHandlers:1736 - StatReload detected changes in 'tests\_check_captcha.py'. Reloading...
+2026-08-30 14:31:42.551 | INFO     | logging:callHandlers:1736 - Shutting down
+2026-08-30 14:31:42.660 | INFO     | logging:callHandlers:1736 - Waiting for application shutdown.
+2026-08-30 14:31:42.660 | INFO     | app.api.v1.module_platform.video.meta_queue:stop:126 - MetaFetchQueue stopped
+2026-08-30 14:31:42.663 | INFO     | app.api.v1.module_platform.video.downloader:stop:152 - DownloadQueue stopping: 服务关闭
+2026-08-30 14:31:42.665 | INFO     | app.api.v1.module_platform.video.downloader:stop:189 - DownloadQueue stopped
+2026-08-30 14:31:42.667 | INFO     | logging:callHandlers:1736 - Scheduler has been shut down
+2026-08-30 14:31:42.668 | INFO     | app.core.ap_scheduler:_handle_scheduler_shutdown:417 - 调度器已关闭
+2026-08-30 14:31:42.668 | INFO     | app.core.ap_scheduler:_update_scheduler_status:522 - 调度器状态变更: 0
+2026-08-30 14:31:42.669 | INFO     | app.core.database:redis_connect:223 - ✅️ Redis连接已关闭
+2026-08-30 14:31:42.672 | INFO     | logging:callHandlers:1736 - Application shutdown complete.
+2026-08-30 14:31:42.672 | INFO     | logging:callHandlers:1736 - Finished server process [31588]
+2026-08-30 14:31:45.305 | INFO     | logging:callHandlers:1736 - Started server process [31876]
+2026-08-30 14:31:45.306 | INFO     | logging:callHandlers:1736 - Waiting for application startup.
+2026-08-30 14:31:47.352 | INFO     | app.init_app:lifespan:26 - 时区 Asia/Shanghai
+2026-08-30 14:31:47.352 | INFO     | app.init_app:lifespan:27 - ✅ 全局事件模块加载完成
+2026-08-30 14:31:47.354 | INFO     | app.init_app:lifespan:31 - ✅ fastapi-admin-cache 初始化完成
+2026-08-30 14:31:47.355 | INFO     | app.init_app:lifespan:52 - ✅ 请求限流器初始化完成 (10000次/60秒)
+2026-08-30 14:31:47.399 | INFO     | logging:callHandlers:1736 - Scheduler started
+2026-08-30 14:31:49.457 | INFO     | app.core.ap_scheduler:_handle_job_added:373 - 任务 system_cleanup_operation_log (操作日志清理) 已添加到 default 存储器
+2026-08-30 14:31:49.528 | INFO     | app.core.ap_scheduler:_cleanup_obsolete_pending_logs:828 - 清理了任务 system_cleanup_operation_log 的 1 条旧 pending 日志
+2026-08-30 14:31:49.590 | INFO     | app.core.ap_scheduler:_create_job_log:866 - 执行日志创建成功: job_id=system_cleanup_operation_log, id=980
+2026-08-30 14:31:49.591 | INFO     | app.core.ap_scheduler:_handle_job_added:386 - 任务 system_cleanup_operation_log 已创建初始 pending 状态日志
+2026-08-30 14:31:49.593 | INFO     | logging:callHandlers:1736 - Added job "操作日志清理" to job store "default"
+2026-08-30 14:31:49.595 | INFO     | app.core.ap_scheduler:_handle_job_added:373 - 任务 system_database_backup (数据库备份) 已添加到 default 存储器
+2026-08-30 14:31:49.628 | INFO     | app.core.ap_scheduler:_cleanup_obsolete_pending_logs:828 - 清理了任务 system_database_backup 的 1 条旧 pending 日志
+2026-08-30 14:31:49.687 | INFO     | app.core.ap_scheduler:_create_job_log:866 - 执行日志创建成功: job_id=system_database_backup, id=981
+2026-08-30 14:31:49.688 | INFO     | app.core.ap_scheduler:_handle_job_added:386 - 任务 system_database_backup 已创建初始 pending 状态日志
+2026-08-30 14:31:49.691 | INFO     | logging:callHandlers:1736 - Added job "数据库备份" to job store "default"
+2026-08-30 14:31:49.692 | INFO     | app.core.ap_scheduler:_register_system_jobs:663 - 系统周期任务已注册 2 个
+2026-08-30 14:31:49.692 | INFO     | app.init_app:lifespan:67 - ✅ APScheduler 初始化完成
+2026-08-30 14:31:51.754 | INFO     | app.api.v1.module_platform.video.meta_queue:start:107 - MetaFetchQueue started workers=1 recover_on_start=False recovered=0
+2026-08-30 14:31:51.757 | INFO     | app.api.v1.module_platform.video.downloader:start:145 - DownloadQueue started workers=2 recovered=0
+2026-08-30 14:31:51.761 | INFO     | app.init_app:lifespan:85 - ✅ 视频队列已启动 (meta_recover_on_start=False, ytdlp_subprocess=True)
+2026-08-30 14:31:51.791 | INFO     | logging:callHandlers:1736 - Application startup complete.
+2026-08-30 14:32:11.131 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/core/server/monitor | client=127.0.0.1
+2026-08-30 14:32:11.175 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 44.0ms
+2026-08-30 14:32:11.175 | INFO     | logging:callHandlers:1736 - 127.0.0.1:51154 - "GET /api/core/server/monitor HTTP/1.1" 200
+2026-08-30 14:32:12.311 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/system/dict/type/list | client=127.0.0.1
+2026-08-30 14:32:12.424 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 113.4ms
+2026-08-30 14:32:12.425 | INFO     | logging:callHandlers:1736 - 127.0.0.1:51167 - "GET /api/system/dict/type/list?page=1&limit=10&name=&code= HTTP/1.1" 200
+2026-08-30 14:32:14.048 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/core/logs/getLoginLogPageList | client=127.0.0.1
+2026-08-30 14:32:14.061 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 13.3ms
+2026-08-30 14:32:14.062 | INFO     | logging:callHandlers:1736 - 127.0.0.1:51169 - "GET /api/core/logs/getLoginLogPageList?page=1&limit=10&orderField=login_time&orderType=desc HTTP/1.1" 200
+2026-08-30 14:32:15.228 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/core/server/redis/browser/level1 | client=127.0.0.1
+2026-08-30 14:32:15.235 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 7.1ms
+2026-08-30 14:32:15.235 | INFO     | logging:callHandlers:1736 - 127.0.0.1:51171 - "GET /api/core/server/redis/browser/level1?pattern=* HTTP/1.1" 200
+2026-08-30 14:32:16.084 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/tool/code/index | client=127.0.0.1
+2026-08-30 14:32:16.165 | ERROR    | app.core.exceptions:http_exception_handler:64 - [HTTP异常] GET /api/tool/code/index | status_code=404 | detail=Not Found | cid=81cff0a0
+2026-08-30 14:32:16.166 | INFO     | app.core.middlewares:dispatch:100 - 响应: 404 | 81.3ms
+2026-08-30 14:32:16.167 | INFO     | logging:callHandlers:1736 - 127.0.0.1:51177 - "GET /api/tool/code/index?page=1&limit=10 HTTP/1.1" 404
+2026-08-30 14:32:17.849 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/article/list | client=127.0.0.1
+2026-08-30 14:32:17.920 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 71.0ms
+2026-08-30 14:32:17.920 | INFO     | logging:callHandlers:1736 - 127.0.0.1:51182 - "GET /api/article/list?page=1&limit=10 HTTP/1.1" 200
+2026-08-30 14:32:19.206 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/tool/code/index | client=127.0.0.1
+2026-08-30 14:32:19.209 | ERROR    | app.core.exceptions:http_exception_handler:64 - [HTTP异常] GET /api/tool/code/index | status_code=404 | detail=Not Found | cid=1859e3f6
+2026-08-30 14:32:19.210 | INFO     | app.core.middlewares:dispatch:100 - 响应: 404 | 4.0ms
+2026-08-30 14:32:19.210 | INFO     | logging:callHandlers:1736 - 127.0.0.1:51204 - "GET /api/tool/code/index?page=1&limit=10 HTTP/1.1" 404
+2026-08-30 14:32:20.917 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/article/list | client=127.0.0.1
+2026-08-30 14:32:20.936 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 18.7ms
+2026-08-30 14:32:20.936 | INFO     | logging:callHandlers:1736 - 127.0.0.1:51221 - "GET /api/article/list?page=1&limit=10 HTTP/1.1" 200
+2026-08-30 14:32:23.490 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/task/cronjob/job/scheduler/jobs | client=127.0.0.1
+2026-08-30 14:32:23.500 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 9.7ms
+2026-08-30 14:32:23.500 | INFO     | logging:callHandlers:1736 - 127.0.0.1:51229 - "GET /api/task/cronjob/job/scheduler/jobs HTTP/1.1" 200
+2026-08-30 14:32:23.521 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/task/cronjob/job/scheduler/status | client=127.0.0.1
+2026-08-30 14:32:23.530 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 9.2ms
+2026-08-30 14:32:23.531 | INFO     | logging:callHandlers:1736 - 127.0.0.1:51231 - "GET /api/task/cronjob/job/scheduler/status HTTP/1.1" 200
+2026-08-30 14:32:25.500 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/task/cronjob/node/list | client=127.0.0.1
+2026-08-30 14:32:25.566 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 65.6ms
+2026-08-30 14:32:25.577 | INFO     | logging:callHandlers:1736 - 127.0.0.1:51243 - "GET /api/task/cronjob/node/list?page_no=1&page_size=10 HTTP/1.1" 200
+2026-08-30 14:32:27.189 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/task/cronjob/job/scheduler/jobs | client=127.0.0.1
+2026-08-30 14:32:27.198 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 8.8ms
+2026-08-30 14:32:27.198 | INFO     | logging:callHandlers:1736 - 127.0.0.1:51245 - "GET /api/task/cronjob/job/scheduler/jobs HTTP/1.1" 200
+2026-08-30 14:32:27.216 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/task/cronjob/job/scheduler/status | client=127.0.0.1
+2026-08-30 14:32:27.223 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 7.2ms
+2026-08-30 14:32:27.223 | INFO     | logging:callHandlers:1736 - 127.0.0.1:51247 - "GET /api/task/cronjob/job/scheduler/status HTTP/1.1" 200
+2026-08-30 14:32:28.133 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/task/cronjob/node/list | client=127.0.0.1
+2026-08-30 14:32:28.144 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 11.7ms
+2026-08-30 14:32:28.145 | INFO     | logging:callHandlers:1736 - 127.0.0.1:51252 - "GET /api/task/cronjob/node/list?page_no=1&page_size=10 HTTP/1.1" 200
+2026-08-30 14:32:30.772 | INFO     | app.core.middlewares:dispatch:88 - 请求: GET /api/task/cronjob/node/logs/4 | client=127.0.0.1
+2026-08-30 14:32:30.791 | INFO     | app.core.middlewares:dispatch:100 - 响应: 200 | 18.4ms
+2026-08-30 14:32:30.791 | INFO     | logging:callHandlers:1736 - 127.0.0.1:51254 - "GET /api/task/cronjob/node/logs/4?page_no=1&page_size=10 HTTP/1.1" 200

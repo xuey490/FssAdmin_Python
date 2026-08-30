@@ -7,10 +7,12 @@ import os
 
 os.environ.setdefault("ENVIRONMENT", "dev")
 
+from app.config.setting import settings
 from app.utils.captcha_util import CaptchaUtil
 
 
 def main() -> None:
+    assert settings.CAPTCHA_EXPIRE_SECONDS == 600
     img_b64, code = CaptchaUtil.generate_captcha()
     assert isinstance(code, str) and len(code) == 4, code
     raw = base64.b64decode(img_b64)

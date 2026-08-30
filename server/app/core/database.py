@@ -204,6 +204,7 @@ async def redis_connect(app: FastAPI, status: bool) -> Redis | None:
                 health_check_interval=20,
                 max_connections=settings.POOL_SIZE,
                 socket_timeout=settings.POOL_TIMEOUT,
+                protocol=2,  # ponytail: redis-py 5+ 默认 RESP3 发 HELLO；本机/旧 Redis 没有这条命令
             )
             app.state.redis = rd
             if await rd.ping():  # pyright: ignore[reportGeneralTypeIssues]
