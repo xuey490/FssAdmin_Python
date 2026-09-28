@@ -263,6 +263,21 @@ class UserService:
         obj = result.scalar_one_or_none()
         if not obj:
             raise CustomException(msg="用户不存在", code=404)
+        if "username" in data and data["username"] is not None:
+            username = (data["username"] or "").strip()
+            if not username:
+                raise CustomException(msg="用户名不能为空", code=400)
+            if username != obj.username:
+                dup = await self.db.execute(
+                    select(UserModel).where(
+                        UserModel.username == username,
+                        UserModel.id != user_id,
+                        not_deleted(UserModel),
+                    )
+                )
+                if dup.scalar_one_or_none():
+                    raise CustomException(msg="用户名已存在", code=400)
+                obj.username = username
         for field in ("realname", "email", "phone", "avatar", "gender", "remark", "dashboard", "status", "dept_id"):
             if field in data:
                 setattr(obj, field, data[field])
