@@ -25,6 +25,8 @@ export interface BaseResponse<T = unknown> {
   code: number
   /** 消息 */
   message: string
+  /** 消息（兼容后端 msg） */
+  msg?: string
   /** 数据 */
   data: T
 }

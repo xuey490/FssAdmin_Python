@@ -121,6 +121,11 @@ const getErrorMessage = (status: number): string => {
  * @returns 错误对象
  */
 export function handleError(error: AxiosError<ErrorResponse>): never {
+  // 业务失败已是 HttpError，不要当成无 response 的网络错误
+  if (error instanceof HttpError) {
+    throw error
+  }
+
   // 处理取消的请求
   if (error.code === 'ERR_CANCELED') {
     console.warn('Request cancelled:', error.message)

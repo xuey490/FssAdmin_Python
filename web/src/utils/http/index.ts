@@ -94,13 +94,16 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
   (response: AxiosResponse<BaseResponse>) => {
     if (response.config.responseType === 'blob') return response
-    const { code, message } = response.data
+    const { code, message, msg } = response.data
+    const text = (message || msg || '').trim()
 
     if (code === ApiStatus.success) return response
-    if (code === ApiStatus.unauthorized) handleUnauthorizedError(message)
-    throw createHttpError(message || $t('httpMsg.requestFailed'), code)
+    if (code === ApiStatus.unauthorized) handleUnauthorizedError(text)
+    // 业务失败（HTTP 200 + 非 200 code）直接抛 HttpError；勿再进下方 error 拦截器改写成网络错误
+    return Promise.reject(createHttpError(text || $t('httpMsg.requestFailed'), code))
   },
   (error) => {
+    if (error instanceof HttpError) return Promise.reject(error)
     if (error.response?.status === ApiStatus.unauthorized) handleUnauthorizedError()
     return Promise.reject(handleError(error))
   }

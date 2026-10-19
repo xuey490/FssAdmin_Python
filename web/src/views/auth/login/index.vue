@@ -192,6 +192,28 @@
             </div>
           </div>
         </ElTabPane>
+        <ElTabPane label="Golang版本" name="golang">
+          <div class="welcome-dialog">
+            <p class="welcome-dialog__intro">
+              基于 GoFrame 的企业级管理后台 REST API 服务：JWT 鉴权、多租户、Redis缓存、RBAC、定时任务、监控与运维能力等，提供 OpenAPI（/api.json）与 Swagger（/docs）
+            </p>
+            <ul class="welcome-dialog__list">
+              <li>
+                适配 SoyAdmin：
+                <a href="https://gf.phpframe.org" target="_blank" rel="noopener noreferrer">https://gf.phpframe.org</a>
+              </li>
+              <li>
+                适配 Art Design Pro：
+                <a href="https://goframe.phpframe.org" target="_blank" rel="noopener noreferrer">https://goframe.phpframe.org</a>
+              </li>
+            </ul>
+            <p class="welcome-dialog__footer">Goframe版本开源中，欢迎关注 & Star：</p>
+            <div class="welcome-dialog__links">
+              <a href="https://gitee.com/fsscms/FssAdmin_goframe" target="_blank" rel="noopener noreferrer">Gitee</a>
+              <a href="https://github.com/xuey490/FssAdmin_goframe" target="_blank" rel="noopener noreferrer">GitHub</a>
+            </div>
+          </div>
+        </ElTabPane>
       </ElTabs>
       <template #footer>
         <ElButton type="primary" @click="welcomeDialogVisible = false">知道了</ElButton>
@@ -212,7 +234,7 @@
     fetchTenantsByUsername,
     fetchPublicConfigValue
   } from '@/api/auth'
-  import { ElNotification, type FormInstance, type FormRules } from 'element-plus'
+  import { ElMessage, ElNotification, type FormInstance, type FormRules } from 'element-plus'
   import { resolveLoginRedirect } from '@/utils/navigation/loginRedirect'
 
   defineOptions({ name: 'Login' })
@@ -339,13 +361,14 @@
     if (!formRef.value) return
 
     try {
-      // 表单验证
       const valid = await formRef.value.validate()
       if (!valid) return
+    } catch {
+      return
+    }
 
-      loading.value = true
-
-      // 登录请求
+    loading.value = true
+    try {
       const { access_token, refresh_token } = await fetchLogin({
         username: formData.username,
         password: formData.password,
@@ -354,31 +377,30 @@
         tenant_id: formData.tenant_id
       })
 
-      // 验证token
       if (!access_token) {
         throw new Error('Login failed - no token received')
       }
 
-      // 存储token和用户信息
       userStore.setToken(access_token, refresh_token)
       const userInfo = await fetchGetUserInfo()
       userStore.setUserInfo(userInfo)
       userStore.setLoginStatus(true)
 
-      // 登录成功处理
       showLoginSuccessNotice()
       router.replace(resolveLoginRedirect(router.currentRoute.value.query.redirect))
     } catch (error) {
-      // 处理 HttpError
-      if (error instanceof HttpError) {
-        // console.log(error.code)
-      } else {
-        // 处理非 HttpError
-        // ElMessage.error('登录失败，请稍后重试')
-        console.error('[Login] Unexpected error:', error)
-      }
-    } finally {
+      const body = (error as { response?: { data?: { msg?: string; message?: string } } })
+        .response?.data
+      const msg =
+        (error instanceof HttpError && error.message) ||
+        body?.msg ||
+        body?.message ||
+        (error instanceof Error && error.message) ||
+        '登录失败，请稍后重试'
+      ElMessage.error({ message: msg, zIndex: 10000, grouping: true })
+      formData.code = ''
       refreshCaptcha()
+    } finally {
       loading.value = false
     }
   }
