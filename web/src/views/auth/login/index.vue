@@ -213,6 +213,7 @@
     fetchPublicConfigValue
   } from '@/api/auth'
   import { ElNotification, type FormInstance, type FormRules } from 'element-plus'
+  import { resolveLoginRedirect } from '@/utils/navigation/loginRedirect'
 
   defineOptions({ name: 'Login' })
 
@@ -366,7 +367,7 @@
 
       // 登录成功处理
       showLoginSuccessNotice()
-      router.push('/')
+      router.replace(resolveLoginRedirect(router.currentRoute.value.query.redirect))
     } catch (error) {
       // 处理 HttpError
       if (error instanceof HttpError) {

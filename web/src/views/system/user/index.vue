@@ -279,7 +279,16 @@
    */
   const getDeptList = () => {
     deptApi.accessDept().then((data: any) => {
-      treeData.value = data
+      const list = Array.isArray(data) ? data : data?.data || []
+      const walk = (nodes: any[]): any[] =>
+        (nodes || []).map((node) => ({
+          ...node,
+          id: Number(node.id),
+          value: Number(node.value ?? node.id),
+          label: node.label || node.name,
+          children: node.children?.length ? walk(node.children) : []
+        }))
+      treeData.value = walk(list)
     })
   }
 

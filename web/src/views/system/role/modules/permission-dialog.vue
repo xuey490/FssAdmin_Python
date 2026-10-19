@@ -65,6 +65,17 @@
 
   const isExpandAll = ref(true)
 
+  function collectParentIds(nodes: any[], out = new Set<number>()): Set<number> {
+    for (const node of nodes || []) {
+      const children = node.children
+      if (children?.length) {
+        out.add(Number(node.id))
+        collectParentIds(children, out)
+      }
+    }
+    return out
+  }
+
   /**
    * 弹窗显示状态双向绑定
    */
@@ -93,10 +104,13 @@
     menuList.value = await menuApi.accessMenu({ tree: true })
     // 角色已分配菜单
     const data = await api.menuByRole({ id: props.data?.id })
-    const menuIds: number[] = data.menus?.map((item: any) => item.id) || []
+    const parentIds = collectParentIds(menuList.value)
+    const menuIds: number[] = (data.menus || [])
+      .map((item: any) => Number(item?.id ?? item))
+      .filter((id: number) => id > 0 && !parentIds.has(id))
 
     await nextTick()
-    treeRef.value?.setCheckedKeys(menuIds, false)
+    treeRef.value?.setCheckedKeys(menuIds, true)
   }
 
   /**
@@ -137,14 +151,13 @@
    * 保存权限配置
    */
   const savePermission = async () => {
-    // 获取全选节点 + 半选父节点，确保父子联动完整性
-    const checkedKeys = treeRef.value.getCheckedKeys(false) as number[]
-    const halfCheckedKeys = treeRef.value.getHalfCheckedKeys() as number[]
-    const allKeys = [...new Set([...checkedKeys, ...halfCheckedKeys])]
+    const checkedKeys = ((treeRef.value.getCheckedKeys(false) as Array<string | number>) || [])
+      .map(Number)
+      .filter((id) => id > 0)
     try {
       await api.menuPermission({
         id: props.data?.id,
-        menu_ids: allKeys
+        menu_ids: checkedKeys
       })
       ElMessage.success('保存成功')
       emit('success')

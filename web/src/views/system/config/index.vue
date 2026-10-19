@@ -261,7 +261,17 @@
 
   const getConfigData = () => {
     api.configList({ group_id: selectedId.value, saiType: 'all' }).then((data) => {
-      formArray.value = data.map((item: any) => {
+      const rows = Array.isArray(data) ? data : (data as any)?.data || []
+      formArray.value = rows.map((item: any) => {
+        let options = item.config_select_data
+        if (typeof options === 'string') {
+          try {
+            options = JSON.parse(options)
+          } catch {
+            options = []
+          }
+        }
+        item.config_select_data = Array.isArray(options) ? options : []
         if (
           item.key.indexOf('local_') !== -1 ||
           item.key.indexOf('qiniu_') !== -1 ||

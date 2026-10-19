@@ -60,6 +60,18 @@
     set: (val) => emit('update:modelValue', val)
   })
 
+  /** 有子节点的目录 id；回显时去掉，避免 setCheckedKeys 把整棵子树勾满 */
+  function collectParentIds(nodes: any[], out = new Set<number>()): Set<number> {
+    for (const node of nodes || []) {
+      const children = node.children
+      if (children?.length) {
+        out.add(Number(node.id))
+        collectParentIds(children, out)
+      }
+    }
+    return out
+  }
+
   async function handleOpen() {
     if (!props.data?.id) return
     loading.value = true
@@ -69,10 +81,14 @@
         userApi.getUserMenus(props.data.id)
       ])
       menuTree.value = (treeRes as any) || []
-      const menuIds: number[] = (menuIdsRes as any) || []
+      const raw = Array.isArray(menuIdsRes) ? menuIdsRes : []
+      const parentIds = collectParentIds(menuTree.value)
+      const menuIds = raw
+        .map((id: any) => Number(id))
+        .filter((id: number) => id > 0 && !parentIds.has(id))
 
       await nextTick()
-      treeRef.value?.setCheckedKeys(menuIds, false)
+      treeRef.value?.setCheckedKeys(menuIds, true)
     } finally {
       loading.value = false
     }
@@ -82,11 +98,11 @@
     if (!props.data?.id) return
     saving.value = true
     try {
-      // 获取选中的节点（包含半选父节点）
-      const checkedKeys = treeRef.value?.getCheckedKeys(false) as number[]
-      const halfCheckedKeys = treeRef.value?.getHalfCheckedKeys() as number[]
-      const allKeys = [...new Set([...checkedKeys, ...halfCheckedKeys])]
-      await userApi.saveUserMenus(props.data.id, allKeys)
+      // 只提交完全勾选的节点；半选父目录由后端补 parent_id，避免再次打开时把已取消的子菜单勾回来
+      const checkedKeys = ((treeRef.value?.getCheckedKeys(false) as Array<string | number>) || [])
+        .map(Number)
+        .filter((id) => id > 0)
+      await userApi.saveUserMenus(props.data.id, checkedKeys)
       ElMessage.success('分配菜单成功')
       emit('success')
       visible.value = false

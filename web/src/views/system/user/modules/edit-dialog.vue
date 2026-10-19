@@ -284,19 +284,27 @@
       await nextTick()
       if (props.data.id) {
         let data = await api.read(props.data.id)
-        if (data.roleList?.length) {
-          data.roleList.forEach((role: any) => {
+        const roleRows = data.roleList?.length ? data.roleList : data.roles
+        if (Array.isArray(data.role_ids) && data.role_ids.length) {
+          data.role_ids = data.role_ids.map((id: any) => Number(id))
+        } else if (roleRows?.length) {
+          data.role_ids = roleRows.map((item: any) => Number(item.id))
+        }
+        if (roleRows?.length) {
+          roleRows.forEach((role: any) => {
             if (!optionData.roleList.find((item: any) => Number(item.id) === Number(role.id))) {
               optionData.roleList.push(role)
             }
           })
-          data.role_ids = data.roleList.map((item: any) => Number(item.id))
         }
-        if (data.post_ids?.length) {
+        const postRows = data.postList?.length ? data.postList : data.posts
+        if (Array.isArray(data.post_ids) && data.post_ids.length) {
           data.post_ids = data.post_ids.map((id: any) => Number(id))
+        } else if (postRows?.length) {
+          data.post_ids = postRows.map((item: any) => Number(item.id))
         }
-        if (data.postList?.length) {
-          data.postList.forEach((post: any) => {
+        if (postRows?.length) {
+          postRows.forEach((post: any) => {
             if (!optionData.postList.find((item: any) => Number(item.id) === Number(post.id))) {
               optionData.postList.push({
                 id: Number(post.id),
@@ -305,7 +313,6 @@
               })
             }
           })
-          data.post_ids = data.postList.map((item: any) => Number(item.id))
         }
         if (data.dept_id != null && data.dept_id !== '') {
           data.dept_id = Number(data.dept_id)

@@ -54,6 +54,7 @@ import { ApiStatus } from '@/utils/http/status'
 import { isHttpError } from '@/utils/http/error'
 import { RouteRegistry, MenuProcessor, IframeRouteManager, RoutePermissionValidator } from '../core'
 import { dashboardRoutes } from '../modules/dashboard'
+import { resolveLoginRedirect, unwrapLoginRedirect } from '@/utils/navigation/loginRedirect'
 
 // 路由注册器实例
 let routeRegistry: RouteRegistry | null = null
@@ -196,17 +197,38 @@ function handleLoginStatus(
   to: RouteLocationNormalized,
   userStore: ReturnType<typeof useUserStore>
 ): boolean | RouteLocationRaw {
-  // 已登录或访问登录页或静态路由，直接放行
-  if (userStore.isLogin || to.path === RoutesAlias.Login || isStaticRoute(to.path)) {
+  if (userStore.isLogin) {
+    if (to.path === RoutesAlias.Login) {
+      return { path: resolveLoginRedirect(to.query.redirect), replace: true }
+    }
     return true
   }
 
-  // 未登录且访问需要权限的页面，跳转到登录页并携带 redirect 参数
-  userStore.logOut()
+  if (to.path === RoutesAlias.Login) {
+    return sanitizeLoginRedirectQuery(to)
+  }
+
+  if (isStaticRoute(to.path)) {
+    return true
+  }
+
+  const redirect = unwrapLoginRedirect(to.fullPath) || to.path
   return {
     name: 'Login',
-    query: { redirect: to.fullPath }
+    query: redirect ? { redirect } : undefined
   }
+}
+
+/** 把 login?redirect=/auth/login?redirect=/x 收成真正的目标；错误页则去掉 redirect */
+function sanitizeLoginRedirectQuery(to: RouteLocationNormalized): boolean | RouteLocationRaw {
+  const raw = Array.isArray(to.query.redirect) ? String(to.query.redirect[0] ?? '') : String(to.query.redirect ?? '')
+  if (!raw) return true
+  const target = resolveLoginRedirect(raw, '')
+  if (!target) {
+    return { path: RoutesAlias.Login, replace: true }
+  }
+  if (target === raw) return true
+  return { path: RoutesAlias.Login, query: { redirect: target }, replace: true }
 }
 
 /**

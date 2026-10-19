@@ -40,6 +40,8 @@ import { useWorktabStore } from './worktab'
 import { AppRouteRecord } from '@/types/router'
 import { setPageTitle } from '@/utils/router'
 import { resetRouterState } from '@/router/guards/beforeEach'
+import { RoutesAlias } from '@/router/routesAlias'
+import { isLoginRedirectTarget } from '@/utils/navigation/loginRedirect'
 import { useMenuStore } from './menu'
 import { StorageConfig } from '@/utils/storage/storage-config'
 import { fetchClearCache, fetchLogout } from '@/api/auth'
@@ -185,9 +187,11 @@ export const useUserStore = defineStore(
       useMenuStore().setHomePath('')
       // 重置路由状态
       resetRouterState(500)
-      // 跳转到登录页，携带当前路由作为 redirect 参数
       const currentRoute = router.currentRoute.value
-      const redirect = currentRoute.path !== '/login' ? currentRoute.fullPath : undefined
+      if (currentRoute.path === RoutesAlias.Login) {
+        return
+      }
+      const redirect = isLoginRedirectTarget(currentRoute.fullPath) ? currentRoute.fullPath : undefined
       router.push({
         name: 'Login',
         query: redirect ? { redirect } : undefined

@@ -17,7 +17,9 @@
         </div>
 
         <el-table :data="boundRows" border height="360" v-loading="boundLoading">
-          <el-table-column prop="user_id" label="用户ID" width="90" align="center" />
+          <el-table-column label="用户ID" width="90" align="center">
+            <template #default="{ row }">{{ userIdOf(row) || '' }}</template>
+          </el-table-column>
           <el-table-column prop="username" label="账号" min-width="140" />
           <el-table-column prop="realname" label="姓名" min-width="120" />
           <el-table-column prop="phone" label="手机号" min-width="130" />
@@ -25,18 +27,18 @@
           <el-table-column label="默认租户" width="100" align="center">
             <template #default="{ row }">
               <el-switch
-                :model-value="row.is_default === 1"
-                @change="(value) => handleDefaultChange(row.user_id, Boolean(value))"
-                :disabled="row.user_id === 1"
+                :model-value="Number(row.is_default) === 1"
+                @change="(value) => handleDefaultChange(userIdOf(row), Boolean(value))"
+                :disabled="userIdOf(row) === 1"
               />
             </template>
           </el-table-column>
           <el-table-column label="租户管理员" width="100" align="center">
             <template #default="{ row }">
               <el-switch
-                :model-value="row.is_super === 1"
-                @change="(value) => handleAdminChange(row.user_id, Boolean(value))"
-                :disabled="row.user_id === 1"
+                :model-value="Number(row.is_super) === 1"
+                @change="(value) => handleAdminChange(userIdOf(row), Boolean(value))"
+                :disabled="userIdOf(row) === 1"
               />
             </template>
           </el-table-column>
@@ -51,8 +53,8 @@
                 v-permission="'core:tenant:update'"
                 type="danger"
                 link
-                @click="removeUser(row.user_id)"
-                v-if="row.user_id !== 1"
+                @click="removeUser(userIdOf(row))"
+                v-if="userIdOf(row) !== 1"
               >
                 移除
               </el-button>
@@ -169,6 +171,8 @@
   const availableSearch = reactive({ username: '', realname: '', phone: '' })
   const selectedAvailableRows = ref<Record<string, any>[]>([])
 
+  const userIdOf = (row: Record<string, any>) => Number(row?.user_id || row?.id || 0)
+
   watch(
     () => props.modelValue,
     (val) => {
@@ -254,6 +258,7 @@
   }
 
   const handleAdminChange = async (userId: number, value: boolean) => {
+    if (!userId) return
     try {
       const isSuper = value ? 1 : 0
       const action = isSuper === 1 ? '设为租户管理员' : '取消租户管理员'
@@ -270,6 +275,7 @@
   }
 
   const handleDefaultChange = async (userId: number, value: boolean) => {
+    if (!userId) return
     try {
       const isDefault = value ? 1 : 0
       const action = isDefault === 1 ? '设为默认租户' : '取消默认租户'
