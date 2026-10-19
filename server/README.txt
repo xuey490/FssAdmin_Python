@@ -8,6 +8,8 @@ windows环境
 ### Windows PowerShell
 ```powershell
 python -m venv .venv
+
+source .venv/bin/activate
 .venv\Scripts\activate
 ```
 
@@ -113,4 +115,117 @@ Using CPython 3.13.0
 Creating virtual environment at: .venv
 ✔ A virtual environment already exists at `.venv`. Do you want to replace it? · yes
 Activate with: source .venv/bin/activate
+
+
+方案 1：uv 标准方式（推荐，fast-admin 项目直接用）
+# 进入项目目录
+cd /www/wwwroot/fast-admin
+
+# 1. 创建 .venv 虚拟环境（uv会自动管理）
+uv venv
+
+# 2. 直接用uv安装requirements.txt，不用pip！
+uv pip install -r requirements.txt
+
+后续运行代码（两种任选）
+# 方式A：uv run（推荐后台、脚本、systemd，不用激活）
+uv run python main.py
+
+# 方式B：手动激活环境，和以前一样
+source .venv/bin/activate
+# 激活后提示符变成 (.venv)，这时里面pip就正常了
+python main.py
+
+
+# uv 安装python
+
+
+> 重点：**uv python install 安装的 Python 和系统Python完全隔离，不会触发那个 `externally-managed-environment` 报错！正好解决你刚才 fast-admin 的问题**
+> 存放路径：`~/.local/share/uv/python/`，用户目录下，不用root改系统文件
+
+## 1、先看可用版本
+```bash
+# 列出所有可下载的python版本
+uv python list
+
+# 只看已经装好了的
+uv python list --installed
+```
+
+## 2、安装Python（常用命令）
+```bash
+# 安装最新3.12（推荐，fast-admin常用）
+uv python install 3.12
+
+# 精确小版本
+uv python install 3.12.8
+
+# 一次性装多个
+uv python install 3.10 3.11 3.12
+
+# 安装pypy
+uv python install pypy@3.11
+```
+> 提示：**uv venv 的时候如果版本不存在，uv会自动帮你下载，不一定需要手动先 install**
+
+## 3、给你的 fast-admin 项目使用（你当前场景）
+```bash
+cd /www/wwwroot/fast-admin
+
+# 用uv自带的3.12创建虚拟环境
+uv venv --python 3.12
+
+# 安装依赖，不会报externally-managed
+uv pip install -r requirements.txt
+```
+
+### 运行两种方式
+```bash
+# 方式1（推荐，后台、systemd）
+uv run python main.py
+
+# 方式2 激活环境
+source .venv/bin/activate
+python main.py
+```
+
+## 4、项目固定python版本（生成 .python-version）
+```bash
+uv python pin 3.12
+```
+之后在这个目录，uv默认自动使用3.12
+
+## 5、查看/查找解释器路径
+```bash
+# 查看当前项目会用哪个python
+uv python find
+
+# 直接调用这个python
+uv run --python 3.12 python
+```
+
+## 6、升级、卸载
+```bash
+# 升级3.12到最新补丁
+uv python upgrade 3.12
+
+# 删除某个版本
+uv python uninstall 3.10
+```
+
+## 7、国内加速（下载慢必加）
+设置pypi源是`uv pip`，python解释器下载镜像需要配置环境变量：
+```bash
+# 临时（当前shell）
+export UV_PYTHON_BUILD_STANDALONE_MIRROR=[https://mirrors.tuna.tsinghua.edu.cn/github-release/indygreg/python-build-standalone/](https://mirrors.tuna.tsinghua.edu.cn/github-release/indygreg/python-build-standalone/)
+uv python install 3.12
+```
+
+## ⚠️ 重要提醒
+- 这个python**不是系统的 /usr/bin/python3**，是uv单独托管的独立编译版
+- 不要用 `sudo uv python install`，装在root家目录会混乱，普通用户执行即可
+- 你之前报错根源：一直在用系统 `/usr/bin/python3` 装包，换成uv自带解释器+uv venv就彻底避开PEP668保护
+
+你这个fast-admin是用3.10还是3.12？我直接给你一条一键部署脚本。
+
 

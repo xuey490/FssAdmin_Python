@@ -176,7 +176,7 @@
 
   const userStore = useUserStore()
 
-  const treeData = ref([])
+  const treeData = ref<any[]>([])
 
   // 编辑框
   const { dialogType, dialogVisible, dialogData, showDialog, handleSelectionChange } = useSaiAdmin()
