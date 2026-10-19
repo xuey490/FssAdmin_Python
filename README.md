@@ -88,8 +88,8 @@
 | 技术                | 版本      | 用途                   |
 | ----------------- | ------- | -------------------- |
 | Python            | 3.13+   | 运行时                  |
-| FastAPI           | 0.115   | HTTP / OpenAPI       |
-| SQLAlchemy        | 2.x     | 异步 ORM               |
+| FastAPI           | 0.148   | HTTP / OpenAPI       |
+| SQLAlchemy        | 2.15     | 异步 ORM               |
 | Alembic           | 1.18    | 结构迁移（可选）             |
 | Pydantic Settings | 2.x     | `.env.{dev,prod}` 配置 |
 | Redis             | 客户端 7.x | 会话、缓存、限流             |
