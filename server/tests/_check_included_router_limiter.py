@@ -1,4 +1,4 @@
-"""ponytail: fastapi-limiter 扫 route.path 会在 FastAPI 0.137+ 的 _IncludedRouter 上炸。"""
+"""ponytail: 限流不扫 route.path，避免 FastAPI 0.137+ 的 _IncludedRouter 炸。"""
 
 from __future__ import annotations
 
@@ -12,19 +12,16 @@ from unittest.mock import AsyncMock
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 os.environ.setdefault("ENVIRONMENT", "dev")
 
-from fastapi_limiter import FastAPILimiter
 from starlette.requests import Request
 from starlette.responses import Response
 
-from app.core.http_limit import RateLimiter, ip_identifier
+from app.core import http_limit
+from app.core.http_limit import RateLimiter
 
 
 async def _run() -> None:
-    FastAPILimiter.redis = SimpleNamespace(evalsha=AsyncMock(return_value=0))
-    FastAPILimiter.prefix = "t"
-    FastAPILimiter.identifier = ip_identifier
-    FastAPILimiter.http_callback = lambda *a, **k: None
-    FastAPILimiter.lua_sha = "x"
+    redis = SimpleNamespace(incr=AsyncMock(return_value=1), expire=AsyncMock(), ttl=AsyncMock(return_value=60))
+    await http_limit.init_limiter(redis=redis, prefix="t:")
 
     scope = {
         "type": "http",
@@ -41,7 +38,8 @@ async def _run() -> None:
         "app": SimpleNamespace(routes=[SimpleNamespace()]),  # no .path
     }
     await RateLimiter(times=1, seconds=60)(Request(scope), Response())
-    FastAPILimiter.redis.evalsha.assert_awaited()
+    redis.incr.assert_awaited()
+    await http_limit.close_limiter()
     print("ok: limiter ignores routes without .path")
 
 

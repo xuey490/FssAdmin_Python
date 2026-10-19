@@ -86,6 +86,13 @@ async def _redis_expire(name: bytes, time: int) -> bool:
     return name in _mock_redis_store
 
 
+async def _redis_incr(name: bytes, amount: int = 1) -> int:
+    raw = _mock_redis_store.get(name)
+    n = int(raw or 0) + amount
+    _mock_redis_store[name] = str(n).encode()
+    return n
+
+
 async def _redis_flushall( asynchronous: bool = False) -> bool:
     _mock_redis_store.clear()
     return True
@@ -143,6 +150,7 @@ _mock_redis.keys = AsyncMock(side_effect=_redis_keys)
 _mock_redis.exists = AsyncMock(side_effect=_redis_exists)
 _mock_redis.ttl = AsyncMock(side_effect=_redis_ttl)
 _mock_redis.expire = AsyncMock(side_effect=_redis_expire)
+_mock_redis.incr = AsyncMock(side_effect=_redis_incr)
 _mock_redis.flushall = AsyncMock(side_effect=_redis_flushall)
 _mock_redis.flushdb = AsyncMock(side_effect=_redis_flushdb)
 _mock_redis.close = AsyncMock(side_effect=_redis_close)
@@ -155,8 +163,8 @@ _mock_redis.info = AsyncMock(side_effect=_redis_info)
 _mock_redis.dbsize = AsyncMock(side_effect=_redis_dbsize)
 
 patch("redis.asyncio.Redis.from_url", return_value=_mock_redis).start()
-patch("app.init_app.FastAPILimiter.init", new=AsyncMock()).start()
-patch("app.init_app.FastAPILimiter.close", new=AsyncMock()).start()
+patch("app.init_app.init_limiter", new=AsyncMock()).start()
+patch("app.init_app.close_limiter", new=AsyncMock()).start()
 patch("app.core.ap_scheduler.SchedulerUtil.init_scheduler", new=AsyncMock()).start()
 patch("app.core.ap_scheduler.SchedulerUtil.shutdown", new=AsyncMock()).start()
 

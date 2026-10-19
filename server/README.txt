@@ -104,3 +104,13 @@ upgrade = 把 versions/ 里未执行的迁移真正跑进数据库
 当前这份 f66ea5c1b592 迁移：生成成功 ≠ 可以升级；务必先打开文件审阅，尤其所有 op.drop_table，确认无误再执行
 
 
+
+# 安装最新的 Python 3.12
+uv python install 3.12
+
+root@C20260514161631:/www/wwwroot/fast-admin# uv venv
+Using CPython 3.13.0
+Creating virtual environment at: .venv
+✔ A virtual environment already exists at `.venv`. Do you want to replace it? · yes
+Activate with: source .venv/bin/activate
+

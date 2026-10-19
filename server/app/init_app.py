@@ -5,13 +5,12 @@ from fastapi import Depends, FastAPI
 from fastapi.concurrency import asynccontextmanager
 from fastapi.openapi.docs import get_redoc_html, get_swagger_ui_html, get_swagger_ui_oauth2_redirect_html
 from fastapi.responses import HTMLResponse
-from fastapi_limiter import FastAPILimiter
 
 from app.core import cache_util
 
 from .config.setting import settings
 from .core.exceptions import handle_exception
-from .core.http_limit import RateLimiter, http_limit_callback, ws_limit_callback
+from .core.http_limit import RateLimiter, close_limiter, init_limiter
 from .core.logger import logger
 from .utils.common_util import import_modules_async
 from .utils.console import console_end, console_start
@@ -39,15 +38,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[Any, Any]:
             if redis is None:
                 logger.warning("⏭️ RATE_LIMIT_ENABLED 但 Redis 不可用，跳过限流初始化")
             else:
-                from .core.http_limit import ip_identifier
-
-                await FastAPILimiter.init(
-                    redis=redis,
-                    prefix=settings.REQUEST_LIMITER_REDIS_PREFIX,
-                    identifier=ip_identifier,
-                    http_callback=http_limit_callback,
-                    ws_callback=ws_limit_callback,
-                )
+                await init_limiter(redis=redis, prefix=settings.REQUEST_LIMITER_REDIS_PREFIX)
                 limiter_ready = True
                 logger.info(
                     "✅ 请求限流器初始化完成 ({}次/{}秒)",
@@ -128,8 +119,8 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[Any, Any]:
             await cache_util.clear()
         except Exception:
             pass
-        if settings.RATE_LIMIT_ENABLED and FastAPILimiter.redis is not None:
-            await FastAPILimiter.close()
+        if settings.RATE_LIMIT_ENABLED:
+            await close_limiter()
         await import_modules_async(modules=settings.EVENT_LIST, desc="全局事件", app=app, status=False)
         from app.core.database import async_engine
 

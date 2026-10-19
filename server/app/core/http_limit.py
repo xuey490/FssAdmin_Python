@@ -1,32 +1,44 @@
 from math import ceil
-from typing import NoReturn, Union
+from typing import Any, NoReturn, Union
 
-import redis as pyredis
 from fastapi import Request, Response
-from fastapi_limiter import FastAPILimiter
-from fastapi_limiter.depends import RateLimiter as _LibRateLimiter
 from starlette.websockets import WebSocket
 
 from app.core.exceptions import CustomException
 
+_redis: Any = None
+_prefix: str = "fssadmin:request_limiter:"
 
-class RateLimiter(_LibRateLimiter):
+
+async def init_limiter(*, redis: Any, prefix: str) -> None:
+    """绑定 Redis；fastapi-limiter 0.2 已无 FastAPILimiter.init。"""
+    global _redis, _prefix
+    _redis = redis
+    _prefix = prefix
+
+
+async def close_limiter() -> None:
+    global _redis
+    _redis = None
+
+
+class RateLimiter:
     """IP 全局限流。不扫 app.routes：FastAPI 0.137+ 的 _IncludedRouter 没有 .path。"""
 
+    def __init__(self, times: int, seconds: int):
+        self.times = times
+        self.seconds = seconds
+
     async def __call__(self, request: Request, response: Response):
-        if not FastAPILimiter.redis:
-            raise Exception("You must call FastAPILimiter.init in startup event of fastapi!")
-        identifier = self.identifier or FastAPILimiter.identifier or ip_identifier
-        callback = self.callback or FastAPILimiter.http_callback or http_limit_callback
-        rate_key = await identifier(request)
-        key = f"{FastAPILimiter.prefix}:{rate_key}"
-        try:
-            pexpire = await self._check(key)
-        except pyredis.exceptions.NoScriptError:
-            FastAPILimiter.lua_sha = await FastAPILimiter.redis.script_load(FastAPILimiter.lua_script)
-            pexpire = await self._check(key)
-        if pexpire != 0:
-            return await callback(request, response, pexpire)
+        if _redis is None:
+            return
+        key = f"{_prefix}{await ip_identifier(request)}"
+        n = await _redis.incr(key)
+        if int(n) == 1:
+            await _redis.expire(key, self.seconds)
+        if int(n) > self.times:
+            ttl = int(await _redis.ttl(key) or 0)
+            return http_limit_callback(request, response, max(ttl, 0) * 1000)
 
 
 async def ip_identifier(request: Union[Request, WebSocket]) -> str:
@@ -37,7 +49,7 @@ async def ip_identifier(request: Union[Request, WebSocket]) -> str:
     return request.client.host if request.client else "unknown"
 
 
-def http_limit_callback(request: Request, response: Response, expire: int) -> NoReturn:
+def http_limit_callback(request: Request, response: Response, expire: int = 0) -> NoReturn:
     """
     HTTP 触发限流时的默认回调：抛出 429。
 
@@ -49,7 +61,7 @@ def http_limit_callback(request: Request, response: Response, expire: int) -> No
     返回:
     - 无（始终抛出 CustomException）。
     """
-    expires = ceil(expire / 30)
+    expires = ceil(expire / 30) if expire else 1
     raise CustomException(
         status_code=429,
         msg="请求过于频繁，请稍后重试！",
@@ -57,7 +69,7 @@ def http_limit_callback(request: Request, response: Response, expire: int) -> No
     )
 
 
-async def ws_limit_callback(ws: WebSocket, expire: int) -> None:
+async def ws_limit_callback(ws: WebSocket, expire: int = 0) -> None:
     """
     WebSocket 触发限流时的默认回调：关闭连接。
 
@@ -68,5 +80,5 @@ async def ws_limit_callback(ws: WebSocket, expire: int) -> None:
     返回:
     - None
     """
-    expires = ceil(expire / 30)
+    expires = ceil(expire / 30) if expire else 1
     await ws.close(code=1008, reason=f"请求过于频繁，请稍后重试！{expires} 秒后重试")
