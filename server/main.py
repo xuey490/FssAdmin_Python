@@ -1,9 +1,4 @@
 import os
-
-from app.core.timezone import pin_process_timezone
-
-pin_process_timezone()
-
 from typing import Annotated
 
 import typer
@@ -85,6 +80,7 @@ def run(
         host=reloaded_settings.SERVER_HOST,
         port=reloaded_settings.SERVER_PORT,
         reload=env.value == EnvironmentEnum.DEV.value,
+        reload_dirs=[os.path.join(os.path.dirname(os.path.abspath(__file__)), "app")],  # 只监听 app 目录，避免扫描 .venv 里 1.3 万个文件
         factory=True,
         log_config=None,
     )

@@ -9,6 +9,12 @@
 
 前后端同仓：`server/` 为 Python 异步后端，`web/` 为 Vue 3 管理端，菜单与权限由后端下发。
 
+
+欢迎加入 QQ 交流群：
+
+![QQ 交流群](https://v3.phpframe.org/assets/qqgroup-C2pjhKmS.png)
+
+
 在线预览：[https://fast.phpframe.org](https://fast.phpframe.org) · 默认账号 `admin` / 密码 `123456`
 
 ---
