@@ -214,6 +214,30 @@
             </div>
           </div>
         </ElTabPane>
+        <ElTabPane label="Java Spring Boot 4.x" name="java">
+          <div class="welcome-dialog">
+            <p class="welcome-dialog__intro">
+              FssAdmin
+              是一个多租户后台管理系统与应用开发底座。系统将认证、组织架构、菜单权限、审计、文件和消息等基础能力集中提供给业务模块，并支持将部分服务独立部署。
+            </p>
+            <p class="welcome-dialog__footer">技术栈：</p>
+            <ul class="welcome-dialog__list">
+              <li>Java 21、Maven Wrapper</li>
+              <li>Spring Boot 4.1.2 / Spring Framework 7</li>
+              <li>Spring Cloud 2025.1.4、Spring Cloud Alibaba</li>
+            </ul>
+            <p class="welcome-dialog__footer">可以单体启动，也可以微服务启动。</p>
+            <ul class="welcome-dialog__list">
+              <li>
+                在线演示：
+                <a href="https://java.phpframe.org/" target="_blank" rel="noopener noreferrer"
+                  >https://java.phpframe.org/</a
+                >
+              </li>
+              <li> 商业版联系微信：<span class="welcome-dialog__wechat">xdbyvibm6</span> </li>
+            </ul>
+          </div>
+        </ElTabPane>		
       </ElTabs>
       <template #footer>
         <ElButton type="primary" @click="welcomeDialogVisible = false">知道了</ElButton>
@@ -282,7 +306,7 @@
   const loading = ref(false)
   const homeDebugEnabled = import.meta.env.VITE_HOME_DEGBUG === 'true'
   const welcomeDialogVisible = ref(false)
-  const welcomeActiveTab = ref('python')
+  const welcomeActiveTab = ref('java')
   let welcomeDialogTimer: ReturnType<typeof setTimeout> | undefined
 
   const loadSystemName = async () => {
@@ -307,7 +331,7 @@
     if (homeDebugEnabled) {
       welcomeDialogTimer = setTimeout(() => {
         welcomeDialogVisible.value = true
-      }, 2000)
+      }, 1000)
     }
   })
 
